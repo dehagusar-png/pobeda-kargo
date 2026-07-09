@@ -15,6 +15,7 @@ export const bot = new Bot<MyContext>(process.env.BOT_TOKEN || "");
 export const i18n = new I18n<MyContext>({
   defaultLocale: "tg",
   directory: "locales",
+  useSession: true,
 });
 
 bot.use(session({ initial: () => ({}) }));
