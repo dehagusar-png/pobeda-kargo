@@ -11,6 +11,8 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
+      - key: NODE_VERSION
+        value: "20.14.0"
 
   # 2. Панели Маъмурият (Next.js)
   - type: web
@@ -23,3 +25,5 @@ services:
     envVars:
       - key: DATABASE_URL
         sync: false
+      - key: NODE_VERSION
+        value: "20.14.0"
