@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
-import { Scanner } from '@yudiel/react-qr-scanner';
-import { Package, Send } from 'lucide-react';
+import { Package, Send, QrCode } from 'lucide-react';
 
 const tg = WebApp as any;
 
 function App() {
-  const [data, setData] = useState<string>('Натиҷа нест');
+  const [data, setData] = useState<string>('');
   const [scanned, setScanned] = useState<boolean>(false);
 
   useEffect(() => {
@@ -14,15 +13,24 @@ function App() {
     tg.expand();
   }, []);
 
-  const handleScan = (result: string) => {
-    if (result && !scanned) {
-      setData(result);
-      setScanned(true);
+  const startScan = () => {
+    if (tg.showScanQrPopup) {
+      tg.showScanQrPopup({ text: "Лутфан трек-кодро скан кунед" }, (result: string) => {
+        if (result) {
+          setData(result);
+          setScanned(true);
+          // Return true to close the popup
+          return true;
+        }
+      });
+    } else {
+      // Fallback for older Telegram versions
+      tg.showAlert("Версияи Телеграми шумо сканери автоматиро дастгирӣ намекунад. Лутфан Телеграмро навсозӣ кунед.");
     }
   };
 
   const sendToBot = () => {
-    if (data && data !== 'Натиҷа нест') {
+    if (data) {
       tg.sendData(JSON.stringify({ trackCode: data }));
     }
   };
@@ -36,14 +44,17 @@ function App() {
         </div>
         
         {!scanned ? (
-          <div className="p-4 flex flex-col items-center">
-            <p className="text-sm mb-4 text-center" style={{ color: 'var(--tg-theme-hint-color, #6b7280)' }}>Лутфан штрих-код ё QR-кодро ба камера нишон диҳед.</p>
-            <div className="w-full aspect-square rounded-xl overflow-hidden bg-black border-4 border-gray-100">
-               <Scanner
-                  onScan={(results) => handleScan(results[0].rawValue)}
-                  onError={(error: any) => console.log(error?.message)}
-               />
-            </div>
+          <div className="p-8 flex flex-col items-center">
+            <p className="text-sm mb-8 text-center" style={{ color: 'var(--tg-theme-hint-color, #6b7280)' }}>
+              Барои скан кардани штрих-код ё QR-коди бор тугмаи зерро пахш кунед.
+            </p>
+            <button 
+              onClick={startScan}
+              className="w-full h-32 bg-blue-50 border-2 border-dashed border-blue-400 hover:bg-blue-100 text-blue-600 font-medium rounded-2xl flex flex-col justify-center items-center transition-colors"
+            >
+              <QrCode size={48} className="mb-2" />
+              <span>Кушодани Сканер</span>
+            </button>
           </div>
         ) : (
           <div className="p-6 flex flex-col items-center text-center">
@@ -64,7 +75,7 @@ function App() {
               Фиристодан ба Бот
             </button>
             <button 
-              onClick={() => setScanned(false)}
+              onClick={() => { setScanned(false); setData(''); }}
               className="mt-3 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-3 rounded-xl transition-colors"
             >
               Аз нав скан кардан
