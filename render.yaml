@@ -1,0 +1,23 @@
+services:
+  # 1. Боти Телеграм
+  - type: web
+    name: pobeda-kargo-bot
+    env: node
+    buildCommand: npm install && npx prisma generate
+    startCommand: npx ts-node src/index.ts
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+
+  # 2. Панели Маъмурият (Next.js)
+  - type: web
+    name: pobeda-admin-panel
+    env: node
+    rootDir: admin-panel
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: DATABASE_URL
+        sync: false

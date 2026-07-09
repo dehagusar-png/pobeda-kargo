@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  telegramId BigInt   @unique
+  phone      String?  @unique
+  firstName  String?
+  lastName   String?
+  language   String   @default("tg") // tg, ru, uz, zh
+  clientCode String?  @unique // PB-XXXX
+  role       Role     @default(USER) // USER, ADMIN, WORKER
+  parcels    Parcel[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Parcel {
+  id         Int          @id @default(autoincrement())
+  trackCode  String       @unique
+  weight     Float?
+  volume     Float?
+  price      Float?
+  status     ParcelStatus @default(EXPECTED)
+  userId     Int?
+  user       User?        @relation(fields: [userId], references: [id])
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  WORKER
+}
+
+enum ParcelStatus {
+  EXPECTED
+  IN_CHINA
+  IN_TRANSIT
+  ARRIVED
+  DELIVERED
+}
