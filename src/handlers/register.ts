@@ -14,7 +14,7 @@ const langMap: Record<string, string> = {
 registerHandler.hears(Object.keys(langMap), async (ctx) => {
   if (!ctx.from || !ctx.message?.text) return;
   const lang = langMap[ctx.message.text];
-  await ctx.i18n.setLocale(lang);
+  ctx.i18n.locale(lang);
   
   try {
     console.log(`Кӯшиши сабти забони ${lang} барои корбар ${ctx.from.id}...`);
