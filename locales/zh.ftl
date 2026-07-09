@@ -1,4 +1,4 @@
-welcome = 您好！欢迎来到 Pobeda Kargo 机器人。请选择您的语言：
+welcome = 您好！欢迎来到 pobedacargo1 机器人。请选择您的语言：
 language_set = 已选择中文！
 ask_phone = 为了继续，请使用下面的按钮发送您的电话号码：
 phone_button = 📱 发送电话号码

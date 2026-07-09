@@ -20,7 +20,7 @@ export default function Sidebar() {
       <div className="p-6">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <Package className="text-blue-500" />
-          <span>Pobeda Kargo</span>
+          <span>pobedacargo1</span>
         </h1>
         <p className="text-xs text-slate-500 mt-1">Панели Маъмурият</p>
       </div>

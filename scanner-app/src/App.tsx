@@ -83,7 +83,7 @@ function App() {
           </div>
         )}
       </div>
-      <p className="text-xs text-center" style={{ color: 'var(--tg-theme-hint-color, #9ca3af)' }}>Pobeda Kargo © 2026</p>
+      <p className="text-xs text-center" style={{ color: 'var(--tg-theme-hint-color, #9ca3af)' }}>pobedacargo1 © 2026</p>
     </div>
   );
 }

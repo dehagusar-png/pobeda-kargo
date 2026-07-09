@@ -7,7 +7,7 @@ import Topbar from "@/components/Topbar";
 const inter = Inter({ subsets: ["latin", "cyrillic"] });
 
 export const metadata: Metadata = {
-  title: "Pobeda Kargo - Admin Panel",
+  title: "pobedacargo1 - Admin Panel",
   description: "Системаи идоракунии логистикии Победа Карго",
 };
 

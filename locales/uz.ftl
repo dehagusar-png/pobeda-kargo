@@ -1,4 +1,4 @@
-welcome = Assalomu alaykum! Pobeda Kargo botiga xush kelibsiz. Iltimos, tilni tanlang:
+welcome = Assalomu alaykum! pobedacargo1 botiga xush kelibsiz. Iltimos, tilni tanlang:
 language_set = O'zbek tili tanlandi!
 ask_phone = Davom etish uchun quyidagi tugma orqali telefon raqamingizni yuboring:
 phone_button = 📱 Telefon raqamni yuborish
