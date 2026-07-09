@@ -16,7 +16,11 @@ startHandler.command("start", async (ctx) => {
       
     // Агар корбар админ ё коргар бошад, тугмаи Сканер пайдо мешавад
     if (user.role === "ADMIN" || user.role === "WORKER") {
-      keyboard.webApp("📸 Сканери Борҳо", "https://pobeda-scanner.vercel.app");
+      keyboard.webApp("📸 Сканери Борҳо", "https://pobeda-scanner.vercel.app").row();
+    }
+    // Агар корбар админ бошад, тугмаи Панели Маъмуриятро низ нишон медиҳем
+    if (user.role === "ADMIN") {
+      keyboard.url("📊 Панели Маъмурият", "https://pobeda-admin-panel.onrender.com").row();
     }
     
     keyboard.resized();
