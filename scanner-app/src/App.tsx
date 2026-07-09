@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
-import { QrReader } from '@yudiel/react-qr-scanner';
+import { Scanner } from '@yudiel/react-qr-scanner';
 import { Package, Send } from 'lucide-react';
+
+const tg = WebApp as any;
 
 function App() {
   const [data, setData] = useState<string>('Натиҷа нест');
   const [scanned, setScanned] = useState<boolean>(false);
 
   useEffect(() => {
-    WebApp.ready();
-    WebApp.expand();
+    tg.ready();
+    tg.expand();
   }, []);
 
   const handleScan = (result: string) => {
@@ -21,7 +23,7 @@ function App() {
 
   const sendToBot = () => {
     if (data && data !== 'Натиҷа нест') {
-      WebApp.sendData(JSON.stringify({ trackCode: data }));
+      tg.sendData(JSON.stringify({ trackCode: data }));
     }
   };
 
@@ -37,9 +39,9 @@ function App() {
           <div className="p-4 flex flex-col items-center">
             <p className="text-sm mb-4 text-center" style={{ color: 'var(--tg-theme-hint-color, #6b7280)' }}>Лутфан штрих-код ё QR-кодро ба камера нишон диҳед.</p>
             <div className="w-full aspect-square rounded-xl overflow-hidden bg-black border-4 border-gray-100">
-               <QrReader
-                  onDecode={handleScan}
-                  onError={(error) => console.log(error?.message)}
+               <Scanner
+                  onScan={(results) => handleScan(results[0].rawValue)}
+                  onError={(error: any) => console.log(error?.message)}
                />
             </div>
           </div>
