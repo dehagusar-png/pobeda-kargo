@@ -1,12 +1,11 @@
 import { Composer } from "grammy";
 import { MyContext } from "../bot";
 import { prisma } from "../db";
+import { BUTTONS, STATUS_MAP } from "../utils/constants";
 
 export const trackHandler = new Composer<MyContext>();
 
-trackHandler.hears([
-  "🔍 Пайгирии Бор", "🔍 Отслеживание груза", "🔍 Yukni kuzatish", "🔍 追踪货物"
-], async (ctx) => {
+trackHandler.hears(BUTTONS.TRACK, async (ctx) => {
   ctx.session.step = "track";
   await ctx.reply("Лутфан трек-коди худро фиристед: / Пожалуйста, отправьте ваш трек-код:");
 });
@@ -17,15 +16,7 @@ trackHandler.on("message:text", async (ctx, next) => {
     const parcel = await prisma.parcel.findUnique({ where: { trackCode } });
     
     if (parcel) {
-      const statusMap: Record<string, string> = {
-        "EXPECTED": "Мунтазири қабул 📦",
-        "IN_CHINA": "Дар анбори Чин 🇨🇳",
-        "IN_TRANSIT": "Дар роҳ ба Тоҷикистон 🚚",
-        "ARRIVED": "Дар Тоҷикистон омода аст 🇹🇯",
-        "DELIVERED": "Супорида шуд ✅"
-      };
-      
-      const statusText = statusMap[parcel.status] || parcel.status;
+      const statusText = STATUS_MAP[parcel.status] || parcel.status;
       await ctx.reply(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { parse_mode: "HTML" });
     } else {
       await ctx.reply("❌ Бор бо ин трек-код ёфт нашуд.");
@@ -42,7 +33,7 @@ trackHandler.on("message:web_app_data", async (ctx) => {
     if (!ctx.from) return;
     const data = JSON.parse(ctx.message.web_app_data.data);
     if (data.trackCode) {
-      const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
+      const user = ctx.user;
       
       // Танҳо Admin ё Worker ҳуқуқи иваз кардани статусро доранд
       if (user?.role === "ADMIN" || user?.role === "WORKER") {

@@ -1,14 +1,13 @@
 import { Composer, InlineKeyboard } from "grammy";
 import { MyContext } from "../bot";
+import { BUTTONS } from "../utils/constants";
 
 export const calculatorHandler = new Composer<MyContext>();
 
 const PRICE_PER_KG = 4.5; // $4.5 барои 1 кг
 const PRICE_PER_CUBE = 350; // $350 барои 1 куб
 
-calculatorHandler.hears([
-  "🧮 Ҳисобкунак", "🧮 Калькулятор", "🧮 Kalkulyator", "🧮 计算器"
-], async (ctx) => {
+calculatorHandler.hears(BUTTONS.CALCULATOR, async (ctx) => {
   ctx.session.step = "calculator";
   await ctx.reply("Барои ҳисоб кардани нарх:\n\n1️⃣ Агар танҳо вазн ё ҳаҷмро медонед, як рақам нависед (масалан: <code>15</code>)\n2️⃣ Агар ҳардуяшро медонед, бо фосила нависед (масалан: <code>15 0.5</code>)", { parse_mode: "HTML" });
 });

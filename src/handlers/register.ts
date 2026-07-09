@@ -1,19 +1,14 @@
 import { Composer, Keyboard } from "grammy";
 import { MyContext } from "../bot";
 import { prisma } from "../db";
+import { LANG_MAP } from "../utils/constants";
+import { getMainKeyboard } from "../utils/keyboard";
 
 export const registerHandler = new Composer<MyContext>();
 
-const langMap: Record<string, string> = {
-  "🇹🇯 Тоҷикӣ": "tg",
-  "🇷🇺 Русский": "ru",
-  "🇺🇿 O'zbek": "uz",
-  "🇨🇳 中文": "zh"
-};
-
-registerHandler.hears(Object.keys(langMap), async (ctx) => {
+registerHandler.hears(Object.keys(LANG_MAP), async (ctx) => {
   if (!ctx.from || !ctx.message?.text) return;
-  const lang = langMap[ctx.message.text] as string;
+  const lang = LANG_MAP[ctx.message.text] as string;
   await ctx.i18n.setLocale(lang);
   
   try {
@@ -43,8 +38,7 @@ registerHandler.on("message:contact", async (ctx) => {
   if (!ctx.from) return;
   const phone = ctx.message.contact.phone_number;
   
-  // Get current user to check if they already have a code
-  let user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
+  let user = ctx.user;
   let clientCode = user?.clientCode;
 
   if (!clientCode) {
@@ -56,9 +50,6 @@ registerHandler.on("message:contact", async (ctx) => {
     });
   }
 
-  const keyboard = new Keyboard()
-    .text(ctx.t("address")).text(ctx.t("track")).row()
-    .text(ctx.t("calculator")).text(ctx.t("support")).resized();
-
+  const keyboard = getMainKeyboard(ctx, user || null);
   await ctx.reply(ctx.t("registered", { clientCode }), { reply_markup: keyboard });
 });

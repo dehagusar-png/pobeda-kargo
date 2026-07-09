@@ -1,30 +1,16 @@
 import { Composer, Keyboard } from "grammy";
 import { MyContext } from "../bot";
-import { prisma } from "../db";
+import { getMainKeyboard } from "../utils/keyboard";
 
 export const startHandler = new Composer<MyContext>();
 
 startHandler.command("start", async (ctx) => {
   if (!ctx.from) return;
-  const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
+  const user = ctx.user;
   
   if (user && user.phone && user.clientCode) {
     // Already registered
-    const keyboard = new Keyboard()
-      .text(ctx.t("address")).text(ctx.t("track")).row()
-      .text(ctx.t("calculator")).text(ctx.t("support")).row();
-      
-    // Агар корбар админ ё коргар бошад, тугмаи Сканер пайдо мешавад
-    if (user.role === "ADMIN" || user.role === "WORKER") {
-      keyboard.webApp("📸 Сканери Борҳо", "https://pobeda-scanner.vercel.app").row();
-    }
-    // Агар корбар админ бошад, тугмаи Панели Маъмуриятро низ нишон медиҳем
-    if (user.role === "ADMIN") {
-      keyboard.webApp("📊 Панели Маъмурият", "https://pobeda-admin-panel.onrender.com").row();
-    }
-    
-    keyboard.resized();
-      
+    const keyboard = getMainKeyboard(ctx, user);
     await ctx.reply(ctx.t("main_menu"), { reply_markup: keyboard });
   } else {
     // Not registered, ask language

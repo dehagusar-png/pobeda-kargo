@@ -1,13 +1,16 @@
 import { Bot, Context, session, SessionFlavor } from "grammy";
 import { I18n, I18nFlavor } from "@grammyjs/i18n";
+import { User } from "@prisma/client";
 import { prisma } from "./db";
 
 // Define context flavor
 interface SessionData {
-  language?: string;
-  step?: string;
+  step: string;
+  __language_code?: string;
 }
-export type MyContext = Context & SessionFlavor<SessionData> & I18nFlavor;
+export type MyContext = Context & SessionFlavor<SessionData> & I18nFlavor & {
+  user?: User | null;
+};
 
 export const bot = new Bot<MyContext>(process.env.BOT_TOKEN || "");
 

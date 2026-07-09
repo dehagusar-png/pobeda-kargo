@@ -6,7 +6,11 @@ import { addressHandler } from "./handlers/address";
 import { calculatorHandler } from "./handlers/calculator";
 import { trackHandler } from "./handlers/track";
 import { supportHandler } from "./handlers/support";
+import { userMiddleware } from "./middleware/user";
 import http from "http";
+
+// Register middleware
+bot.use(userMiddleware);
 
 // Register handlers
 bot.use(startHandler);
