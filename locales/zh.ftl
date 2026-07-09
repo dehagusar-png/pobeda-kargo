@@ -8,3 +8,9 @@ address = 📍 中国仓库地址
 track = 🔍 追踪货物
 calculator = 🧮 计算器
 support = 🎧 客服支持
+
+support_text = 🎧 <b>客户支持</b>
+ 要联系管理部门，请拨打以下号码或在Telegram上留言：
+ 
+ 📞 +992 000 00 00 00
+ 💬 @PobedaCargoSupport

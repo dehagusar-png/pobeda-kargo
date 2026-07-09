@@ -8,3 +8,9 @@ address = 📍 Xitoydagi manzil
 track = 🔍 Yukni kuzatish
 calculator = 🧮 Kalkulyator
 support = 🎧 Qo'llab-quvvatlash
+
+support_text = 🎧 <b>Mijozlarni qo'llab-quvvatlash</b>
+ Ma'muriyat bilan bog'lanish uchun raqamlarga qo'ng'iroq qiling yoki Telegramda yozing:
+ 
+ 📞 +992 000 00 00 00
+ 💬 @PobedaCargoSupport

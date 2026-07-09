@@ -5,6 +5,7 @@ import { registerHandler } from "./handlers/register";
 import { addressHandler } from "./handlers/address";
 import { calculatorHandler } from "./handlers/calculator";
 import { trackHandler } from "./handlers/track";
+import { supportHandler } from "./handlers/support";
 import http from "http";
 
 // Register handlers
@@ -13,6 +14,11 @@ bot.use(registerHandler);
 bot.use(addressHandler);
 bot.use(calculatorHandler);
 bot.use(trackHandler);
+bot.use(supportHandler);
+
+// Graceful shutdown to prevent 409 Conflict during zero-downtime deploys
+process.once("SIGINT", () => bot.stop());
+process.once("SIGTERM", () => bot.stop());
 
 import { GrammyError, HttpError } from "grammy";
 bot.catch((err) => {
