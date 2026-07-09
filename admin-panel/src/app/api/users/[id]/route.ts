@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await context.params;
     const { role } = await request.json();
-    const userId = parseInt(params.id);
+    const userId = parseInt(id);
 
     if (!role || !["USER", "ADMIN", "WORKER"].includes(role)) {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
