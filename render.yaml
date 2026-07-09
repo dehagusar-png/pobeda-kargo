@@ -3,6 +3,7 @@ services:
   - type: web
     name: pobeda-kargo-bot
     env: node
+    plan: free
     buildCommand: npm install && npx prisma generate
     startCommand: npx ts-node src/index.ts
     envVars:
@@ -15,6 +16,7 @@ services:
   - type: web
     name: pobeda-admin-panel
     env: node
+    plan: free
     rootDir: admin-panel
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npm run start
