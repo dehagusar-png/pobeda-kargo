@@ -16,20 +16,27 @@ registerHandler.hears(Object.keys(langMap), async (ctx) => {
   const lang = langMap[ctx.message.text];
   await ctx.i18n.setLocale(lang);
   
-  // Upsert user to save language
-  await prisma.user.upsert({
-    where: { telegramId: BigInt(ctx.from.id) },
-    update: { language: lang, firstName: ctx.from.first_name, lastName: ctx.from.last_name || null },
-    create: {
-      telegramId: BigInt(ctx.from.id),
-      language: lang,
-      firstName: ctx.from.first_name,
-      lastName: ctx.from.last_name || null
-    }
-  });
+  try {
+    console.log(`Кӯшиши сабти забони ${lang} барои корбар ${ctx.from.id}...`);
+    // Upsert user to save language
+    await prisma.user.upsert({
+      where: { telegramId: BigInt(ctx.from.id) },
+      update: { language: lang, firstName: ctx.from.first_name, lastName: ctx.from.last_name || null },
+      create: {
+        telegramId: BigInt(ctx.from.id),
+        language: lang,
+        firstName: ctx.from.first_name,
+        lastName: ctx.from.last_name || null
+      }
+    });
+    console.log(`Маълумот дар база муваффақона сабт шуд.`);
 
-  const kb = new Keyboard().requestContact(ctx.t("phone_button")).resized();
-  await ctx.reply(ctx.t("ask_phone"), { reply_markup: kb });
+    const kb = new Keyboard().requestContact(ctx.t("phone_button")).resized();
+    await ctx.reply(ctx.t("ask_phone"), { reply_markup: kb });
+  } catch (error) {
+    console.error("Хатогӣ ҳангоми сабт дар базаи маълумот:", error);
+    await ctx.reply("❌ Хатогӣ дар базаи маълумоти сервер ба вуҷуд омад. Лутфан логҳои (Logs) серверро тафтиш кунед.");
+  }
 });
 
 registerHandler.on("message:contact", async (ctx) => {
