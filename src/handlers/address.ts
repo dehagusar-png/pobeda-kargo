@@ -8,7 +8,7 @@ addressHandler.hears([
   "📍 Суроға дар Чин", "📍 Адрес в Китае", "📍 Xitoydagi manzil", "📍 中国仓库地址"
 ], async (ctx) => {
   if (!ctx.from) return;
-  const user = await prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+  const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
   
   if (user && user.clientCode) {
     await ctx.reply(ctx.t("address_info", { 

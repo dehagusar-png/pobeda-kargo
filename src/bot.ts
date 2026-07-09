@@ -23,7 +23,7 @@ bot.use(i18n);
 // Language and user detection middleware
 bot.use(async (ctx, next) => {
   if (ctx.from) {
-    const user = await prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+    const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
     if (user && user.language) {
       ctx.i18n.locale(user.language);
     }

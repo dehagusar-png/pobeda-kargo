@@ -18,13 +18,13 @@ registerHandler.hears(Object.keys(langMap), async (ctx) => {
   
   // Upsert user to save language
   await prisma.user.upsert({
-    where: { telegramId: ctx.from.id },
-    update: { language: lang, firstName: ctx.from.first_name, lastName: ctx.from.last_name },
+    where: { telegramId: BigInt(ctx.from.id) },
+    update: { language: lang, firstName: ctx.from.first_name, lastName: ctx.from.last_name || null },
     create: {
-      telegramId: ctx.from.id,
+      telegramId: BigInt(ctx.from.id),
       language: lang,
       firstName: ctx.from.first_name,
-      lastName: ctx.from.last_name
+      lastName: ctx.from.last_name || null
     }
   });
 
@@ -37,14 +37,14 @@ registerHandler.on("message:contact", async (ctx) => {
   const phone = ctx.message.contact.phone_number;
   
   // Get current user to check if they already have a code
-  let user = await prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+  let user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
   let clientCode = user?.clientCode;
 
   if (!clientCode) {
     const userCount = await prisma.user.count();
     clientCode = `PB-${1000 + userCount}`;
     user = await prisma.user.update({
-      where: { telegramId: ctx.from.id },
+      where: { telegramId: BigInt(ctx.from.id) },
       data: { phone, clientCode }
     });
   }

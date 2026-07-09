@@ -6,7 +6,7 @@ export const startHandler = new Composer<MyContext>();
 
 startHandler.command("start", async (ctx) => {
   if (!ctx.from) return;
-  const user = await prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+  const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
   
   if (user && user.phone && user.clientCode) {
     // Already registered

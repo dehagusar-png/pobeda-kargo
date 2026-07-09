@@ -42,7 +42,7 @@ trackHandler.on("message:web_app_data", async (ctx) => {
     if (!ctx.from) return;
     const data = JSON.parse(ctx.message.web_app_data.data);
     if (data.trackCode) {
-      const user = await prisma.user.findUnique({ where: { telegramId: ctx.from.id } });
+      const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
       
       // Танҳо Admin ё Worker ҳуқуқи иваз кардани статусро доранд
       if (user?.role === "ADMIN" || user?.role === "WORKER") {
