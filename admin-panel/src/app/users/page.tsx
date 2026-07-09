@@ -70,9 +70,27 @@ export default function UsersPage() {
                 <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-600 font-bold text-lg flex items-center justify-center uppercase">
                   {user.name.charAt(0)}
                 </div>
-                <span className={`px-2 py-1 border rounded text-xs font-semibold ${roleColors[user.role] || "bg-gray-100"}`}>
-                  {user.role}
-                </span>
+                <select 
+                  className={`px-2 py-1 border rounded text-xs font-semibold outline-none cursor-pointer ${roleColors[user.role] || "bg-gray-100"}`}
+                  value={user.role}
+                  onChange={async (e) => {
+                    const newRole = e.target.value;
+                    const res = await fetch(`/api/users/${user.id}`, {
+                      method: "PUT",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ role: newRole }),
+                    });
+                    if (res.ok) {
+                      setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole } : u));
+                    } else {
+                      alert("Хатогӣ ҳангоми иваз кардани вазифа!");
+                    }
+                  }}
+                >
+                  <option value="USER">USER</option>
+                  <option value="WORKER">WORKER</option>
+                  <option value="ADMIN">ADMIN</option>
+                </select>
               </div>
               <h3 className="font-bold text-slate-900 text-lg">{user.name}</h3>
               <p className="text-blue-600 font-mono font-medium text-sm mt-1">{user.clientCode}</p>
