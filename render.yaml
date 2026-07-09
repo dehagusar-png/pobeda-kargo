@@ -5,7 +5,7 @@ services:
     env: node
     plan: free
     buildCommand: npm install && npx prisma generate && npx prisma db push --accept-data-loss
-    startCommand: npx ts-node src/index.ts
+    startCommand: npx tsx src/index.ts
     envVars:
       - key: BOT_TOKEN
         sync: false
