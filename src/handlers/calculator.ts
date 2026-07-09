@@ -20,8 +20,8 @@ calculatorHandler.on("message:text", async (ctx, next) => {
     // Ду рақам ворид шуд (Вазн ва Ҳаҷм)
     const matchTwo = text.match(/^([\d\.]+)\s+([\d\.]+)$/);
     if (matchTwo) {
-      const weight = parseFloat(matchTwo[1]);
-      const volume = parseFloat(matchTwo[2]);
+      const weight = parseFloat(matchTwo[1]!);
+      const volume = parseFloat(matchTwo[2]!);
       
       const weightPrice = weight * PRICE_PER_KG;
       const volumePrice = volume * PRICE_PER_CUBE;
@@ -42,7 +42,7 @@ calculatorHandler.on("message:text", async (ctx, next) => {
     // Як рақам ворид шуд (Мизоҷ мехоҳад танҳо якеашро бинад)
     const matchOne = text.match(/^([\d\.]+)$/);
     if (matchOne) {
-      const value = parseFloat(matchOne[1]);
+      const value = parseFloat(matchOne[1]!);
       const keyboard = new InlineKeyboard()
         .text("⚖️ Вазн (Кг)", `calc_kg_${value}`)
         .text("📦 Ҳаҷм (М³)", `calc_m3_${value}`);

@@ -25,7 +25,7 @@ bot.use(async (ctx, next) => {
   if (ctx.from) {
     const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
     if (user && user.language) {
-      ctx.i18n.locale(user.language);
+      await ctx.i18n.setLocale(user.language);
     }
   }
   await next();

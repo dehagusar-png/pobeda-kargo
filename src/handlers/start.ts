@@ -20,7 +20,7 @@ startHandler.command("start", async (ctx) => {
     }
     // Агар корбар админ бошад, тугмаи Панели Маъмуриятро низ нишон медиҳем
     if (user.role === "ADMIN") {
-      keyboard.url("📊 Панели Маъмурият", "https://pobeda-admin-panel.onrender.com").row();
+      keyboard.webApp("📊 Панели Маъмурият", "https://pobeda-admin-panel.onrender.com").row();
     }
     
     keyboard.resized();
