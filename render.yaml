@@ -1,3 +1,9 @@
+databases:
+  - name: pobeda-db
+    databaseName: pobeda_db
+    user: pobeda_user
+    plan: free
+
 services:
   # 1. Боти Телеграм
   - type: web
@@ -5,12 +11,14 @@ services:
     env: node
     plan: free
     buildCommand: npm install && npx prisma generate
-    startCommand: npx ts-node src/index.ts
+    startCommand: npx prisma db push && npx ts-node src/index.ts
     envVars:
       - key: BOT_TOKEN
         sync: false
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: pobeda-db
+          property: connectionString
 
   # 2. Панели Маъмурият (Next.js)
   - type: web
@@ -22,4 +30,6 @@ services:
     startCommand: npm run start
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: pobeda-db
+          property: connectionString
