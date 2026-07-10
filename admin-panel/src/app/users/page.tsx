@@ -12,6 +12,7 @@ const mockUsers = [
 ];
 
 const roleColors: any = {
+  "SUPERADMIN": "bg-purple-100 text-purple-700 border-purple-200",
   "ADMIN": "bg-red-100 text-red-700 border-red-200",
   "WORKER": "bg-blue-100 text-blue-700 border-blue-200",
   "USER": "bg-slate-100 text-slate-700 border-slate-200",
@@ -71,25 +72,41 @@ export default function UsersPage() {
                   {user.name.charAt(0)}
                 </div>
                 <select 
-                  className={`px-2 py-1 border rounded text-xs font-semibold outline-none cursor-pointer ${roleColors[user.role] || "bg-gray-100"}`}
+                  disabled={user.role === "SUPERADMIN"}
+                  className={`px-2 py-1 border rounded text-xs font-semibold outline-none ${user.role === "SUPERADMIN" ? "cursor-not-allowed opacity-80" : "cursor-pointer"} ${roleColors[user.role] || "bg-gray-100"}`}
                   value={user.role}
                   onChange={async (e) => {
                     const newRole = e.target.value;
+                    let pin = undefined;
+                    
+                    if (user.phone === "79801868277") {
+                      const userPin = prompt("ПИН-КОД-и Суперадминро ворид кунед то ки вазифаи ин админро иваз кунед:");
+                      if (userPin === null) return; // User cancelled
+                      pin = userPin;
+                    }
+                    
                     const res = await fetch(`/api/users/${user.id}`, {
                       method: "PUT",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ role: newRole }),
+                      body: JSON.stringify({ role: newRole, pin }),
                     });
+                    
                     if (res.ok) {
                       setUsers(users.map(u => u.id === user.id ? { ...u, role: newRole } : u));
                     } else {
-                      alert("Хатогӣ ҳангоми иваз кардани вазифа!");
+                      const data = await res.json();
+                      if (data.error === "PIN_REQUIRED") {
+                        alert("ПИН-КОД нодуруст аст!");
+                      } else {
+                        alert("Хатогӣ ҳангоми иваз кардани вазифа!");
+                      }
                     }
                   }}
                 >
                   <option value="USER">USER</option>
                   <option value="WORKER">WORKER</option>
                   <option value="ADMIN">ADMIN</option>
+                  {user.role === "SUPERADMIN" && <option value="SUPERADMIN">SUPERADMIN</option>}
                 </select>
               </div>
               <h3 className="font-bold text-slate-900 text-lg">{user.name}</h3>

