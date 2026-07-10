@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import WebApp from '@twa-dev/sdk';
 import { Package, Send, QrCode } from 'lucide-react';
 
-const tg = WebApp as any;
+const tg = (window as any).Telegram?.WebApp || {};
 
 function App() {
   const [data, setData] = useState<string>('');
