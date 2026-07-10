@@ -42,14 +42,16 @@ registerHandler.on("message:contact", async (ctx) => {
   let clientCode = user?.clientCode;
 
   if (!clientCode) {
-    const userCount = await prisma.user.count();
-    clientCode = `PB-${1000 + userCount}`;
-    user = await prisma.user.update({
-      where: { telegramId: BigInt(ctx.from.id) },
-      data: { phone, clientCode }
-    });
+    user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
+    if (user) {
+      clientCode = `PB-${1000 + user.id}`;
+      user = await prisma.user.update({
+        where: { telegramId: BigInt(ctx.from.id) },
+        data: { phone, clientCode }
+      });
+    }
   }
 
   const keyboard = getMainKeyboard(ctx, user || null);
-  await ctx.reply(ctx.t("registered", { clientCode }), { reply_markup: keyboard });
+  await ctx.reply(ctx.t("registered", { clientCode: clientCode || "" }), { reply_markup: keyboard });
 });

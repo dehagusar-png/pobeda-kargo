@@ -5,15 +5,7 @@ import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 
-const data = [
-  { name: "1 Июл", parcels: 120 },
-  { name: "2 Июл", parcels: 200 },
-  { name: "3 Июл", parcels: 150 },
-  { name: "4 Июл", parcels: 300 },
-  { name: "5 Июл", parcels: 280 },
-  { name: "6 Июл", parcels: 400 },
-  { name: "7 Июл", parcels: 380 },
-];
+// Chart data is now fetched from the API
 
 export default function Dashboard() {
   const [statsData, setStatsData] = useState<any>({
@@ -21,7 +13,8 @@ export default function Dashboard() {
     totalUsers: 0,
     inTransit: 0,
     expected: 0,
-    revenue: 0
+    revenue: 0,
+    chartData: []
   });
 
   useEffect(() => {
@@ -91,7 +84,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={statsData.chartData || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorParcels" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>

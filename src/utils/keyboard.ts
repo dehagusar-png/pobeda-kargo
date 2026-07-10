@@ -8,7 +8,7 @@ export function getMainKeyboard(ctx: MyContext, user: User | null): Keyboard {
     .text(ctx.t("calculator")).text(ctx.t("support")).row();
     
   if (user?.role === "ADMIN" || user?.role === "WORKER") {
-    keyboard.webApp("📸 Сканери Борҳо", "https://pobeda-kargo.onrender.com").row();
+    keyboard.webApp("📸 Сканери Борҳо", "https://pobeda-kargo.onrender.com/?v=2").row();
   }
   
   if (user?.role === "ADMIN") {

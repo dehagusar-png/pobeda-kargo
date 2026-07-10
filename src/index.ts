@@ -25,7 +25,7 @@ process.once("SIGINT", () => bot.stop());
 process.once("SIGTERM", () => bot.stop());
 
 import { GrammyError, HttpError } from "grammy";
-bot.catch((err) => {
+bot.catch(async (err) => {
   const ctx = err.ctx;
   console.error(`Error while handling update ${ctx.update.update_id}:`);
   const e = err.error;
@@ -35,6 +35,14 @@ bot.catch((err) => {
     console.error("Could not contact Telegram:", e);
   } else {
     console.error("Unknown error:", e);
+  }
+
+  try {
+    if (ctx.chat) {
+      await ctx.reply("⚠️ Узр, муваққатан хатогӣ ба вуҷуд омад (шояд сервер банд аст). Лутфан якчанд сония интизор шавед ва аз нав кӯшиш кунед.");
+    }
+  } catch (replyError) {
+    console.error("Failed to send error message to user:", replyError);
   }
 });
 // Start bot
