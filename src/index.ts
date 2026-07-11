@@ -20,6 +20,11 @@ bot.use(calculatorHandler);
 bot.use(trackHandler);
 bot.use(supportHandler);
 
+// Fallback handler for unhandled messages
+bot.on("message", async (ctx) => {
+  await ctx.reply("❌ Узр, ман ин маълумотро нафаҳмидам. Лутфан маълумоти дуруст ворид кунед ё аз тугмаҳои меню истифода баред.\n\n🔄 Барои бозгашт ба менюи асосӣ: /start");
+});
+
 // Graceful shutdown to prevent 409 Conflict during zero-downtime deploys
 process.once("SIGINT", () => bot.stop());
 process.once("SIGTERM", () => bot.stop());

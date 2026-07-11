@@ -16,7 +16,7 @@ export async function GET() {
 
 export async function POST(_request: Request) {
   try {
-    const body = await request.json();
+    const body = await _request.json();
     const { pin, config } = body;
     
     const correctPin = process.env.SUPERADMIN_PIN || "7777";
