@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const parcels = await prisma.parcel.findMany({
       orderBy: { createdAt: "desc" },
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     }));
 
     return NextResponse.json(formattedParcels);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Failed to fetch parcels" }, { status: 500 });
   }
 }

@@ -43,7 +43,7 @@ export async function GET() {
       revenue,
       chartData
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });
   }
 }

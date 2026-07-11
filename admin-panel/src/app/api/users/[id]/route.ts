@@ -38,7 +38,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       ...updatedUser,
       telegramId: updatedUser.telegramId.toString()
     });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Failed to update user role" }, { status: 500 });
   }
 }

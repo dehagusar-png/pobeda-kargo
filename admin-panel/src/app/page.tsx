@@ -1,14 +1,23 @@
 "use client";
 
-import { Package, Users, ArrowUpRight, DollarSign, Activity } from "lucide-react";
+import { Package, Users, ArrowUpRight, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 
 // Chart data is now fetched from the API
 
+interface StatsData {
+  totalParcels: number;
+  totalUsers: number;
+  inTransit: number;
+  expected: number;
+  revenue: number;
+  chartData: { name: string; parcels: number }[];
+}
+
 export default function Dashboard() {
-  const [statsData, setStatsData] = useState<any>({
+  const [statsData, setStatsData] = useState<StatsData>({
     totalParcels: 0,
     totalUsers: 0,
     inTransit: 0,

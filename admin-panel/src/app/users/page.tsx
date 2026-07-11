@@ -1,10 +1,10 @@
 "use client";
 
-import { Search, Mail, Phone, Shield } from "lucide-react";
+import { Search, Phone, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-const mockUsers = [
+const _mockUsers = [
   { id: "1", clientCode: "PB-1025", name: "Сабир Махмудов", phone: "+992987654321", role: "ADMIN", language: "tg", date: "2026-07-01" },
   { id: "2", clientCode: "PB-1026", name: "Алиҷон Валиев", phone: "+992900112233", role: "USER", language: "ru", date: "2026-07-02" },
   { id: "3", clientCode: "PB-1027", name: "Фирӯз Салимов", phone: "+992888999000", role: "WORKER", language: "uz", date: "2026-07-03" },

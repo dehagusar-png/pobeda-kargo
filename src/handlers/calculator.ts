@@ -89,7 +89,7 @@ calculatorHandler.on("message:text", async (ctx, next) => {
     if (text.includes('x')) {
       const parts = text.split('x').map(p => parseFloat(p.trim()));
       if (parts.length === 3 && !parts.some(isNaN)) {
-        volume = (parts[0] * parts[1] * parts[2]) / 1_000_000;
+        volume = (parts[0]! * parts[1]! * parts[2]!) / 1_000_000;
       }
     } else {
       volume = parseFloat(text);

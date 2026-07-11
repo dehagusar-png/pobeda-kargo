@@ -9,12 +9,12 @@ export async function GET() {
   try {
     const data = fs.readFileSync(configPath, "utf8");
     return NextResponse.json(JSON.parse(data));
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Failed to read config" }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     const body = await request.json();
     const { pin, config } = body;
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     
     fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf8");
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Failed to save config" }, { status: 500 });
   }
 }

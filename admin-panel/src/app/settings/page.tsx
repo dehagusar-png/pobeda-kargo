@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Settings, Plus, Trash2, Save } from "lucide-react";
 
 export default function SettingsPage() {
-  const [config, setConfig] = useState<any>({ weightTiers: [], volumeTiers: [] });
+  const [config, setConfig] = useState<unknown>({ weightTiers: [], volumeTiers: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

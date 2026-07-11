@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const users = await prisma.user.findMany({
       orderBy: { createdAt: "desc" }
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     }));
 
     return NextResponse.json(formattedUsers);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 }
