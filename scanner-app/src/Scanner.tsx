@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
+import { useEffect } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -7,53 +7,47 @@ interface ScannerProps {
 }
 
 const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  
   useEffect(() => {
-    if (!videoRef.current) return;
-
-    // Танзимоти сканер: Мо ҳеҷ гуна форматҳоро маҳдуд намекунем, то сканер озод бошад ва ҳама намудро хонад.
-    // Мо танҳо бо ёрии дарозии код (text.length) хатогиҳои кӯтоҳро филтр мекунем.
-    const codeReader = new BrowserMultiFormatReader();
+    const html5QrCode = new Html5Qrcode("reader");
     let isScanning = true;
 
-    codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
-      if (!isScanning) return;
-      if (result) {
-        const text = result.getText().trim();
-        // Штрих-кодҳои Чин камаш 10-12 рақам доранд. 
-        // Агар сканер ягон рамзи кӯтоҳи ғалатро хонад, мо онро нодида мегирем ва сканкуниро давом медиҳем.
-        if (text && text.length >= 10) {
-          onScanSuccess(text);
+    html5QrCode.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: { width: 300, height: 150 },
+      },
+      (decodedText) => {
+        if (!isScanning) return;
+        const text = decodedText.trim();
+        
+        // Санҷиши дарозӣ барои пешгирии хатогиҳо
+        if (text && text.length >= 8) {
           isScanning = false;
-          codeReader.reset();
+          onScanSuccess(text);
+          html5QrCode.stop().catch(console.error);
         }
+      },
+      () => {
+        // Одатан хатогиҳои хурд ҳангоми наёфтани штрих-код мебароянд, мо онҳоро нодида мегирем
       }
-      if (err && !(err instanceof NotFoundException)) {
-        if (onScanFailure) {
-          onScanFailure(err);
-        }
-      }
-    }).catch(err => {
+    ).catch((err) => {
       console.error("Camera error:", err);
       if (onScanFailure) onScanFailure(err);
     });
 
     return () => {
       isScanning = false;
-      codeReader.reset();
+      if (html5QrCode.isScanning) {
+        html5QrCode.stop().catch(console.error);
+      }
     };
   }, [onScanSuccess, onScanFailure]);
 
   return (
-    <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black relative flex items-center justify-center" style={{ minHeight: '250px' }}>
-      <video 
-        ref={videoRef} 
-        className="w-full h-full object-cover absolute inset-0" 
-        autoPlay 
-        playsInline 
-        muted 
-      />
-      <div className="absolute inset-0 border-2 border-dashed border-blue-400 m-8 rounded-lg pointer-events-none shadow-[0_0_0_4000px_rgba(0,0,0,0.5)] z-10"></div>
+    <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black">
+      <div id="reader" className="w-full" style={{ minHeight: '250px' }}></div>
     </div>
   );
 };
