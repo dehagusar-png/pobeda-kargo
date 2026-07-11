@@ -8,29 +8,21 @@ interface ScannerProps {
 
 const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  
   useEffect(() => {
     if (!videoRef.current) return;
-    
-    // Танзимоти сканер: Мо форматҳоро маҳдуд мекунем, то ки "хонишҳои хато"-и кӯтоҳ (ба мисли ITF) пешгирӣ шавад.
-    // Штрих-кодҳои Чин одатан Code 128 мебошанд.
-    const hints = new Map();
-    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
-      BarcodeFormat.CODE_128,
-      BarcodeFormat.CODE_39,
-      BarcodeFormat.QR_CODE,
-      BarcodeFormat.EAN_13,
-    ]);
-    const codeReader = new BrowserMultiFormatReader(hints);
+
+    // Танзимоти сканер: Мо ҳеҷ гуна форматҳоро маҳдуд намекунем, то сканер озод бошад ва ҳама намудро хонад.
+    // Мо танҳо бо ёрии дарозии код (text.length) хатогиҳои кӯтоҳро филтр мекунем.
+    const codeReader = new BrowserMultiFormatReader();
     let isScanning = true;
 
     codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
       if (!isScanning) return;
       if (result) {
         const text = result.getText().trim();
-        // Штрих-кодҳои Чин одатан зиёда аз 10 рақам доранд (масалан 15 ё 20). 
-        // Рақамҳои кӯтоҳ (5-6 рақама) ин хатогии хониши камера (хаёлоти сканер) мебошанд!
-        if (text && text.length >= 8) {
+        // Штрих-кодҳои Чин камаш 10-12 рақам доранд. 
+        // Агар сканер ягон рамзи кӯтоҳи ғалатро хонад, мо онро нодида мегирем ва сканкуниро давом медиҳем.
+        if (text && text.length >= 10) {
           onScanSuccess(text);
           isScanning = false;
           codeReader.reset();
