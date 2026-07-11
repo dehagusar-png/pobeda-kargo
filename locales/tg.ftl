@@ -35,3 +35,16 @@ support_text = 🎧 <b>Дастгирии мизоҷон</b>
  
  📞 +992 000 00 00 00
  💬 @PobedaCargoSupport
+
+add_parcel = ➕ Иловаи Бор
+add_parcel_prompt = 📦 Лутфан трек-коди бори худро фиристед:
+parcel_added = ✅ Бор бо трек-коди { $trackCode } ба номи шумо сабт шуд!
+parcel_already_yours = ℹ️ Ин бор аллакай ба номи шумост.
+parcel_already_others = ❌ Ин бор аллакай ба номи дигар шахс сабт шудааст.
+claim_prompt = 📦 Ин бор аллакай дар Чин аст, аммо соҳибаш номуайян. Ин бори кист?
+btn_mine = 🙋‍♂️ Бори ман аст
+btn_others = 👥 Бори каси дигар
+btn_track_only = 🔍 Фақат пайгирӣ
+ask_owner_code = 👤 Лутфан коди муштарии (PB-XXXX) соҳиби борро ворид кунед:
+owner_not_found = ❌ Муштарӣ бо ин код ёфт нашуд.
+parcel_assigned = ✅ Бор бомуваффақият ба муштарӣ { $clientCode } пайваст карда шуд!

@@ -1,4 +1,4 @@
-import { Composer } from "grammy";
+import { Composer, InlineKeyboard } from "grammy";
 import { MyContext } from "../bot";
 import { prisma } from "../db";
 import { BUTTONS, STATUS_MAP } from "../utils/constants";
@@ -16,12 +16,27 @@ trackHandler.on("message:text", async (ctx, next) => {
     const parcel = await prisma.parcel.findUnique({ where: { trackCode } });
     
     if (parcel) {
-      const statusText = STATUS_MAP[parcel.status] || parcel.status;
-      await ctx.reply(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { parse_mode: "HTML" });
+      if (!parcel.userId) {
+        ctx.session.tempTrackCode = trackCode;
+        ctx.session.step = "claim_verification";
+        
+        const inlineKeyboard = new InlineKeyboard()
+          .text(ctx.t("btn_mine"), `claim_${trackCode}`).row()
+          .text(ctx.t("btn_others"), `assign_other_${trackCode}`).row()
+          .text(ctx.t("btn_track_only"), `track_only_${trackCode}`);
+          
+        await ctx.reply(ctx.t("claim_prompt"), { reply_markup: inlineKeyboard });
+      } else {
+        const statusText = STATUS_MAP[parcel.status] || parcel.status;
+        await ctx.reply(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { parse_mode: "HTML" });
+      }
     } else {
       await ctx.reply("❌ Бор бо ин трек-код ёфт нашуд.");
     }
-    ctx.session.step = ""; // clear step
+    
+    if (ctx.session.step === "track") {
+      ctx.session.step = ""; // clear step if not transitioned
+    }
   } else {
     await next();
   }

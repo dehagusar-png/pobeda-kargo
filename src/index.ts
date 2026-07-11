@@ -5,6 +5,7 @@ import { registerHandler } from "./handlers/register";
 import { addressHandler } from "./handlers/address";
 import { calculatorHandler } from "./handlers/calculator";
 import { trackHandler } from "./handlers/track";
+import { addParcelHandler } from "./handlers/addParcel";
 import { supportHandler } from "./handlers/support";
 import { userMiddleware } from "./middleware/user";
 import http from "http";
@@ -18,6 +19,7 @@ bot.use(registerHandler);
 bot.use(addressHandler);
 bot.use(calculatorHandler);
 bot.use(trackHandler);
+bot.use(addParcelHandler);
 bot.use(supportHandler);
 
 // Fallback handler for unhandled messages

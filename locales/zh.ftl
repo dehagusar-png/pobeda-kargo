@@ -14,3 +14,16 @@ support_text = 🎧 <b>客户支持</b>
  
  📞 +992 000 00 00 00
  💬 @PobedaCargoSupport
+
+add_parcel = ➕ 添加货物
+add_parcel_prompt = 📦 请发送您的货物追踪号码：
+parcel_added = ✅ 追踪号码为 { $trackCode } 的货物已成功注册到您的名下！
+parcel_already_yours = ℹ️ 此货物已注册到您的名下。
+parcel_already_others = ❌ 此货物已注册到其他人名下。
+claim_prompt = 📦 该货物已在中国仓库，但未指定所有者。这是谁的货物？
+btn_mine = 🙋‍♂️ 这是我的货物
+btn_others = 👥 其他人的货物
+btn_track_only = 🔍 仅追踪
+ask_owner_code = 👤 请输入货物所有者的客户代码 (PB-XXXX)：
+owner_not_found = ❌ 未找到具有此代码的客户。
+parcel_assigned = ✅ 货物已成功绑定到客户 { $clientCode }！
