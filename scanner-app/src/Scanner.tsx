@@ -7,9 +7,12 @@ interface ScannerProps {
 }
 
 const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
-  
   useEffect(() => {
-    const html5QrCode = new Html5Qrcode("reader");
+    // Истифодаи BarcodeDetector-и телефони мобилӣ (агар дастгирӣ шавад)
+    // Ин хатогиҳои хониши штрих-кодҳои Чинро (Code 128 Subset C) пурра бартараф мекунад!
+    const html5QrCode = new Html5Qrcode("reader", { 
+      useBarCodeDetectorIfSupported: true 
+    });
     let isScanning = true;
 
     html5QrCode.start(
