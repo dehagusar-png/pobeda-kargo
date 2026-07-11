@@ -4,8 +4,15 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Settings, Plus, Trash2, Save } from "lucide-react";
 
+type Tier = { min: number; max: number; price: number };
+
+interface Config {
+  weightTiers: Tier[];
+  volumeTiers: Tier[];
+}
+
 export default function SettingsPage() {
-  const [config, setConfig] = useState<unknown>({ weightTiers: [], volumeTiers: [] });
+  const [config, setConfig] = useState<Config>({ weightTiers: [], volumeTiers: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
