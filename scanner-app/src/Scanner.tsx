@@ -12,24 +12,25 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   useEffect(() => {
     if (!videoRef.current) return;
     
-    // Танзимоти сканер барои хондани танҳо форматҳои асосии трек-код
+    // Танзимоти сканер: Мо форматҳоро маҳдуд мекунем, то ки "хонишҳои хато"-и кӯтоҳ (ба мисли ITF) пешгирӣ шавад.
+    // Штрих-кодҳои Чин одатан Code 128 мебошанд.
     const hints = new Map();
     hints.set(DecodeHintType.POSSIBLE_FORMATS, [
       BarcodeFormat.CODE_128,
       BarcodeFormat.CODE_39,
-      BarcodeFormat.QR_CODE
+      BarcodeFormat.QR_CODE,
+      BarcodeFormat.EAN_13,
     ]);
-
     const codeReader = new BrowserMultiFormatReader(hints);
     let isScanning = true;
 
     codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
       if (!isScanning) return;
       if (result) {
-        const text = result.getText();
-        // Трек-кодҳо одатан дароз ҳастанд. Кодҳои аз 8 рамз кӯтоҳро нодида мегирем, 
-        // то ки хатогиҳо (штрих-кодҳои ёрирасон ё хониши хато) пешгирӣ шаванд.
-        if (text.length >= 8) {
+        const text = result.getText().trim();
+        // Штрих-кодҳои Чин одатан зиёда аз 10 рақам доранд (масалан 15 ё 20). 
+        // Рақамҳои кӯтоҳ (5-6 рақама) ин хатогии хониши камера (хаёлоти сканер) мебошанд!
+        if (text && text.length >= 8) {
           onScanSuccess(text);
           isScanning = false;
           codeReader.reset();
