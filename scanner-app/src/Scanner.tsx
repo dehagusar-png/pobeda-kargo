@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException, BarcodeFormat, DecodeHintType } from '@zxing/library';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -12,15 +12,28 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   useEffect(() => {
     if (!videoRef.current) return;
     
-    const codeReader = new BrowserMultiFormatReader();
+    // Танзимоти сканер барои хондани танҳо форматҳои асосии трек-код
+    const hints = new Map();
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, [
+      BarcodeFormat.CODE_128,
+      BarcodeFormat.CODE_39,
+      BarcodeFormat.QR_CODE
+    ]);
+
+    const codeReader = new BrowserMultiFormatReader(hints);
     let isScanning = true;
 
     codeReader.decodeFromVideoDevice(null, videoRef.current, (result, err) => {
       if (!isScanning) return;
       if (result) {
-        onScanSuccess(result.getText());
-        isScanning = false;
-        codeReader.reset();
+        const text = result.getText();
+        // Трек-кодҳо одатан дароз ҳастанд. Кодҳои аз 8 рамз кӯтоҳро нодида мегирем, 
+        // то ки хатогиҳо (штрих-кодҳои ёрирасон ё хониши хато) пешгирӣ шаванд.
+        if (text.length >= 8) {
+          onScanSuccess(text);
+          isScanning = false;
+          codeReader.reset();
+        }
       }
       if (err && !(err instanceof NotFoundException)) {
         if (onScanFailure) {
