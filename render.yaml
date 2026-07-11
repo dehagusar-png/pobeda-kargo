@@ -27,3 +27,15 @@ services:
         sync: false
       - key: NODE_VERSION
         value: "20.14.0"
+
+  # 3. Барномаи Сканер (Vite)
+  - type: web
+    name: pobeda-scanner-app
+    env: static
+    plan: free
+    rootDir: scanner-app
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_VERSION
+        value: "20.14.0"
