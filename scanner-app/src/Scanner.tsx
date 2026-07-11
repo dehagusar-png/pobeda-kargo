@@ -11,6 +11,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     // Истифодаи BarcodeDetector-и телефони мобилӣ (агар дастгирӣ шавад)
     // Ин хатогиҳои хониши штрих-кодҳои Чинро (Code 128 Subset C) пурра бартараф мекунад!
     const html5QrCode = new Html5Qrcode("reader", { 
+      verbose: false,
       useBarCodeDetectorIfSupported: true 
     });
     let isScanning = true;
