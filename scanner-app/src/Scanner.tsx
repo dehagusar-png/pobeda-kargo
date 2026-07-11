@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { BrowserMultiFormatReader, NotFoundException, BarcodeFormat, DecodeHintType } from '@zxing/library';
+import { BrowserMultiFormatReader, NotFoundException } from '@zxing/library';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
