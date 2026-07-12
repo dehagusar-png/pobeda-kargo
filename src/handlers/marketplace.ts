@@ -101,8 +101,11 @@ marketplaceHandler.callbackQuery(/^buy_(\d+)$/, async (ctx) => {
     return ctx.answerCallbackQuery("Аввал сабти ном шавед / Сначала зарегистрируйтесь", { show_alert: true });
   }
 
+  // Answer immediately to stop the button loading spinner and prevent Telegram timeout
+  await ctx.answerCallbackQuery().catch(() => {});
+
   const product = await prisma.product.findUnique({ where: { id: productId } });
-  if (!product) return ctx.answerCallbackQuery("Мол ёфт нашуд / Товар не найден");
+  if (!product) return ctx.reply("❌ Мол ёфт нашуд / Товар не найден");
 
   const settings = await prisma.settings.findUnique({ where: { id: 1 } });
   const rate = settings?.exchangeRate || 1.5;
@@ -118,14 +121,15 @@ marketplaceHandler.callbackQuery(/^buy_(\d+)$/, async (ctx) => {
       }
     });
 
-    await ctx.answerCallbackQuery("Фармоиши шумо қабул шуд! ✅ Мо бо шумо тамос мегирем.", { show_alert: true });
-    
-    // Optionally alert admins
-    // const admins = await prisma.user.findMany({ where: { role: "ADMIN" } });
-    // for (const admin of admins) { ... }
+    const successMsg = `✅ <b>Фармоиши шумо бомуваффақият сабт шуд!</b>\n\n` + 
+                       `📦 <b>Мол:</b> ${product.title}\n` + 
+                       `💰 <b>Нарх:</b> ${priceTJS.toFixed(2)} Сомонӣ\n\n` + 
+                       `Менеҷерҳои мо ба зудӣ барои тасдиқи фармоиш бо шумо тамос мегиранд. Ташаккур барои интихобатон!`;
+                       
+    await ctx.reply(successMsg, { parse_mode: "HTML" });
 
   } catch (error) {
     console.error(error);
-    await ctx.answerCallbackQuery("Хатогӣ ба вуҷуд омад / Произошла ошибка", { show_alert: true });
+    await ctx.reply("❌ Хатогӣ ба вуҷуд омад. Лутфан дертар боз кӯшиш кунед.");
   }
 });
