@@ -88,14 +88,14 @@ async function showProduct(ctx: MyContext, index: number, messageIdToEdit?: numb
 
 marketplaceHandler.callbackQuery(/^cat_(-?\d+)$/, async (ctx) => {
   if (!ctx.match) return;
-  const index = parseInt(ctx.match[1], 10);
+  const index = parseInt(ctx.match[1] as string, 10);
   await ctx.answerCallbackQuery();
   await showProduct(ctx, index, ctx.msg?.message_id);
 });
 
 marketplaceHandler.callbackQuery(/^buy_(\d+)$/, async (ctx) => {
   if (!ctx.match) return;
-  const productId = parseInt(ctx.match[1], 10);
+  const productId = parseInt(ctx.match[1] as string, 10);
   
   if (!ctx.from) return;
   const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
