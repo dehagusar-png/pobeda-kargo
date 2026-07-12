@@ -28,6 +28,7 @@ async function showProduct(ctx: MyContext, index: number, messageIdToEdit?: numb
   if (index >= products.length) index = 0;
 
   const product = products[index];
+  if (!product) return;
   
   // Get settings for exchange rate
   let settings = await prisma.settings.findUnique({ where: { id: 1 } });
@@ -86,19 +87,21 @@ async function showProduct(ctx: MyContext, index: number, messageIdToEdit?: numb
 }
 
 marketplaceHandler.callbackQuery(/^cat_(-?\d+)$/, async (ctx) => {
+  if (!ctx.match) return;
   const index = parseInt(ctx.match[1], 10);
   await ctx.answerCallbackQuery();
   await showProduct(ctx, index, ctx.msg?.message_id);
 });
 
 marketplaceHandler.callbackQuery(/^buy_(\d+)$/, async (ctx) => {
+  if (!ctx.match) return;
   const productId = parseInt(ctx.match[1], 10);
   
   if (!ctx.from) return;
   const user = await prisma.user.findUnique({ where: { telegramId: BigInt(ctx.from.id) } });
   
   if (!user) {
-    return ctx.answerCallbackQuery("Аввал сабти ном шавед / Сначала зарегистрируйтесь", { show_alert: true });
+    return ctx.answerCallbackQuery({ text: "Аввал сабти ном шавед / Сначала зарегистрируйтесь", show_alert: true });
   }
 
   // Answer immediately to stop the button loading spinner and prevent Telegram timeout
