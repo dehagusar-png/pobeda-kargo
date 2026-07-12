@@ -7,6 +7,7 @@ import { calculatorHandler } from "./handlers/calculator";
 import { trackHandler } from "./handlers/track";
 import { addParcelHandler } from "./handlers/addParcel";
 import { supportHandler } from "./handlers/support";
+import { languageHandler } from "./handlers/language";
 import { userMiddleware } from "./middleware/user";
 import http from "http";
 
@@ -15,6 +16,7 @@ bot.use(userMiddleware);
 
 // Register handlers
 bot.use(startHandler);
+bot.use(languageHandler);
 bot.use(registerHandler);
 bot.use(addressHandler);
 bot.use(calculatorHandler);

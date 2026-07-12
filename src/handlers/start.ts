@@ -17,8 +17,8 @@ startHandler.command("start", async (ctx) => {
     // Not registered, ask language
     const kb = new Keyboard()
       .text("🇹🇯 Тоҷикӣ").text("🇷🇺 Русский").row()
-      .text("🇺🇿 O'zbek").text("🇨🇳 中文").resized();
-    await ctx.reply("Салом! Забонро интихоб кунед / Выберите язык / Tilni tanlang / 请选择语言", { reply_markup: kb });
+      .text("🇺🇿 O'zbek").text("🇨🇳 中文").text("🇺🇸 English").resized();
+    await ctx.reply("Салом! Забонро интихоб кунед / Выберите язык / Tilni tanlang / 请选择语言 / Choose language", { reply_markup: kb });
   }
 });
 
