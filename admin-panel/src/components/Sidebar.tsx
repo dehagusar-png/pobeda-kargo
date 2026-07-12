@@ -6,7 +6,7 @@ import { LayoutDashboard, Package, Users, Settings, ShoppingBag, ShoppingCart } 
 import { motion } from "framer-motion";
 
 const navItems = [
-  { name: "Омор (Dashboard)", href: "/", icon: LayoutDashboard },
+  { name: "Омор", href: "/", icon: LayoutDashboard },
   { name: "Борҳо (Parcels)", href: "/parcels", icon: Package },
   { name: "Мизоҷон (Users)", href: "/users", icon: Users },
   { name: "Мағоза (Store)", href: "/products", icon: ShoppingBag },

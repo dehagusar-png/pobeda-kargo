@@ -5,15 +5,25 @@ import { motion } from "framer-motion";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 
-// Chart data is now fetched from the API
+interface ActivityItem {
+  trackCode: string;
+  message: string;
+  time: string;
+}
 
 interface StatsData {
   totalParcels: number;
   totalUsers: number;
   inTransit: number;
   expected: number;
-  revenue: number;
+  trends: {
+    parcels: string;
+    users: string;
+    expected: string;
+    inTransit: string;
+  };
   chartData: { name: string; parcels: number }[];
+  recentActivity: ActivityItem[];
 }
 
 export default function Dashboard() {
@@ -22,8 +32,9 @@ export default function Dashboard() {
     totalUsers: 0,
     inTransit: 0,
     expected: 0,
-    revenue: 0,
-    chartData: []
+    trends: { parcels: "0%", users: "0%", expected: "0%", inTransit: "0%" },
+    chartData: [],
+    recentActivity: []
   });
 
   useEffect(() => {
@@ -37,16 +48,27 @@ export default function Dashboard() {
   }, []);
 
   const stats = [
-    { title: "Борҳои умумӣ", value: statsData.totalParcels.toString(), icon: Package, trend: "+12.5%", color: "blue" },
-    { title: "Мизоҷон", value: statsData.totalUsers.toString(), icon: Users, trend: "+5.2%", color: "green" },
-    { title: "Мунтазири қабул", value: statsData.expected.toString(), icon: Activity, trend: "-2.4%", color: "orange" },
-    { title: "Дар роҳ", value: statsData.inTransit.toString(), icon: Package, trend: "+8.1%", color: "purple" },
+    { title: "Борҳои умумӣ", value: statsData.totalParcels.toString(), icon: Package, trend: statsData.trends.parcels, color: "blue" },
+    { title: "Мизоҷон", value: statsData.totalUsers.toString(), icon: Users, trend: statsData.trends.users, color: "green" },
+    { title: "Мунтазири қабул", value: statsData.expected.toString(), icon: Activity, trend: statsData.trends.expected, color: "orange" },
+    { title: "Дар роҳ", value: statsData.inTransit.toString(), icon: Package, trend: statsData.trends.inTransit, color: "purple" },
   ];
+
+  const formatTime = (isoString: string) => {
+    const d = new Date(isoString);
+    const now = new Date();
+    const diffMins = Math.floor((now.getTime() - d.getTime()) / 60000);
+    if (diffMins < 60) return `${diffMins} дақиқа пеш`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} соат пеш`;
+    return d.toLocaleDateString("ru-RU");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Омор (Dashboard)</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Омор</h1>
           <p className="text-sm text-slate-500 mt-1">Хулосаи фаъолияти логистикии ширкат дар як нигоҳ.</p>
         </div>
         <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
@@ -67,7 +89,7 @@ export default function Dashboard() {
               <div className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600`}>
                 <stat.icon size={24} />
               </div>
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${stat.trend.startsWith("+") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${stat.trend.startsWith("-") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
                 {stat.trend}
               </span>
             </div>
@@ -88,7 +110,6 @@ export default function Dashboard() {
             <h2 className="text-lg font-bold text-slate-800">Динамикаи қабули борҳо</h2>
             <select className="bg-slate-50 border border-slate-200 text-sm rounded-lg px-3 py-1 outline-none text-slate-600">
               <option>7 рӯзи охир</option>
-              <option>Моҳи ҷорӣ</option>
             </select>
           </div>
           <div className="h-[300px] w-full">
@@ -121,18 +142,21 @@ export default function Dashboard() {
         >
           <h2 className="text-lg font-bold text-slate-800 mb-6">Фаъолияти охирин</h2>
           <div className="space-y-6">
-            {[1, 2, 3, 4, 5].map((i) => (
+            {statsData.recentActivity.map((activity, i) => (
               <div key={i} className="flex gap-4">
                 <div className="relative">
                   <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full z-10 relative"></div>
-                  {i !== 5 && <div className="absolute top-4 left-1 w-[2px] h-12 bg-slate-100 -translate-x-1/2"></div>}
+                  {i !== statsData.recentActivity.length - 1 && <div className="absolute top-4 left-1 w-[2px] h-12 bg-slate-100 -translate-x-1/2"></div>}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-800">Бор <span className="text-blue-600 font-mono">YT890123</span> расид</p>
-                  <p className="text-xs text-slate-500 mt-1">Анбори Душанбе • {i * 10} дақиқа пеш</p>
+                  <p className="text-sm font-medium text-slate-800">{activity.message}</p>
+                  <p className="text-xs text-slate-500 mt-1">{formatTime(activity.time)}</p>
                 </div>
               </div>
             ))}
+            {statsData.recentActivity.length === 0 && (
+              <p className="text-sm text-slate-500">Ягон фаъолият ёфт нашуд.</p>
+            )}
           </div>
           <button className="w-full mt-6 py-2 text-sm text-blue-600 font-medium hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center gap-1">
             Ҳамаро дидан <ArrowUpRight size={16} />
