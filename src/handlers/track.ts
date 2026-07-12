@@ -28,7 +28,14 @@ trackHandler.on("message:text", async (ctx, next) => {
         await ctx.reply(ctx.t("claim_prompt"), { reply_markup: inlineKeyboard });
       } else {
         const statusText = STATUS_MAP[parcel.status] || parcel.status;
-        await ctx.reply(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { parse_mode: "HTML" });
+        const inlineKeyboard = new InlineKeyboard().webApp(
+          "📍 Дар харита дидан",
+          `https://pobeda-admin-panel.onrender.com/track/${trackCode}`
+        );
+        await ctx.reply(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { 
+          parse_mode: "HTML",
+          reply_markup: inlineKeyboard
+        });
       }
     } else {
       await ctx.reply("❌ Бор бо ин трек-код ёфт нашуд.");

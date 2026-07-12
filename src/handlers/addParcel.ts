@@ -123,7 +123,14 @@ addParcelHandler.callbackQuery(/^track_only_(.+)$/, async (ctx) => {
   
   if (parcel) {
     const statusText = STATUS_MAP[parcel.status] || parcel.status;
-    await ctx.editMessageText(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { parse_mode: "HTML" });
+    const inlineKeyboard = new InlineKeyboard().webApp(
+      "📍 Дар харита дидан",
+      `https://pobeda-admin-panel.onrender.com/track/${trackCode}`
+    );
+    await ctx.editMessageText(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { 
+      parse_mode: "HTML",
+      reply_markup: inlineKeyboard
+    });
   }
   
   await ctx.answerCallbackQuery();
