@@ -81,14 +81,14 @@ export default async function ProductsPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <table className="w-full text-left">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+        <table className="w-full text-left min-w-max">
           <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
             <tr>
-              <th className="px-6 py-3 font-medium">Акс</th>
-              <th className="px-6 py-3 font-medium">Ном</th>
-              <th className="px-6 py-3 font-medium">Нарх (¥)</th>
-              <th className="px-6 py-3 font-medium">Амал</th>
+              <th className="px-6 py-3 font-medium whitespace-nowrap">Акс</th>
+              <th className="px-6 py-3 font-medium min-w-[200px]">Ном</th>
+              <th className="px-6 py-3 font-medium whitespace-nowrap">Нарх (¥)</th>
+              <th className="px-6 py-3 font-medium whitespace-nowrap">Амал</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">

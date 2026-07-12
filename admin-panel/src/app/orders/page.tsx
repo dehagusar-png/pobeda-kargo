@@ -34,16 +34,16 @@ export default async function OrdersPage() {
     <div className="max-w-6xl mx-auto space-y-6">
       <h1 className="text-2xl font-bold text-slate-800">Фармоишҳо аз Чин (Orders)</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <table className="w-full text-left text-sm">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+        <table className="w-full text-left text-sm min-w-max">
           <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
             <tr>
-              <th className="px-4 py-3 font-medium">ID</th>
-              <th className="px-4 py-3 font-medium">Мизоҷ</th>
-              <th className="px-4 py-3 font-medium">Мол</th>
-              <th className="px-4 py-3 font-medium">Нарх (Сомонӣ)</th>
-              <th className="px-4 py-3 font-medium">Ҳолат (Status)</th>
-              <th className="px-4 py-3 font-medium">Амалҳо</th>
+              <th className="px-4 py-3 font-medium whitespace-nowrap">ID</th>
+              <th className="px-4 py-3 font-medium whitespace-nowrap">Мизоҷ</th>
+              <th className="px-4 py-3 font-medium min-w-[200px]">Мол</th>
+              <th className="px-4 py-3 font-medium whitespace-nowrap">Нарх (Сомонӣ)</th>
+              <th className="px-4 py-3 font-medium whitespace-nowrap">Ҳолат (Status)</th>
+              <th className="px-4 py-3 font-medium whitespace-nowrap">Амалҳо</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
