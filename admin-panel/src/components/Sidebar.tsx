@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Users, Settings } from "lucide-react";
+import { LayoutDashboard, Package, Users, Settings, ShoppingBag, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 
 const navItems = [
   { name: "Омор (Dashboard)", href: "/", icon: LayoutDashboard },
   { name: "Борҳо (Parcels)", href: "/parcels", icon: Package },
   { name: "Мизоҷон (Users)", href: "/users", icon: Users },
+  { name: "Мағоза (Store)", href: "/products", icon: ShoppingBag },
+  { name: "Фармоишҳо (Orders)", href: "/orders", icon: ShoppingCart },
   { name: "Танзимот", href: "/settings", icon: Settings },
 ];
 

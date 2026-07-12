@@ -18,6 +18,7 @@ model User {
   clientCode String?  @unique // PB-XXXX
   role       Role     @default(USER) // USER, ADMIN, WORKER
   parcels    Parcel[]
+  orders     Order[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
@@ -35,6 +36,36 @@ model Parcel {
   updatedAt  DateTime     @updatedAt
 }
 
+model Product {
+  id          Int      @id @default(autoincrement())
+  title       String
+  priceCNY    Float
+  image       String?
+  description String?
+  isActive    Boolean  @default(true)
+  orders      Order[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  productId  Int
+  product    Product     @relation(fields: [productId], references: [id])
+  totalTJS   Float
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Settings {
+  id           Int      @id @default(1)
+  exchangeRate Float    @default(1.50) // CNY to TJS rate (includes margin)
+  updatedAt    DateTime @updatedAt
+}
+
 enum Role {
   USER
   ADMIN
@@ -47,4 +78,10 @@ enum ParcelStatus {
   IN_TRANSIT
   ARRIVED
   DELIVERED
+}
+
+enum OrderStatus {
+  PENDING
+  PURCHASED
+  CANCELLED
 }

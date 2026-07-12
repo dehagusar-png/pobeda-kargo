@@ -4,6 +4,7 @@ ask_phone = 为了继续，请使用下面的按钮发送您的电话号码：
 phone_button = 📱 发送电话号码
 registered = 谢谢！您已成功注册。您的客户代码是：{ $clientCode }
 main_menu = 🏠 主菜单：
+marketplace = 🛍 中国购物
 address = 📍 中国仓库地址
 track = 🔍 追踪货物
 calculator = 🧮 计算器
