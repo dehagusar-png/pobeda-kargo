@@ -39,7 +39,10 @@ export default function UsersPage() {
           <h1 className="text-2xl font-bold text-slate-900">Мизоҷон (Users)</h1>
           <p className="text-sm text-slate-500 mt-1">Рӯйхати ҳамаи мизоҷон ва кормандони система.</p>
         </div>
-        <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+        <button 
+          onClick={() => alert("Барои иловаи корманд: \n1. Корманди нав бояд ба боти Телеграм ворид шуда, бақайдгириро гузарад.\n2. Пас аз он, дар ҳамин саҳифа номи ӯро ёфта, вазифаашро ба 'WORKER' ё 'ADMIN' иваз кунед.")}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+        >
           + Иловаи Корманд
         </button>
       </div>
