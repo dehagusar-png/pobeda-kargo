@@ -9,6 +9,16 @@ address = 📍 中国仓库地址
 track = 🔍 追踪货物
 calculator = 🧮 计算器
 support = 🎧 客服支持
+address_info = 📍 您的中国仓库地址：
+
+ 收件人 (姓名): <b>PobedaCargo1 { $clientCode } { $name }</b>
+ 手机号码 (电话): <b>15678360075</b>
+ 所在地区 (地区): <b>广西壮族自治区 桂林市 七星区</b>
+ 详细地址 (详细地址): <b>环城北二路14号国外熊猫餐厅</b>
+ 
+ <i>请一键复制以下信息并粘贴到中国购物应用中（例如拼多多）：</i>
+
+ <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name }, { $phone }</code>
 
 support_text = 🎧 <b>客户支持</b>
  要联系管理部门，请拨打以下号码或在Telegram上留言：

@@ -9,6 +9,16 @@ address = 📍 Xitoydagi manzil
 track = 🔍 Yukni kuzatish
 calculator = 🧮 Kalkulyator
 support = 🎧 Qo'llab-quvvatlash
+address_info = 📍 Xitoydagi manzilingiz:
+
+ 收件人 (Ism): <b>PobedaCargo1 { $clientCode } { $name }</b>
+ 手机号码 (Telefon): <b>15678360075</b>
+ 所在地区 (Mintaqa): <b>广西壮族自治区 桂林市 七星区</b>
+ 详细地址 (To'liq manzil): <b>环城北二路14号国外熊猫餐厅</b>
+ 
+ <i>Iltimos, quyidagi ma'lumotni nusxalash tugmasini bosib oling va Xitoy dasturiga kiring (masalan Pinduoduo):</i>
+
+ <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name }, { $phone }</code>
 
 support_text = 🎧 <b>Mijozlarni qo'llab-quvvatlash</b>
  Ma'muriyat bilan bog'lanish uchun raqamlarga qo'ng'iroq qiling yoki Telegramda yozing:

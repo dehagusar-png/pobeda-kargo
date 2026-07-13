@@ -11,12 +11,14 @@ calculator = 🧮 Calculator
 support = 🎧 Support
 address_info = 📍 Your address in China:
 
- 收件人 (Name): <b>{ $clientCode } { $name }</b>
- 手机号码 (Phone): <b>13800138000</b>
- 所在地区 (Region): <b>广东省 广州市 越秀区</b>
- 详细地址 (Full address): <b>广园西路 222 号 Победа Карго { $clientCode }</b>
+ 收件人 (Name): <b>PobedaCargo1 { $clientCode } { $name }</b>
+ 手机号码 (Phone): <b>15678360075</b>
+ 所在地区 (Region): <b>广西壮族自治区 桂林市 七星区</b>
+ 详细地址 (Full address): <b>环城北二路14号国外熊猫餐厅</b>
+ 
+ <i>Please copy the information below in one click and paste it into the Chinese shopping app (e.g. Pinduoduo):</i>
 
- <i>Please copy the information above and use it in Chinese stores.</i>
+ <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name }, { $phone }</code>
 
 calc_prompt = 🧮 <b>Price Calculator</b>
  Please send the weight (kg) and volume (m³) separated by a space.
