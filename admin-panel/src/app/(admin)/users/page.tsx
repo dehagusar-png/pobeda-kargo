@@ -116,6 +116,16 @@ export default function UsersPage() {
                 <div className="flex items-center text-sm text-slate-600">
                   <Phone size={14} className="mr-2 text-slate-400" />
                   {user.phone}
+                  {user.phone && (
+                    <a 
+                      href={`https://t.me/${user.phone}`} 
+                      className="ml-auto text-xs text-blue-600 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      💬 Навиштан
+                    </a>
+                  )}
                 </div>
                 <div className="flex items-center text-sm text-slate-600">
                   <Shield size={14} className="mr-2 text-slate-400" />

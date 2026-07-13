@@ -53,6 +53,16 @@ export default async function OrdersPage() {
                 <td className="px-4 py-3">
                   <div className="font-medium text-slate-800">{o.user?.clientCode}</div>
                   <div className="text-xs text-slate-500">{o.user?.firstName} ({o.user?.phone})</div>
+                  {o.user?.phone && (
+                    <a 
+                      href={`https://t.me/${o.user.phone}`} 
+                      className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1 mt-1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      💬 Навиштан
+                    </a>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
