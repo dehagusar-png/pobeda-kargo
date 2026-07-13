@@ -174,9 +174,41 @@ export default function ParcelsPage() {
           </button>
         </div>
 
-        <div className="overflow-x-hidden md:overflow-x-auto p-4 md:p-0">
-          <table className="w-full text-left border-collapse block md:table">
-            <thead className="hidden md:table-header-group">
+        {/* Мобильная версия (Компактные карточки) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {loading ? (
+            <div className="p-8 text-center text-slate-500 text-sm">Боркунӣ...</div>
+          ) : parcels.filter(p => p.track.includes(searchTerm)).map((parcel) => (
+            <div key={parcel.id} className="p-4 hover:bg-slate-50 transition-colors">
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-mono font-bold text-slate-900">{parcel.track}</div>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${statusColors[parcel.status] || "bg-gray-100"}`}>
+                  {statusLabels[parcel.status] || parcel.status}
+                </span>
+              </div>
+              <div className="flex justify-between items-end">
+                <div className="space-y-1">
+                  <div className="text-xs text-slate-500 flex items-center gap-1">
+                    Мизоҷ: <span className="bg-red-50 text-red-700 px-1.5 py-0.5 rounded font-semibold">{parcel.client}</span>
+                  </div>
+                  <div className="text-xs text-slate-500">Вазн: <span className="font-medium text-slate-700">{parcel.weight}</span></div>
+                  <div className="text-xs text-slate-500">Сана: <span className="font-medium text-slate-700">{parcel.date}</span></div>
+                </div>
+                <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors bg-slate-50">
+                  <MoreHorizontal size={18} />
+                </button>
+              </div>
+            </div>
+          ))}
+          {!loading && parcels.filter(p => p.track.includes(searchTerm)).length === 0 && (
+            <div className="p-8 text-center text-slate-500 text-sm">Боре ёфт нашуд.</div>
+          )}
+        </div>
+
+        {/* Десктопная версия (Таблица) */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
               <tr className="bg-slate-50 border-b border-slate-200 text-sm text-slate-500">
                 <th className="py-4 px-6 font-medium">Трек-код</th>
                 <th className="py-4 px-6 font-medium">Мизоҷ</th>
@@ -186,45 +218,37 @@ export default function ParcelsPage() {
                 <th className="py-4 px-6 font-medium text-right">Амалҳо</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 block md:table-row-group">
+            <tbody className="divide-y divide-slate-100">
               {loading ? (
-                <tr><td colSpan={6} className="py-8 text-center text-slate-500 block md:table-cell">Боркунӣ...</td></tr>
+                <tr><td colSpan={6} className="py-8 text-center text-slate-500">Боркунӣ...</td></tr>
               ) : parcels.filter(p => p.track.includes(searchTerm)).map((parcel) => (
-                <tr key={parcel.id} className="hover:bg-slate-50 transition-colors block md:table-row bg-white border border-slate-100 rounded-xl mb-4 md:mb-0 md:border-none p-4 md:p-0 shadow-sm md:shadow-none">
-                  <td className="py-2 md:py-4 md:px-6 font-mono font-medium text-slate-900 block md:table-cell border-b border-slate-100 md:border-none">
-                    <span className="md:hidden text-slate-500 mr-2 text-sm">Трек-код:</span>
-                    {parcel.track}
-                  </td>
-                  <td className="py-2 md:py-4 md:px-6 block md:table-cell border-b border-slate-100 md:border-none">
-                    <span className="md:hidden text-slate-500 mr-2 text-sm">Мизоҷ:</span>
+                <tr key={parcel.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="py-4 px-6 font-mono font-medium text-slate-900">{parcel.track}</td>
+                  <td className="py-4 px-6">
                     <span className="bg-red-50 text-red-700 px-2 py-1 rounded text-xs font-semibold">{parcel.client}</span>
                   </td>
-                  <td className="py-2 md:py-4 md:px-6 text-sm text-slate-600 block md:table-cell border-b border-slate-100 md:border-none">
-                    <span className="md:hidden text-slate-500 mr-2">Вазн:</span>
-                    {parcel.weight}
-                  </td>
-                  <td className="py-2 md:py-4 md:px-6 text-sm text-slate-500 block md:table-cell border-b border-slate-100 md:border-none">
-                    <span className="md:hidden text-slate-500 mr-2">Сана:</span>
-                    {parcel.date}
-                  </td>
-                  <td className="py-2 md:py-4 md:px-6 block md:table-cell border-b border-slate-100 md:border-none">
-                    <span className="md:hidden text-slate-500 mr-2 text-sm">Ҳолат:</span>
+                  <td className="py-4 px-6 text-sm text-slate-600">{parcel.weight}</td>
+                  <td className="py-4 px-6 text-sm text-slate-500">{parcel.date}</td>
+                  <td className="py-4 px-6">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[parcel.status] || "bg-gray-100"}`}>
                       {statusLabels[parcel.status] || parcel.status}
                     </span>
                   </td>
-                  <td className="py-2 md:py-4 md:px-6 md:text-right block md:table-cell">
-                    <button className="w-full md:w-auto p-2 bg-slate-50 text-slate-600 md:bg-transparent md:text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex justify-center items-center">
+                  <td className="py-4 px-6 text-right">
+                    <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                       <MoreHorizontal size={18} />
                     </button>
                   </td>
                 </tr>
               ))}
+              {!loading && parcels.filter(p => p.track.includes(searchTerm)).length === 0 && (
+                <tr><td colSpan={6} className="py-8 text-center text-slate-500">Боре ёфт нашуд.</td></tr>
+              )}
             </tbody>
           </table>
         </div>
         
-        <div className="p-4 border-t border-slate-200 text-sm text-slate-500 flex justify-between items-center">
+        <div className="p-4 border-t border-slate-200 text-sm text-slate-500 flex justify-between items-center bg-white">
           <span>Намоиш аз 1 то 5 аз 5 бор</span>
           <div className="flex gap-1">
             <button className="px-3 py-1 border border-slate-200 rounded text-slate-400 cursor-not-allowed">Пештара</button>

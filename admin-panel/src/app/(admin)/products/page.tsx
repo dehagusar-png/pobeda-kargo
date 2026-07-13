@@ -95,47 +95,72 @@ export default async function ProductsPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-hidden md:overflow-x-auto p-4 md:p-0">
-        <table className="w-full text-left block md:table min-w-max md:min-w-0">
-          <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 hidden md:table-header-group">
-            <tr>
-              <th className="px-6 py-3 font-medium whitespace-nowrap">Акс</th>
-              <th className="px-6 py-3 font-medium min-w-[200px]">Ном</th>
-              <th className="px-6 py-3 font-medium whitespace-nowrap">Нарх (¥)</th>
-              <th className="px-6 py-3 font-medium whitespace-nowrap">Амал</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 block md:table-row-group">
-            {products.map((p: any) => (
-              <tr key={p.id} className="hover:bg-slate-50 block md:table-row bg-white border border-slate-100 rounded-xl mb-4 md:mb-0 md:border-none p-4 md:p-0 shadow-sm md:shadow-none">
-                <td className="py-2 md:py-3 px-4 md:px-6 block md:table-cell border-b border-slate-100 md:border-none flex items-center justify-between md:table-cell">
-                  <span className="md:hidden font-bold text-slate-700">Акс:</span>
-                  {p.image ? <img src={p.image} alt={p.title} className="w-16 h-16 md:w-12 md:h-12 object-cover rounded" /> : <div className="w-16 h-16 md:w-12 md:h-12 bg-slate-200 rounded"></div>}
-                </td>
-                <td className="py-2 md:py-3 px-4 md:px-6 font-medium text-slate-700 block md:table-cell border-b border-slate-100 md:border-none">
-                  <span className="md:hidden font-bold text-slate-700 block mb-1">Ном:</span>
-                  {p.title}
-                </td>
-                <td className="py-2 md:py-3 px-4 md:px-6 text-emerald-600 font-semibold block md:table-cell border-b border-slate-100 md:border-none">
-                  <span className="md:hidden font-bold text-slate-700 mr-2">Нарх:</span>
-                  {p.priceCNY} ¥
-                </td>
-                <td className="py-2 md:py-3 px-4 md:px-6 block md:table-cell">
-                  <span className="md:hidden font-bold text-slate-700 block mb-2">Амал:</span>
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        {/* Мобильная версия (Компактные карточки) */}
+        <div className="md:hidden divide-y divide-slate-100">
+          {products.map((p: any) => (
+            <div key={p.id} className="flex gap-4 p-4 hover:bg-slate-50 transition-colors">
+              <div className="shrink-0">
+                {p.image ? (
+                  <img src={p.image} alt={p.title} className="w-20 h-20 object-cover rounded-lg shadow-sm border border-slate-100" />
+                ) : (
+                  <div className="w-20 h-20 bg-slate-100 rounded-lg flex items-center justify-center text-xs text-slate-400 border border-slate-200">Бе акс</div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0 flex flex-col">
+                <h3 className="font-semibold text-slate-800 text-sm mb-1 leading-snug">{p.title}</h3>
+                <div className="text-emerald-600 font-bold text-sm mb-auto">{p.priceCNY} ¥</div>
+                <div className="mt-3 flex justify-end">
                   <form action={deleteProduct}>
                     <input type="hidden" name="id" value={p.id} />
-                    <button type="submit" className="w-full md:w-auto text-red-500 hover:text-red-700 text-sm font-medium bg-red-50 px-4 py-2 md:px-3 md:py-1 rounded">Нест кардан</button>
+                    <button type="submit" className="text-red-500 hover:text-red-700 text-xs font-medium bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">
+                      Нест кардан
+                    </button>
                   </form>
-                </td>
-              </tr>
-            ))}
-            {products.length === 0 && (
+                </div>
+              </div>
+            </div>
+          ))}
+          {products.length === 0 && (
+            <div className="p-8 text-center text-slate-500 text-sm">Ҳоло ягон мол илова нашудааст.</div>
+          )}
+        </div>
+
+        {/* Десктопная версия (Таблица) */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600">
               <tr>
-                <td colSpan={4} className="px-6 py-8 text-center text-slate-500 block md:table-cell">Ҳоло ягон мол илова нашудааст.</td>
+                <th className="px-6 py-3 font-medium whitespace-nowrap">Акс</th>
+                <th className="px-6 py-3 font-medium min-w-[200px]">Ном</th>
+                <th className="px-6 py-3 font-medium whitespace-nowrap">Нарх (¥)</th>
+                <th className="px-6 py-3 font-medium whitespace-nowrap text-right">Амал</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {products.map((p: any) => (
+                <tr key={p.id} className="hover:bg-slate-50">
+                  <td className="px-6 py-3">
+                    {p.image ? <img src={p.image} alt={p.title} className="w-12 h-12 object-cover rounded shadow-sm border border-slate-100" /> : <div className="w-12 h-12 bg-slate-100 rounded border border-slate-200"></div>}
+                  </td>
+                  <td className="px-6 py-3 font-medium text-slate-700">{p.title}</td>
+                  <td className="px-6 py-3 text-emerald-600 font-semibold">{p.priceCNY} ¥</td>
+                  <td className="px-6 py-3 text-right">
+                    <form action={deleteProduct}>
+                      <input type="hidden" name="id" value={p.id} />
+                      <button type="submit" className="text-red-500 hover:text-red-700 text-sm font-medium bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded transition-colors">Нест кардан</button>
+                    </form>
+                  </td>
+                </tr>
+              ))}
+              {products.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-slate-500">Ҳоло ягон мол илова нашудааст.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
