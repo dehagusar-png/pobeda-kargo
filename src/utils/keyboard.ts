@@ -4,7 +4,7 @@ import { User } from "@prisma/client";
 
 export function getMainKeyboard(ctx: MyContext, user: User | null): Keyboard {
   const keyboard = new Keyboard()
-    .text(ctx.t("marketplace")).text(ctx.t("add_parcel")).row()
+    .webApp(ctx.t("marketplace"), "https://pobeda-admin-panel.onrender.com/shop").text(ctx.t("add_parcel")).row()
     .text(ctx.t("track")).text(ctx.t("address")).row()
     .text(ctx.t("calculator")).text(ctx.t("support")).row();
     

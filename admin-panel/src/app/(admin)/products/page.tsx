@@ -10,13 +10,23 @@ export default async function ProductsPage() {
     "use server";
     const title = formData.get("title") as string;
     const priceCNY = parseFloat(formData.get("priceCNY") as string);
-    const image = formData.get("image") as string;
+    const description = formData.get("description") as string;
+    const imageFile = formData.get("image") as File | null;
+    
+    let imageStr = null;
+    if (imageFile && imageFile.size > 0) {
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      const base64 = buffer.toString("base64");
+      const mimeType = imageFile.type || "image/jpeg";
+      imageStr = `data:${mimeType};base64,${base64}`;
+    }
 
     await prisma.product.create({
       data: {
         title,
         priceCNY,
-        image: image || null,
+        description: description || null,
+        image: imageStr,
         isActive: true
       }
     });
@@ -71,8 +81,12 @@ export default async function ProductsPage() {
               <input name="priceCNY" type="number" step="0.01" required className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="100" />
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium text-slate-600 mb-1">Ссылкаи Акс (Image URL - i.imgur.com)</label>
-              <input name="image" className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="https://..." />
+              <label className="block text-sm font-medium text-slate-600 mb-1">Тафсилот ё Ссылка (ихтиёрӣ)</label>
+              <input name="description" className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Маълумот ё ссылкаи Pinduoduo..." />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-slate-600 mb-1">Боркунии Акс (Image)</label>
+              <input type="file" accept="image/*" name="image" className="w-full border rounded-lg p-1.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
             </div>
           </div>
           <button type="submit" className="bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition">
