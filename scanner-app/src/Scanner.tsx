@@ -15,6 +15,8 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       useBarCodeDetectorIfSupported: true 
     });
     let isScanning = true;
+    let lastScannedCode = "";
+    let lastScanTime = 0;
 
     html5QrCode.start(
       { facingMode: "environment" },
@@ -28,9 +30,16 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         
         // Санҷиши дарозӣ барои пешгирии хатогиҳо
         if (text && text.length >= 8) {
-          isScanning = false;
+          const now = Date.now();
+          // Нагузоред, ки як код дар давоми 3 сония дубора скан шавад
+          if (text === lastScannedCode && (now - lastScanTime) < 3000) {
+            return;
+          }
+          
+          lastScannedCode = text;
+          lastScanTime = now;
           onScanSuccess(text);
-          html5QrCode.stop().catch(console.error);
+          // html5QrCode.stop() хориҷ карда шуд барои сканери доимӣ
         }
       },
       () => {
