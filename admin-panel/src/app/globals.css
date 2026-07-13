@@ -27,3 +27,23 @@ body {
   background-color: var(--background);
   color: var(--foreground);
 }
+
+/* Намуди зоҳирии скроллбар (Scrollbar styling) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9; /* slate-100 */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dc2626; /* red-600 */
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c; /* red-700 */
+}
