@@ -11,14 +11,23 @@ export default async function ProductsPage() {
     const title = formData.get("title") as string;
     const priceCNY = parseFloat(formData.get("priceCNY") as string);
     const description = formData.get("description") as string;
-    const imageFile = formData.get("image") as File | null;
+    const imageFiles = formData.getAll("images") as File[];
     
-    let imageStr = null;
-    if (imageFile && imageFile.size > 0) {
-      const buffer = Buffer.from(await imageFile.arrayBuffer());
-      const base64 = buffer.toString("base64");
-      const mimeType = imageFile.type || "image/jpeg";
-      imageStr = `data:${mimeType};base64,${base64}`;
+    let mainImageStr = null;
+    let allImageStrs: string[] = [];
+
+    for (let i = 0; i < imageFiles.length; i++) {
+      const file = imageFiles[i];
+      if (file && file.size > 0) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const base64 = buffer.toString("base64");
+        const mimeType = file.type || "image/jpeg";
+        const imageStr = `data:${mimeType};base64,${base64}`;
+        allImageStrs.push(imageStr);
+        if (i === 0) {
+          mainImageStr = imageStr;
+        }
+      }
     }
 
     await prisma.product.create({
@@ -26,7 +35,8 @@ export default async function ProductsPage() {
         title,
         priceCNY,
         description: description || null,
-        image: imageStr,
+        image: mainImageStr,
+        images: allImageStrs,
         isActive: true
       }
     });
@@ -85,8 +95,8 @@ export default async function ProductsPage() {
               <input name="description" className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Маълумот ё ссылкаи Pinduoduo..." />
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium text-slate-600 mb-1">Боркунии Акс (Image)</label>
-              <input type="file" accept="image/*" name="image" className="w-full border rounded-lg p-1.5 focus:ring-2 focus:ring-red-500 outline-none bg-white file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
+              <label className="block text-sm font-medium text-slate-600 mb-1">Боркунии Аксҳо (Images)</label>
+              <input type="file" multiple accept="image/*" name="images" className="w-full border rounded-lg p-1.5 focus:ring-2 focus:ring-red-500 outline-none bg-white file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
             </div>
           </div>
           <button type="submit" className="bg-red-600 text-white font-medium py-2 rounded-lg hover:bg-red-700 transition">
@@ -98,11 +108,16 @@ export default async function ProductsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         {/* Мобильная версия (Компактные карточки) */}
         <div className="md:hidden divide-y divide-slate-100">
-          {products.map((p: any) => (
+            {products.map((p: any) => {
+              const allImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+              return (
             <div key={p.id} className="flex gap-4 p-4 hover:bg-slate-50 transition-colors">
               <div className="shrink-0">
-                {p.image ? (
-                  <img src={p.image} alt={p.title} className="w-20 h-20 object-cover rounded-lg shadow-sm border border-slate-100" />
+                {allImages.length > 0 ? (
+                  <div className="relative">
+                    <img src={allImages[0]} alt={p.title} className="w-20 h-20 object-cover rounded-lg shadow-sm border border-slate-100" />
+                    {allImages.length > 1 && <span className="absolute bottom-1 right-1 bg-black/50 text-white text-[10px] px-1 rounded">+{allImages.length - 1}</span>}
+                  </div>
                 ) : (
                   <div className="w-20 h-20 bg-slate-100 rounded-lg flex items-center justify-center text-xs text-slate-400 border border-slate-200">Бе акс</div>
                 )}
@@ -120,7 +135,8 @@ export default async function ProductsPage() {
                 </div>
               </div>
             </div>
-          ))}
+              );
+            })}
           {products.length === 0 && (
             <div className="p-8 text-center text-slate-500 text-sm">Ҳоло ягон мол илова нашудааст.</div>
           )}
@@ -138,10 +154,17 @@ export default async function ProductsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {products.map((p: any) => (
+              {products.map((p: any) => {
+                const allImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+                return (
                 <tr key={p.id} className="hover:bg-slate-50">
                   <td className="px-6 py-3">
-                    {p.image ? <img src={p.image} alt={p.title} className="w-12 h-12 object-cover rounded shadow-sm border border-slate-100" /> : <div className="w-12 h-12 bg-slate-100 rounded border border-slate-200"></div>}
+                    {allImages.length > 0 ? (
+                      <div className="relative inline-block">
+                        <img src={allImages[0]} alt={p.title} className="w-12 h-12 object-cover rounded shadow-sm border border-slate-100" />
+                        {allImages.length > 1 && <span className="absolute -bottom-1 -right-1 bg-black/50 text-white text-[10px] px-1 rounded">+{allImages.length - 1}</span>}
+                      </div>
+                    ) : <div className="w-12 h-12 bg-slate-100 rounded border border-slate-200"></div>}
                   </td>
                   <td className="px-6 py-3 font-medium text-slate-700">{p.title}</td>
                   <td className="px-6 py-3 text-emerald-600 font-semibold">{p.priceCNY} ¥</td>
@@ -152,7 +175,8 @@ export default async function ProductsPage() {
                     </form>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
               {products.length === 0 && (
                 <tr>
                   <td colSpan={4} className="px-6 py-8 text-center text-slate-500">Ҳоло ягон мол илова нашудааст.</td>

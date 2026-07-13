@@ -8,6 +8,7 @@ interface Product {
   title: string;
   priceCNY: number;
   image: string | null;
+  images: string[];
   description: string | null;
 }
 
@@ -15,6 +16,7 @@ export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [exchangeRate, setExchangeRate] = useState<number>(1.5);
   const [loading, setLoading] = useState(true);
+  const [activeImageIndices, setActiveImageIndices] = useState<Record<number, number>>({});
 
   useEffect(() => {
     fetch("/api/shop/products")
@@ -40,6 +42,22 @@ export default function ShopPage() {
     } else {
       alert("Ин хусусият танҳо дар дохили Телеграм кор мекунад!");
     }
+  };
+
+  const nextImage = (e: any, productId: number, maxIndex: number) => {
+    e.stopPropagation();
+    setActiveImageIndices(prev => ({
+      ...prev,
+      [productId]: ((prev[productId] || 0) + 1) % maxIndex
+    }));
+  };
+
+  const prevImage = (e: any, productId: number, maxIndex: number) => {
+    e.stopPropagation();
+    setActiveImageIndices(prev => ({
+      ...prev,
+      [productId]: prev[productId] ? prev[productId] - 1 : maxIndex - 1
+    }));
   };
 
   return (
@@ -68,6 +86,8 @@ export default function ShopPage() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {products.map((product) => {
               const priceTJS = (product.priceCNY * exchangeRate).toFixed(2);
+              const allImages = product.images && product.images.length > 0 ? product.images : (product.image ? [product.image] : []);
+              const currentImageIndex = activeImageIndices[product.id] || 0;
               
               return (
                 <div 
@@ -75,12 +95,25 @@ export default function ShopPage() {
                   className="bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col"
                 >
                   <div className="relative aspect-square bg-slate-50 w-full overflow-hidden group">
-                    {product.image ? (
-                      <img 
-                        src={product.image} 
-                        alt={product.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
+                    {allImages.length > 0 ? (
+                      <>
+                        <img 
+                          src={allImages[currentImageIndex]} 
+                          alt={product.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {allImages.length > 1 && (
+                          <>
+                            <button onClick={(e) => prevImage(e, product.id, allImages.length)} className="absolute left-1 top-1/2 -translate-y-1/2 bg-black/30 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-80 hover:opacity-100 hover:bg-black/50 transition">&lt;</button>
+                            <button onClick={(e) => nextImage(e, product.id, allImages.length)} className="absolute right-1 top-1/2 -translate-y-1/2 bg-black/30 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-80 hover:opacity-100 hover:bg-black/50 transition">&gt;</button>
+                            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+                              {allImages.map((_, idx) => (
+                                <div key={idx} className={`w-1.5 h-1.5 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/40'}`}></div>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-slate-300">
                         Сурат нест
