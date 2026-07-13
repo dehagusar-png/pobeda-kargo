@@ -28,3 +28,10 @@ btn_track_only = 🔍 Faqat kuzatish
 ask_owner_code = 👤 Iltimos, yuk egasining mijoz kodini (PB-XXXX) kiriting:
 owner_not_found = ❌ Bunday kodli mijoz topilmadi.
 parcel_assigned = ✅ Yuk muvaffaqiyatli { $clientCode } mijoziga biriktirildi!
+
+status_EXPECTED = Qabul qilinishi kutilmoqda 📦
+status_IN_CHINA = Yuk Xitoy omborida 🇨🇳
+status_IN_TRANSIT = Ombordan yo'lga chiqdi 🚚
+status_ARRIVED = Manzilga yetib keldi 🇹🇯
+status_DELIVERED = Topshirildi ✅
+status_changed = 🔔 Bildirishnoma: Yukingiz ({ $trackCode }) holati o'zgardi: <b>{ $status }</b>

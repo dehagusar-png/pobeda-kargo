@@ -49,3 +49,10 @@ btn_track_only = 🔍 Только отслеживание
 ask_owner_code = 👤 Пожалуйста, введите код клиента (PB-XXXX) владельца груза:
 owner_not_found = ❌ Клиент с таким кодом не найден.
 parcel_assigned = ✅ Груз успешно привязан к клиенту { $clientCode }!
+
+status_EXPECTED = Ожидает поступления 📦
+status_IN_CHINA = Груз на складе в Китае 🇨🇳
+status_IN_TRANSIT = Отправлен со склада в пути 🚚
+status_ARRIVED = Прибыл в пункт назначения 🇹🇯
+status_DELIVERED = Выдан ✅
+status_changed = 🔔 Уведомление: Статус вашего груза ({ $trackCode }) изменен: <b>{ $status }</b>

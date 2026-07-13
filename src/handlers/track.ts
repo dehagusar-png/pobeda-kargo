@@ -1,7 +1,7 @@
 import { Composer, InlineKeyboard } from "grammy";
-import { MyContext } from "../bot";
+import { MyContext, i18n } from "../bot";
 import { prisma } from "../db";
-import { BUTTONS, STATUS_MAP } from "../utils/constants";
+import { BUTTONS } from "../utils/constants";
 
 export const trackHandler = new Composer<MyContext>();
 
@@ -27,7 +27,7 @@ trackHandler.on("message:text", async (ctx, next) => {
           
         await ctx.reply(ctx.t("claim_prompt"), { reply_markup: inlineKeyboard });
       } else {
-        const statusText = STATUS_MAP[parcel.status] || parcel.status;
+        const statusText = ctx.t("status_" + parcel.status);
         const inlineKeyboard = new InlineKeyboard().webApp(
           "📍 Дар харита дидан",
           `https://pobeda-admin-panel.onrender.com/track/${trackCode}`
@@ -73,13 +73,16 @@ trackHandler.on("message:web_app_data", async (ctx) => {
              data: { status: nextStatus as any }
            });
            
-           await ctx.reply(`✅ Статуси бор ${data.trackCode} ба ${nextStatus} иваз карда шуд.`);
+           await ctx.reply(`✅ Статуси бор ${data.trackCode} ба ${ctx.t("status_" + nextStatus)} иваз карда шуд.`);
            
            // Огоҳинома (Push Notification) ба соҳиби бор
            if (parcel.userId) {
              const owner = await prisma.user.findUnique({ where: { id: parcel.userId } });
              if (owner && owner.telegramId) {
-               await ctx.api.sendMessage(Number(owner.telegramId), `🔔 Огоҳинома: Статуси бори шумо (${data.trackCode}) иваз шуд: <b>${nextStatus}</b>`, { parse_mode: "HTML" });
+               const ownerLang = owner.language || "tg";
+               const localizedStatus = i18n.t(ownerLang, "status_" + nextStatus);
+               const msg = i18n.t(ownerLang, "status_changed", { trackCode: data.trackCode, status: localizedStatus });
+               await ctx.api.sendMessage(Number(owner.telegramId), msg, { parse_mode: "HTML" });
              }
            }
         } else {
@@ -90,7 +93,7 @@ trackHandler.on("message:web_app_data", async (ctx) => {
                status: "IN_CHINA"
              }
            });
-           await ctx.reply(`🆕 Бори нав (${data.trackCode}) ба база илова шуд (IN_CHINA).`);
+           await ctx.reply(`🆕 Бори нав (${data.trackCode}) ба база илова шуд (${ctx.t("status_IN_CHINA")}).`);
         }
       } else {
         await ctx.reply("❌ Шумо ҳуқуқи тағйир додани статусро надоред.");

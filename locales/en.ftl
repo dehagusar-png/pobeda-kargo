@@ -49,3 +49,10 @@ btn_track_only = 🔍 Just track
 ask_owner_code = 👤 Please enter the owner's client code (PB-XXXX):
 owner_not_found = ❌ Client with this code was not found.
 parcel_assigned = ✅ Parcel successfully assigned to client { $clientCode }!
+
+status_EXPECTED = Expected 📦
+status_IN_CHINA = Parcel at China warehouse 🇨🇳
+status_IN_TRANSIT = Departed warehouse, in transit 🚚
+status_ARRIVED = Arrived at destination 🇹🇯
+status_DELIVERED = Delivered ✅
+status_changed = 🔔 Notification: Your parcel ({ $trackCode }) status changed to: <b>{ $status }</b>

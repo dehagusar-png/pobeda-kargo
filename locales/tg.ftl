@@ -49,3 +49,10 @@ btn_track_only = 🔍 Фақат пайгирӣ
 ask_owner_code = 👤 Лутфан коди муштарии (PB-XXXX) соҳиби борро ворид кунед:
 owner_not_found = ❌ Муштарӣ бо ин код ёфт нашуд.
 parcel_assigned = ✅ Бор бомуваффақият ба муштарӣ { $clientCode } пайваст карда шуд!
+
+status_EXPECTED = Мунтазири қабул 📦
+status_IN_CHINA = Бор дар анбори Чин 🇨🇳
+status_IN_TRANSIT = Аз анбор ба роҳ баромад 🚚
+status_ARRIVED = Ба манзил омада расид 🇹🇯
+status_DELIVERED = Супорида шуд ✅
+status_changed = 🔔 Огоҳинома: Статуси бори шумо ({ $trackCode }) иваз шуд: <b>{ $status }</b>
