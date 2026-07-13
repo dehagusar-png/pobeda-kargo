@@ -73,23 +73,23 @@ export default async function ProductsPage() {
         <form action={addProduct} className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium text-slate-600 mb-1">Номи Мол (Title)</label>
-            <input name="title" required className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Масалан: Кроссовка Nike" />
+            <input name="title" required className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Масалан: Кроссовка Nike" />
           </div>
           <div className="flex gap-4">
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-600 mb-1">Нарх (Юан - ¥)</label>
-              <input name="priceCNY" type="number" step="0.01" required className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="100" />
+              <input name="priceCNY" type="number" step="0.01" required className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="100" />
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-600 mb-1">Тафсилот ё Ссылка (ихтиёрӣ)</label>
-              <input name="description" className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Маълумот ё ссылкаи Pinduoduo..." />
+              <input name="description" className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Маълумот ё ссылкаи Pinduoduo..." />
             </div>
             <div className="flex-1">
               <label className="block text-sm font-medium text-slate-600 mb-1">Боркунии Акс (Image)</label>
-              <input type="file" accept="image/*" name="image" className="w-full border rounded-lg p-1.5 focus:ring-2 focus:ring-blue-500 outline-none bg-white file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
+              <input type="file" accept="image/*" name="image" className="w-full border rounded-lg p-1.5 focus:ring-2 focus:ring-red-500 outline-none bg-white file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer" />
             </div>
           </div>
-          <button type="submit" className="bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition">
+          <button type="submit" className="bg-red-600 text-white font-medium py-2 rounded-lg hover:bg-red-700 transition">
             ➕ Илова Кардан
           </button>
         </form>

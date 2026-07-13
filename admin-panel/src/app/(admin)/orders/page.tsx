@@ -56,7 +56,7 @@ export default async function OrdersPage() {
                   {o.user?.phone && (
                     <a 
                       href={`https://t.me/${o.user.phone}`} 
-                      className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1 mt-1"
+                      className="text-xs text-red-600 font-medium hover:underline flex items-center gap-1 mt-1"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -66,7 +66,7 @@ export default async function OrdersPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">
-                    {o.product?.image && <img src={o.product.image} className="w-8 h-8 rounded object-cover" />}
+                    {o.product?.image && <img src={o.product.image} alt="" className="w-8 h-8 rounded object-cover" />}
                     <div className="font-medium text-slate-700">{o.product?.title}</div>
                   </div>
                 </td>
@@ -79,12 +79,12 @@ export default async function OrdersPage() {
                 <td className="px-4 py-3">
                   <form action={updateStatus} className="flex items-center gap-2">
                     <input type="hidden" name="id" value={o.id} />
-                    <select name="status" defaultValue={o.status} className="border text-xs rounded p-1 outline-none focus:border-blue-500">
+                    <select name="status" defaultValue={o.status} className="border text-xs rounded p-1 outline-none focus:border-red-500">
                       <option value="PENDING">PENDING</option>
                       <option value="PURCHASED">PURCHASED</option>
                       <option value="CANCELLED">CANCELLED</option>
                     </select>
-                    <button type="submit" className="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs font-medium hover:bg-blue-100">Сабт</button>
+                    <button type="submit" className="bg-red-50 text-red-600 px-2 py-1 rounded text-xs font-medium hover:bg-red-100">Сабт</button>
                   </form>
                 </td>
               </tr>

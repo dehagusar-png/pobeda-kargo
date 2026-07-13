@@ -55,7 +55,7 @@ export default function ParcelsPage() {
           <button className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center gap-2">
             <FileDown size={16} /> Экспорт
           </button>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
             + Бори нав
           </button>
         </div>
@@ -74,7 +74,7 @@ export default function ParcelsPage() {
               placeholder="Ҷустуҷӯ аз рӯи трек-код..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-red-500 transition-shadow"
             />
           </div>
           <button className="flex items-center gap-2 text-sm text-slate-600 font-medium px-3 py-2 hover:bg-slate-200 rounded-lg transition-colors">
@@ -101,7 +101,7 @@ export default function ParcelsPage() {
                 <tr key={parcel.id} className="hover:bg-slate-50 transition-colors">
                   <td className="py-4 px-6 font-mono font-medium text-slate-900">{parcel.track}</td>
                   <td className="py-4 px-6">
-                    <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-xs font-semibold">{parcel.client}</span>
+                    <span className="bg-red-50 text-red-700 px-2 py-1 rounded text-xs font-semibold">{parcel.client}</span>
                   </td>
                   <td className="py-4 px-6 text-sm text-slate-600">{parcel.weight}</td>
                   <td className="py-4 px-6 text-sm text-slate-500">{parcel.date}</td>
@@ -111,7 +111,7 @@ export default function ParcelsPage() {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">
-                    <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                    <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
                       <MoreHorizontal size={18} />
                     </button>
                   </td>

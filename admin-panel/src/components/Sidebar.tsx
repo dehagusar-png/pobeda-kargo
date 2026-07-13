@@ -21,7 +21,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-slate-900 h-screen text-slate-300 flex flex-col shadow-2xl z-20 hidden md:flex sticky top-0">
       <div className="p-6">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Package className="text-blue-500" />
+          <Package className="text-red-500" />
           <span>pobedacargo1</span>
         </h1>
         <p className="text-xs text-slate-500 mt-1">Панели Маъмурият</p>
@@ -35,7 +35,7 @@ export default function Sidebar() {
               {isActive && (
                 <motion.div
                   layoutId="active-tab"
-                  className="absolute inset-0 bg-blue-600 rounded-lg"
+                  className="absolute inset-0 bg-red-600 rounded-lg"
                   initial={false}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />

@@ -3,7 +3,7 @@ import { Bell, Search, User } from "lucide-react";
 export default function Topbar() {
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10 shadow-sm">
-      <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-96 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+      <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 w-96 focus-within:ring-2 focus-within:ring-red-500 transition-all">
         <Search className="text-gray-400 mr-2" size={20} />
         <input 
           type="text" 
@@ -22,7 +22,7 @@ export default function Topbar() {
             <p className="text-sm font-medium text-gray-700">Администратор</p>
             <p className="text-xs text-gray-500">admin@pobedakargo.tj</p>
           </div>
-          <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">
+          <div className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold">
             <User size={20} />
           </div>
         </div>

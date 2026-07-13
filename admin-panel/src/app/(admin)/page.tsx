@@ -71,7 +71,7 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-slate-900">Омор</h1>
           <p className="text-sm text-slate-500 mt-1">Хулосаи фаъолияти логистикии ширкат дар як нигоҳ.</p>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+        <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
           Ҳисобот (Export)
         </button>
       </div>
@@ -86,7 +86,7 @@ export default function Dashboard() {
             className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow"
           >
             <div className="flex justify-between items-start mb-4">
-              <div className={`p-3 rounded-xl bg-${stat.color}-50 text-${stat.color}-600`}>
+              <div className={`p-3 rounded-xl bg-${stat.color === 'blue' ? 'red' : stat.color}-50 text-${stat.color === 'blue' ? 'red' : stat.color}-600`}>
                 <stat.icon size={24} />
               </div>
               <span className={`text-xs font-semibold px-2 py-1 rounded-full ${stat.trend.startsWith("-") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"}`}>
@@ -117,8 +117,8 @@ export default function Dashboard() {
               <AreaChart data={statsData.chartData || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorParcels" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#dc2626" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#dc2626" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={10} />
@@ -128,7 +128,7 @@ export default function Dashboard() {
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#1e293b' }}
                 />
-                <Area type="monotone" dataKey="parcels" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorParcels)" />
+                <Area type="monotone" dataKey="parcels" stroke="#dc2626" strokeWidth={3} fillOpacity={1} fill="url(#colorParcels)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -145,7 +145,7 @@ export default function Dashboard() {
             {statsData.recentActivity.map((activity, i) => (
               <div key={i} className="flex gap-4">
                 <div className="relative">
-                  <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full z-10 relative"></div>
+                  <div className="w-2 h-2 mt-2 bg-red-500 rounded-full z-10 relative"></div>
                   {i !== statsData.recentActivity.length - 1 && <div className="absolute top-4 left-1 w-[2px] h-12 bg-slate-100 -translate-x-1/2"></div>}
                 </div>
                 <div>
@@ -158,7 +158,7 @@ export default function Dashboard() {
               <p className="text-sm text-slate-500">Ягон фаъолият ёфт нашуд.</p>
             )}
           </div>
-          <button className="w-full mt-6 py-2 text-sm text-blue-600 font-medium hover:bg-blue-50 rounded-lg transition-colors flex items-center justify-center gap-1">
+          <button className="w-full mt-6 py-2 text-sm text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-1">
             Ҳамаро дидан <ArrowUpRight size={16} />
           </button>
         </motion.div>
