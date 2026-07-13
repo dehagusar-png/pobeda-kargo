@@ -82,10 +82,10 @@ export default function ParcelsPage() {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-white border-b border-slate-200 text-sm text-slate-500">
+        <div className="overflow-x-hidden md:overflow-x-auto p-4 md:p-0">
+          <table className="w-full text-left border-collapse block md:table">
+            <thead className="hidden md:table-header-group">
+              <tr className="bg-slate-50 border-b border-slate-200 text-sm text-slate-500">
                 <th className="py-4 px-6 font-medium">Трек-код</th>
                 <th className="py-4 px-6 font-medium">Мизоҷ</th>
                 <th className="py-4 px-6 font-medium">Вазн</th>
@@ -94,24 +94,35 @@ export default function ParcelsPage() {
                 <th className="py-4 px-6 font-medium text-right">Амалҳо</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 block md:table-row-group">
               {loading ? (
-                <tr><td colSpan={6} className="py-8 text-center text-slate-500">Боркунӣ...</td></tr>
+                <tr><td colSpan={6} className="py-8 text-center text-slate-500 block md:table-cell">Боркунӣ...</td></tr>
               ) : parcels.filter(p => p.track.includes(searchTerm)).map((parcel) => (
-                <tr key={parcel.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-4 px-6 font-mono font-medium text-slate-900">{parcel.track}</td>
-                  <td className="py-4 px-6">
+                <tr key={parcel.id} className="hover:bg-slate-50 transition-colors block md:table-row bg-white border border-slate-100 rounded-xl mb-4 md:mb-0 md:border-none p-4 md:p-0 shadow-sm md:shadow-none">
+                  <td className="py-2 md:py-4 md:px-6 font-mono font-medium text-slate-900 block md:table-cell border-b border-slate-100 md:border-none">
+                    <span className="md:hidden text-slate-500 mr-2 text-sm">Трек-код:</span>
+                    {parcel.track}
+                  </td>
+                  <td className="py-2 md:py-4 md:px-6 block md:table-cell border-b border-slate-100 md:border-none">
+                    <span className="md:hidden text-slate-500 mr-2 text-sm">Мизоҷ:</span>
                     <span className="bg-red-50 text-red-700 px-2 py-1 rounded text-xs font-semibold">{parcel.client}</span>
                   </td>
-                  <td className="py-4 px-6 text-sm text-slate-600">{parcel.weight}</td>
-                  <td className="py-4 px-6 text-sm text-slate-500">{parcel.date}</td>
-                  <td className="py-4 px-6">
+                  <td className="py-2 md:py-4 md:px-6 text-sm text-slate-600 block md:table-cell border-b border-slate-100 md:border-none">
+                    <span className="md:hidden text-slate-500 mr-2">Вазн:</span>
+                    {parcel.weight}
+                  </td>
+                  <td className="py-2 md:py-4 md:px-6 text-sm text-slate-500 block md:table-cell border-b border-slate-100 md:border-none">
+                    <span className="md:hidden text-slate-500 mr-2">Сана:</span>
+                    {parcel.date}
+                  </td>
+                  <td className="py-2 md:py-4 md:px-6 block md:table-cell border-b border-slate-100 md:border-none">
+                    <span className="md:hidden text-slate-500 mr-2 text-sm">Ҳолат:</span>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[parcel.status] || "bg-gray-100"}`}>
                       {statusLabels[parcel.status] || parcel.status}
                     </span>
                   </td>
-                  <td className="py-4 px-6 text-right">
-                    <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                  <td className="py-2 md:py-4 md:px-6 md:text-right block md:table-cell">
+                    <button className="w-full md:w-auto p-2 bg-slate-50 text-slate-600 md:bg-transparent md:text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex justify-center items-center">
                       <MoreHorizontal size={18} />
                     </button>
                   </td>
