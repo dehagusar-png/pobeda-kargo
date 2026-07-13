@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Users, Settings, ShoppingBag, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, Package, Users, Settings, ShoppingBag, ShoppingCart, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { name: "Омор", href: "/", icon: LayoutDashboard },
@@ -16,9 +17,31 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close sidebar on navigation
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
-    <aside className="w-64 bg-slate-900 h-screen text-slate-300 flex flex-col shadow-2xl z-20 hidden md:flex sticky top-0">
+    <>
+      <button 
+        className="md:hidden fixed top-3 left-4 z-50 p-2 bg-white rounded-lg shadow-sm border border-slate-200 text-slate-800"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
+
+      {/* Backdrop */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-30" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside className={`w-64 bg-slate-900 h-screen text-slate-300 flex flex-col shadow-2xl z-40 fixed md:sticky top-0 transition-transform duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
       <div className="p-6">
         <h1 className="text-2xl font-bold text-white flex items-center gap-2">
           <Package className="text-red-500" />
@@ -53,5 +76,6 @@ export default function Sidebar() {
         <p className="text-xs text-slate-500">Системаи стандарти ҷаҳонӣ</p>
       </div>
     </aside>
+    </>
   );
 }
