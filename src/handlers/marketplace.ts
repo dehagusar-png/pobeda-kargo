@@ -5,7 +5,7 @@ import { BUTTONS } from "../utils/constants";
 
 export const marketplaceHandler = new Composer<MyContext>();
 
-marketplaceHandler.hears(BUTTONS.MARKETPLACE, async (ctx) => {
+marketplaceHandler.hears([/Харид аз Чин/i, /Покупки из Китая/i, /Xitoydan xaridlar/i, /中国购物/i, /Shop from China/i], async (ctx) => {
   await showProduct(ctx, 0);
 });
 

@@ -45,7 +45,7 @@ function calculatePrice(value: number, type: 'weight' | 'volume') {
   return { pricePerUnit, total: value * pricePerUnit };
 }
 
-calculatorHandler.hears(BUTTONS.CALCULATOR, async (ctx) => {
+calculatorHandler.hears([/Ҳисобкунак/i, /Калькулятор/i, /Kalkulyator/i, /计算器/i, /Calculator/i], async (ctx) => {
   const keyboard = new InlineKeyboard()
     .text("⚖️ Ҳисоб аз рӯи Вазн (Кг)", "calc_start_kg").row()
     .text("📦 Ҳаҷм аз рӯи Андоза (Дарозӣ x Паҳнӣ x Баландӣ)", "calc_start_m3");

@@ -4,6 +4,6 @@ import { BUTTONS } from "../utils/constants";
 
 export const supportHandler = new Composer<MyContext>();
 
-supportHandler.hears(BUTTONS.SUPPORT, async (ctx) => {
+supportHandler.hears([/Дастгирӣ/i, /Поддержка/i, /Qo'llab-quvvatlash/i, /客服支持/i, /Support/i], async (ctx) => {
   await ctx.reply(ctx.t("support_text"), { parse_mode: "HTML" });
 });

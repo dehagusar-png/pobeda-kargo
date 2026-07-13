@@ -5,7 +5,7 @@ import { BUTTONS } from "../utils/constants";
 
 export const trackHandler = new Composer<MyContext>();
 
-trackHandler.hears(BUTTONS.TRACK, async (ctx) => {
+trackHandler.hears([/Пайгирии Бор/i, /Отслеживание груза/i, /Yukni kuzatish/i, /追踪货物/i, /Track Parcel/i], async (ctx) => {
   ctx.session.step = "track";
   await ctx.reply("Лутфан трек-коди худро фиристед: / Пожалуйста, отправьте ваш трек-код:");
 });

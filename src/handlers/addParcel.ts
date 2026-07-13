@@ -5,7 +5,7 @@ import { BUTTONS, STATUS_MAP } from "../utils/constants";
 
 export const addParcelHandler = new Composer<MyContext>();
 
-addParcelHandler.hears(BUTTONS.ADD_PARCEL, async (ctx) => {
+addParcelHandler.hears([/Иловаи Бор/i, /Добавить груз/i, /Yuk qo'shish/i, /添加货物/i, /Add Parcel/i], async (ctx) => {
   ctx.session.step = "add_parcel";
   await ctx.reply(ctx.t("add_parcel_prompt"));
 });

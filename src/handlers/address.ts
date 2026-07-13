@@ -4,7 +4,7 @@ import { BUTTONS } from "../utils/constants";
 
 export const addressHandler = new Composer<MyContext>();
 
-addressHandler.hears(BUTTONS.ADDRESS, async (ctx) => {
+addressHandler.hears([/Суроға дар Чин/i, /Адрес в Китае/i, /Xitoydagi manzil/i, /中国仓库地址/i, /Address in China/i], async (ctx) => {
   if (!ctx.from) return;
   const user = ctx.user;
   
