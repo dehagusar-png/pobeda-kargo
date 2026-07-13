@@ -18,7 +18,7 @@ address_info = 📍 您的中国仓库地址：
  
  <i>请一键复制以下信息并粘贴到中国购物应用中（例如拼多多）：</i>
 
- <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name }, { $phone }</code>
+ <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name } , 您的地址 , { $phone }</code>
 
 support_text = 🎧 <b>客户支持</b>
  要联系管理部门，请拨打以下号码或在Telegram上留言：

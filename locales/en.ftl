@@ -18,7 +18,7 @@ address_info = 📍 Your address in China:
  
  <i>Please copy the information below in one click and paste it into the Chinese shopping app (e.g. Pinduoduo):</i>
 
- <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name }, { $phone }</code>
+ <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name } , your address , { $phone }</code>
 
 calc_prompt = 🧮 <b>Price Calculator</b>
  Please send the weight (kg) and volume (m³) separated by a space.

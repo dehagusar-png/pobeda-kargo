@@ -18,7 +18,7 @@ address_info = 📍 Xitoydagi manzilingiz:
  
  <i>Iltimos, quyidagi ma'lumotni nusxalash tugmasini bosib oling va Xitoy dasturiga kiring (masalan Pinduoduo):</i>
 
- <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name }, { $phone }</code>
+ <code>PobedaCargo1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 { $clientCode } { $name } , manzilingiz , { $phone }</code>
 
 support_text = 🎧 <b>Mijozlarni qo'llab-quvvatlash</b>
  Ma'muriyat bilan bog'lanish uchun raqamlarga qo'ng'iroq qiling yoki Telegramda yozing:
