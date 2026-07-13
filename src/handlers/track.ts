@@ -62,6 +62,11 @@ trackHandler.on("message:web_app_data", async (ctx) => {
         const parcel = await prisma.parcel.findUnique({ where: { trackCode: data.trackCode } });
         
         if (parcel) {
+           if (parcel.status === "DELIVERED") {
+             await ctx.reply(`ℹ️ Бор (${data.trackCode}) аллакай ба мизоҷ дода шудааст (${ctx.t("status_DELIVERED")}).`);
+             return;
+           }
+
            let nextStatus = "IN_CHINA";
            if (parcel.status === "EXPECTED") nextStatus = "IN_CHINA";
            else if (parcel.status === "IN_CHINA") nextStatus = "IN_TRANSIT";
