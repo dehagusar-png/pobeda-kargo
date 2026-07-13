@@ -17,7 +17,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     
-    if (existingUser.phone === "+992928153531") {
+    if (existingUser.role === "SUPERADMIN") {
       return NextResponse.json({ error: "Cannot change role of a SUPERADMIN" }, { status: 403 });
     }
 
