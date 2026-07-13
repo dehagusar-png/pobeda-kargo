@@ -17,8 +17,8 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
     
-    if (existingUser.role === "SUPERADMIN") {
-      return NextResponse.json({ error: "Cannot change role of a SUPERADMIN" }, { status: 403 });
+    if (existingUser.role === "SUPERADMIN" || existingUser.phone === "+992928153531") {
+      return NextResponse.json({ error: "Cannot change role of the primary SUPERADMIN" }, { status: 403 });
     }
 
     // Require PIN for Murodov_QS
