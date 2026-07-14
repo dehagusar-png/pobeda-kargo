@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
@@ -14,7 +15,7 @@ export default async function ProductsPage() {
     const imageFiles = formData.getAll("images") as File[];
     
     let mainImageStr = null;
-    let allImageStrs: string[] = [];
+    const allImageStrs: string[] = [];
 
     for (let i = 0; i < imageFiles.length; i++) {
       const file = imageFiles[i];

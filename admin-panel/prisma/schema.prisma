@@ -17,6 +17,7 @@ model User {
   language   String   @default("tg") // tg, ru, uz, zh
   clientCode String?  @unique // PB-XXXX
   role       Role     @default(USER) // USER, ADMIN, WORKER
+  password   String?
   parcels    Parcel[]
   orders     Order[]
   createdAt  DateTime @default(now())
@@ -24,16 +25,16 @@ model User {
 }
 
 model Parcel {
-  id         Int          @id @default(autoincrement())
-  trackCode  String       @unique
-  weight     Float?
-  volume     Float?
-  price      Float?
-  status     ParcelStatus @default(EXPECTED)
-  userId     Int?
-  user       User?        @relation(fields: [userId], references: [id])
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  id        Int          @id @default(autoincrement())
+  trackCode String       @unique
+  weight    Float?
+  volume    Float?
+  price     Float?
+  status    ParcelStatus @default(EXPECTED)
+  userId    Int?
+  user      User?        @relation(fields: [userId], references: [id])
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
 model Product {
@@ -41,6 +42,7 @@ model Product {
   title       String
   priceCNY    Float
   image       String?
+  images      String[] @default([])
   description String?
   isActive    Boolean  @default(true)
   orders      Order[]
@@ -49,15 +51,15 @@ model Product {
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  userId     Int
-  user       User        @relation(fields: [userId], references: [id])
-  productId  Int
-  product    Product     @relation(fields: [productId], references: [id])
-  totalTJS   Float
-  status     OrderStatus @default(PENDING)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product     @relation(fields: [productId], references: [id])
+  totalTJS  Float
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 }
 
 model Settings {

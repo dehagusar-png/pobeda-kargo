@@ -27,7 +27,7 @@ function getPricingConfig() {
   };
 }
 
-function calculatePrice(value: number, type: 'weight' | 'volume') {
+export function calculatePrice(value: number, type: 'weight' | 'volume') {
   const config = getPricingConfig();
   const tiers = type === 'weight' ? config.weightTiers : config.volumeTiers;
   

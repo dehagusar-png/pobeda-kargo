@@ -17,6 +17,7 @@ model User {
   language   String   @default("tg") // tg, ru, uz, zh
   clientCode String?  @unique // PB-XXXX
   role       Role     @default(USER) // USER, ADMIN, WORKER
+  password   String?
   parcels    Parcel[]
   orders     Order[]
   createdAt  DateTime @default(now())

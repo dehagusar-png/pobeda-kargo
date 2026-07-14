@@ -9,6 +9,7 @@ import { addParcelHandler } from "./handlers/addParcel";
 import { supportHandler } from "./handlers/support";
 import { languageHandler } from "./handlers/language";
 import { marketplaceHandler } from "./handlers/marketplace";
+import { passwordHandler } from "./handlers/password";
 import { userMiddleware } from "./middleware/user";
 import http from "http";
 
@@ -25,6 +26,7 @@ bot.use(calculatorHandler);
 bot.use(trackHandler);
 bot.use(addParcelHandler);
 bot.use(supportHandler);
+bot.use(passwordHandler);
 
 // Fallback handler for unhandled messages
 bot.on("message", async (ctx) => {
