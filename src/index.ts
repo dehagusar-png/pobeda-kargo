@@ -13,19 +13,8 @@ import { passwordHandler } from "./handlers/password";
 import { userMiddleware } from "./middleware/user";
 import http from "http";
 
-import { limit } from "@grammyjs/ratelimiter";
-import { redis } from "./redis";
-
-// Register middleware
-bot.use(limit({
-  timeFrame: 1000,
-  limit: 5,
-  storageClient: redis || "MEMORY_STORE",
-  onLimitExceeded: async (ctx) => {
-    await ctx.reply("⚠️ Лутфан зуд-зуд тугмаҳоро пахш накунед. 1 сония интизор шавед.");
-  },
-  keyGenerator: (ctx) => ctx.from?.id.toString(),
-}));
+// Rate limiter is temporarily disabled due to Redis connection errors
+// bot.use(limit({ ... }));
 bot.use(userMiddleware);
 
 // Register handlers
