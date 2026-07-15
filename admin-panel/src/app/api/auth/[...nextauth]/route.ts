@@ -10,8 +10,50 @@ export const authOptions: AuthOptions = {
       credentials: {
         telegramId: { label: "Telegram ID", type: "text", placeholder: "123456789" },
         password: { label: "Password", type: "password" },
+        initData: { label: "Init Data", type: "text" },
       },
       async authorize(credentials) {
+        if (credentials?.initData) {
+          const crypto = require("crypto");
+          const botToken = process.env.BOT_TOKEN;
+          if (!botToken) throw new Error("BOT_TOKEN is not defined");
+          
+          const urlParams = new URLSearchParams(credentials.initData);
+          const hash = urlParams.get("hash");
+          urlParams.delete("hash");
+          urlParams.sort();
+          
+          let dataCheckString = "";
+          for (const [key, value] of urlParams.entries()) {
+            dataCheckString += `${key}=${value}\n`;
+          }
+          dataCheckString = dataCheckString.slice(0, -1);
+          
+          const secret = crypto.createHmac("sha256", "WebAppData").update(botToken).digest();
+          const calculatedHash = crypto.createHmac("sha256", secret).update(dataCheckString).digest("hex");
+          
+          if (calculatedHash !== hash) {
+            throw new Error("Маълумоти Телеграм нодуруст аст (Invalid Hash).");
+          }
+          
+          const tgUser = JSON.parse(urlParams.get("user") || "{}");
+          if (!tgUser.id) throw new Error("ID-и Телеграм ёфт нашуд.");
+          
+          const telegramId = BigInt(tgUser.id);
+          const user = await prisma.user.findUnique({ where: { telegramId } });
+          
+          if (!user) throw new Error("Корбар ёфт нашуд.");
+          if (user.role !== "ADMIN" && user.role !== "SUPERADMIN") {
+            throw new Error("Шумо ҳуқуқи ворид шудан надоред.");
+          }
+          
+          return {
+            id: user.id.toString(),
+            name: user.firstName || "Admin",
+            role: user.role,
+          };
+        }
+
         if (!credentials?.telegramId || !credentials?.password) {
           throw new Error("Лутфан Telegram ID ва паролро ворид кунед.");
         }

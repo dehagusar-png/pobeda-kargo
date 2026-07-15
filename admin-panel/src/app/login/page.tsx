@@ -1,15 +1,50 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 
 export default function LoginPage() {
   const [telegramId, setTelegramId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start loading immediately for auto-login
   const router = useRouter();
+
+  useEffect(() => {
+    // Check if running inside Telegram WebApp
+    const checkTelegramAuth = async () => {
+      if (typeof window !== "undefined" && (window as any).Telegram?.WebApp) {
+        const tg = (window as any).Telegram.WebApp;
+        const initData = tg.initData;
+        
+        if (initData) {
+          try {
+            const res = await signIn("credentials", {
+              initData,
+              redirect: false,
+            });
+            
+            if (res?.error) {
+              setError("Авто-воридшавӣ қатъ шуд: " + res.error);
+              setLoading(false);
+            } else {
+              router.push("/");
+            }
+            return;
+          } catch (e) {
+            setLoading(false);
+          }
+        }
+      }
+      // If no Telegram WebApp or initData is missing, allow manual login
+      setLoading(false);
+    };
+
+    // Give Telegram script a moment to load if needed
+    setTimeout(checkTelegramAuth, 500);
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +68,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+      <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
       <div className="bg-white p-8 rounded-2xl shadow-sm w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-slate-800">Вуруд ба Админ-Панел</h1>
