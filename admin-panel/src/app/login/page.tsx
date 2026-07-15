@@ -9,40 +9,49 @@ export default function LoginPage() {
   const [telegramId, setTelegramId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true); // Start loading immediately for auto-login
+  const [loading, setLoading] = useState(true);
+  const [debugMsg, setDebugMsg] = useState("Оғози тафтиш...");
   const router = useRouter();
 
   useEffect(() => {
-    // Check if running inside Telegram WebApp
     const checkTelegramAuth = async () => {
-      if (typeof window !== "undefined" && (window as any).Telegram?.WebApp) {
-        const tg = (window as any).Telegram.WebApp;
+      if (typeof window !== "undefined") {
+        const tg = (window as any).Telegram?.WebApp;
+        if (!tg) {
+          setDebugMsg("Хатогӣ: Телеграм ёфт нашуд.");
+          setLoading(false);
+          return;
+        }
+
         const initData = tg.initData;
-        
-        if (initData) {
-          try {
-            const res = await signIn("credentials", {
-              initData,
-              redirect: false,
-            });
-            
-            if (res?.error) {
-              setError("Авто-воридшавӣ қатъ шуд: " + res.error);
-              setLoading(false);
-            } else {
-              router.push("/");
-            }
-            return;
-          } catch (e) {
+        if (!initData) {
+          setDebugMsg("Хатогӣ: initData холӣ аст. (Аз тугмаи WebApp кушоед)");
+          setLoading(false);
+          return;
+        }
+
+        setDebugMsg("Маълумот ёфт шуд. Дар ҳоли воридшавӣ...");
+        try {
+          const res = await signIn("credentials", {
+            initData,
+            redirect: false,
+          });
+          
+          if (res?.error) {
+            setError("Хатогии сервер: " + res.error);
+            setDebugMsg("Вуруд қатъ шуд.");
             setLoading(false);
+          } else {
+            setDebugMsg("Вуруд бомуваффақият!");
+            router.push("/");
           }
+        } catch (e: any) {
+          setError("Хатогии система: " + e.message);
+          setLoading(false);
         }
       }
-      // If no Telegram WebApp or initData is missing, allow manual login
-      setLoading(false);
     };
 
-    // Give Telegram script a moment to load if needed
     setTimeout(checkTelegramAuth, 500);
   }, [router]);
 
@@ -80,6 +89,11 @@ export default function LoginPage() {
             {error}
           </div>
         )}
+
+        {/* Debug Message */}
+        <div className="text-center text-xs text-slate-400 mb-4">
+          Система: {debugMsg}
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
