@@ -26,7 +26,7 @@ export default async function OrdersPage() {
       if (botToken) {
         let text = `✅ <b>Фармоиши шумо тасдиқ ва харида шуд!</b>\n\n` +
                    `📦 <b>Мол:</b> ${order.product?.title || 'Моли шумо'}\n\n` +
-                   `<i>Дар наздиктарин фурсат трек-коди бор ба шумо равон карда мешавад ва ҳангоми қабул ва сабти трек-код ҳамчун бори шумо, ба шумо тариқи бот трек-код равон карда мешавад.</i>`;
+                   `<i>Дар наздиктарин фурсат трек-коди бор ба шумо равон карда мешавад.</i>`;
         
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: "POST",
