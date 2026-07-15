@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
@@ -15,6 +15,14 @@ export default function LoginPage() {
 
   useEffect(() => {
     const checkTelegramAuth = async () => {
+      // First, check if already logged in via NextAuth session
+      const session = await getSession();
+      if (session?.user) {
+        setDebugMsg("Шумо аллакай ворид шудаед!");
+        router.push("/");
+        return;
+      }
+
       if (typeof window !== "undefined") {
         const tg = (window as any).Telegram?.WebApp;
         if (!tg) {
