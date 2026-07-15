@@ -35,13 +35,19 @@ export default function ShopPage() {
       });
   }, []);
 
+  const [buyingProductId, setBuyingProductId] = useState<number | null>(null);
+
   const handleBuy = (product: Product) => {
+    if (buyingProductId === product.id) return;
+    setBuyingProductId(product.id);
+    
     // Check if running inside Telegram WebApp
     if (typeof window !== "undefined" && window.Telegram && window.Telegram.WebApp) {
       const tg = window.Telegram.WebApp;
       tg.sendData(JSON.stringify({ action: "buy", productId: product.id }));
     } else {
       alert("Ин хусусият танҳо дар дохили Телеграм кор мекунад!");
+      setBuyingProductId(null);
     }
   };
 
@@ -145,9 +151,14 @@ export default function ShopPage() {
                       
                       <button 
                         onClick={() => handleBuy(product)}
-                        className="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-medium py-2 rounded-xl transition-colors text-sm shadow-sm hover:shadow active:scale-95 transform duration-150"
+                        disabled={buyingProductId === product.id}
+                        className={`w-full font-medium py-2 rounded-xl transition-colors text-sm shadow-sm hover:shadow active:scale-95 transform duration-150 ${
+                          buyingProductId === product.id 
+                            ? "bg-slate-300 text-slate-500 cursor-not-allowed" 
+                            : "bg-red-600 hover:bg-red-700 active:bg-red-800 text-white"
+                        }`}
                       >
-                        Фармоиш додан
+                        {buyingProductId === product.id ? "Дар ҳоли ирсол..." : "Фармоиш додан"}
                       </button>
                     </div>
                   </div>
