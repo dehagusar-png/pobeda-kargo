@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +41,17 @@ export default async function OrdersPage() {
         }).catch(console.error);
       }
     }
+
+    const session = await getServerSession(authOptions);
+    const adminName = session?.user?.name || "Номаълум";
+    await prisma.auditLog.create({
+      data: {
+        adminName,
+        action: "Иваз кард (Фармоиш)",
+        target: `Фармоиш #${order.id} (${order.product?.title || ''})`,
+        details: `Ҳолат ба ${status} иваз шуд`
+      }
+    });
 
     revalidatePath("/orders");
   }

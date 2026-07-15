@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
@@ -86,6 +88,18 @@ export async function POST(request: Request) {
         })
       });
     }
+
+    // Audit Log
+    const session = await getServerSession(authOptions);
+    const adminName = session?.user?.name || "Номаълум";
+    await prisma.auditLog.create({
+      data: {
+        adminName,
+        action: "Илова кард (Бор)",
+        target: `Трек-код: ${trackCode}`,
+        details: `Бори нав ба мизоҷи ${clientCode} илова шуд`
+      }
+    });
 
     return NextResponse.json({ success: true, parcel });
   } catch (error) {

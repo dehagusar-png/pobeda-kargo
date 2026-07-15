@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +33,7 @@ export default async function ProductsPage() {
       }
     }
 
-    await prisma.product.create({
+    const newProduct = await prisma.product.create({
       data: {
         title,
         priceCNY,
@@ -42,13 +44,37 @@ export default async function ProductsPage() {
       }
     });
 
+    const session = await getServerSession(authOptions);
+    const adminName = session?.user?.name || "Номаълум";
+    await prisma.auditLog.create({
+      data: {
+        adminName,
+        action: "Илова кард (Мағоза)",
+        target: `Мол: ${title}`,
+        details: `Нарх: ${priceCNY} ¥`
+      }
+    });
+
     revalidatePath("/products");
   }
 
   async function deleteProduct(formData: FormData) {
     "use server";
     const id = parseInt(formData.get("id") as string);
-    await prisma.product.delete({ where: { id } });
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (product) {
+      await prisma.product.delete({ where: { id } });
+      const session = await getServerSession(authOptions);
+      const adminName = session?.user?.name || "Номаълум";
+      await prisma.auditLog.create({
+        data: {
+          adminName,
+          action: "Нест кард (Мағоза)",
+          target: `Мол: ${product.title}`,
+          details: `Мол нест карда шуд`
+        }
+      });
+    }
     revalidatePath("/products");
   }
 

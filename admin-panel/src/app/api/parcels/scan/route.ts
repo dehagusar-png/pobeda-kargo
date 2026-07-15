@@ -98,6 +98,15 @@ export async function POST(request: Request) {
       message = "Бори нав сабт шуд (Дар Чин)";
     }
 
+    await prisma.auditLog.create({
+      data: {
+        adminName: worker.firstName || worker.telegramId.toString(),
+        action: parcel ? "Скан кард (Ивази ҳолат)" : "Скан кард (Бори нав)",
+        target: `Трек-код: ${trackCode}`,
+        details: message
+      }
+    });
+
     return NextResponse.json({ success: true, message, trackCode, status: nextStatus }, { headers: corsHeaders });
   } catch (error) {
     console.error("Scanner API Error:", error);
