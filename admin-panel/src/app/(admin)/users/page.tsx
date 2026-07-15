@@ -3,6 +3,7 @@
 import { Search, Phone, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 const _mockUsers = [
   { id: "1", clientCode: "PB-1025", name: "Сабир Махмудов", phone: "+992987654321", role: "ADMIN", language: "tg", date: "2026-07-01" },
@@ -22,6 +23,10 @@ export default function UsersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPERADMIN";
+  const isPrimarySuperAdmin = (session?.user as any)?.id === "1";
 
   useEffect(() => {
     fetch("/api/users")
@@ -75,8 +80,8 @@ export default function UsersPage() {
                   {user.name.charAt(0)}
                 </div>
                 <select 
-                  disabled={user.role === "SUPERADMIN"}
-                  className={`px-2 py-1 border rounded text-xs font-semibold outline-none ${user.role === "SUPERADMIN" ? "cursor-not-allowed opacity-80" : "cursor-pointer"} ${roleColors[user.role] || "bg-gray-100"}`}
+                  disabled={!isSuperAdmin || (user.role === "SUPERADMIN" && !isPrimarySuperAdmin)}
+                  className={`px-2 py-1 border rounded text-xs font-semibold outline-none ${(!isSuperAdmin || (user.role === "SUPERADMIN" && !isPrimarySuperAdmin)) ? "cursor-not-allowed opacity-80" : "cursor-pointer"} ${roleColors[user.role] || "bg-gray-100"}`}
                   value={user.role}
                   onChange={async (e) => {
                     const newRole = e.target.value;
