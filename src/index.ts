@@ -10,6 +10,7 @@ import { supportHandler } from "./handlers/support";
 import { languageHandler } from "./handlers/language";
 import { marketplaceHandler } from "./handlers/marketplace";
 import { passwordHandler } from "./handlers/password";
+import { adminHandler } from "./handlers/admin";
 import { userMiddleware } from "./middleware/user";
 import http from "http";
 
@@ -38,6 +39,7 @@ bot.use(trackHandler);
 bot.use(addParcelHandler);
 bot.use(supportHandler);
 bot.use(passwordHandler);
+bot.use(adminHandler);
 
 // Fallback handler for unhandled messages
 bot.on("message", async (ctx) => {

@@ -13,7 +13,7 @@ export function getMainKeyboard(ctx: MyContext, user: User | null): Keyboard {
   }
   
   if (user?.role === "ADMIN" || user?.role === "SUPERADMIN") {
-    keyboard.webApp("📊 Панели Маъмурият", "https://pobeda-admin-panel.onrender.com/login").row();
+    keyboard.text("📊 Панели Маъмурият").row();
   }
   
   return keyboard.resized();
