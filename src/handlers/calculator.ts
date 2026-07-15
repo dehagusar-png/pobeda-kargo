@@ -10,26 +10,47 @@ function getPricingConfig() {
   try {
     const configPath = path.resolve(process.cwd(), "config.json");
     if (fs.existsSync(configPath)) {
-      return JSON.parse(fs.readFileSync(configPath, "utf8"));
+      const parsed = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      if (!parsed.dushanbe) {
+        return {
+          dushanbe: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] },
+          panjakent: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] }
+        };
+      }
+      return parsed;
     }
   } catch (e) {}
   
   return {
-    weightTiers: [
-      { min: 0, max: 30, price: 4.5 },
-      { min: 30, max: 80, price: 4.0 },
-      { min: 80, max: 999999, price: 3.5 }
-    ],
-    volumeTiers: [
-      { min: 0, max: 1, price: 350 },
-      { min: 1, max: 999999, price: 320 }
-    ]
+    dushanbe: {
+      weightTiers: [
+        { min: 0, max: 30, price: 4.5 },
+        { min: 30, max: 80, price: 4.0 },
+        { min: 80, max: 999999, price: 3.5 }
+      ],
+      volumeTiers: [
+        { min: 0, max: 1, price: 350 },
+        { min: 1, max: 999999, price: 320 }
+      ]
+    },
+    panjakent: {
+      weightTiers: [
+        { min: 0, max: 30, price: 5.0 },
+        { min: 30, max: 80, price: 4.5 },
+        { min: 80, max: 999999, price: 4.0 }
+      ],
+      volumeTiers: [
+        { min: 0, max: 1, price: 400 },
+        { min: 1, max: 999999, price: 380 }
+      ]
+    }
   };
 }
 
-export function calculatePrice(value: number, type: 'weight' | 'volume') {
+export function calculatePrice(value: number, type: 'weight' | 'volume', city: 'dushanbe' | 'panjakent' = 'dushanbe') {
   const config = getPricingConfig();
-  const tiers = type === 'weight' ? config.weightTiers : config.volumeTiers;
+  const cityConfig = config[city] || config.dushanbe;
+  const tiers = type === 'weight' ? cityConfig.weightTiers : cityConfig.volumeTiers;
   
   let pricePerUnit = 0;
   for (const tier of tiers) {
@@ -47,18 +68,31 @@ export function calculatePrice(value: number, type: 'weight' | 'volume') {
 
 calculatorHandler.hears([/Ҳисобкунак/i, /Калькулятор/i, /Kalkulyator/i, /计算器/i, /Calculator/i], async (ctx) => {
   const keyboard = new InlineKeyboard()
-    .text("⚖️ Ҳисоб аз рӯи Вазн (Кг)", "calc_start_kg").row()
-    .text("📦 Ҳаҷм аз рӯи Андоза (Дарозӣ x Паҳнӣ x Баландӣ)", "calc_start_m3");
+    .text("📍 Душанбе", "calc_city_dushanbe").row()
+    .text("📍 Панҷакент", "calc_city_panjakent");
 
-  await ctx.reply("Чӣ гуна ҳисоб кардан мехоҳед?", { reply_markup: keyboard });
+  await ctx.reply("Ба кадом шаҳр мехоҳед бор равон кунед?", { reply_markup: keyboard });
 });
 
 calculatorHandler.on("callback_query:data", async (ctx, next) => {
-  if (ctx.callbackQuery.data === "calc_start_kg") {
+  const data = ctx.callbackQuery.data;
+  
+  if (data === "calc_city_dushanbe" || data === "calc_city_panjakent") {
+    const city = data === "calc_city_dushanbe" ? "dushanbe" : "panjakent";
+    ctx.session.step = "calculator_type";
+    ctx.session.calcCity = city;
+    
+    const keyboard = new InlineKeyboard()
+      .text("⚖️ Вазн (Кг)", `calc_type_kg`).row()
+      .text("📦 Ҳаҷм (М³)", `calc_type_m3`);
+      
+    await ctx.editMessageText(`Шумо шаҳри <b>${city === 'dushanbe' ? 'Душанбе' : 'Панҷакент'}</b>-ро интихоб кардед.\n\nАз рӯи чӣ ҳисоб мекунем?`, { parse_mode: "HTML", reply_markup: keyboard });
+    await ctx.answerCallbackQuery();
+  } else if (data === "calc_type_kg") {
     ctx.session.step = "calculator_kg";
     await ctx.editMessageText("⚖️ Лутфан вазни борро бо килограмм нависед (масалан: <code>15</code> ё <code>2.5</code>)", { parse_mode: "HTML" });
     await ctx.answerCallbackQuery();
-  } else if (ctx.callbackQuery.data === "calc_start_m3") {
+  } else if (data === "calc_type_m3") {
     ctx.session.step = "calculator_m3";
     await ctx.editMessageText("📦 Лутфан андозаи борро бо сантиметр нависед (масалан: <code>50x40x30</code>) ё куби тайёрро (масалан: <code>0.06</code>)", { parse_mode: "HTML" });
     await ctx.answerCallbackQuery();
@@ -77,8 +111,10 @@ calculatorHandler.on("message:text", async (ctx, next) => {
       return;
     }
     
-    const result = calculatePrice(weight, 'weight');
-    await ctx.reply(`⚖️ Вазн: <b>${weight} кг</b>\n💵 Нарх барои 1 кг: <b>$${result.pricePerUnit}</b>\n💰 Нархи умумии интиқол: <b>$${result.total.toFixed(2)}</b>`, { parse_mode: "HTML" });
+    const city = ctx.session.calcCity || 'dushanbe';
+    const result = calculatePrice(weight, 'weight', city);
+    const cityName = city === 'dushanbe' ? 'Душанбе' : 'Панҷакент';
+    await ctx.reply(`📍 Шаҳр: <b>${cityName}</b>\n⚖️ Вазн: <b>${weight} кг</b>\n💵 Нарх барои 1 кг: <b>$${result.pricePerUnit}</b>\n💰 Нархи умумии интиқол: <b>$${result.total.toFixed(2)}</b>`, { parse_mode: "HTML" });
     ctx.session.step = "";
   } 
   else if (ctx.session.step === "calculator_m3") {
@@ -100,8 +136,10 @@ calculatorHandler.on("message:text", async (ctx, next) => {
       return;
     }
     
-    const result = calculatePrice(volume, 'volume');
-    await ctx.reply(`📦 Ҳаҷм: <b>${volume.toFixed(3)} м³</b>\n💵 Нарх барои 1 м³: <b>$${result.pricePerUnit}</b>\n💰 Нархи умумии интиқол: <b>$${result.total.toFixed(2)}</b>`, { parse_mode: "HTML" });
+    const city = ctx.session.calcCity || 'dushanbe';
+    const result = calculatePrice(volume, 'volume', city);
+    const cityName = city === 'dushanbe' ? 'Душанбе' : 'Панҷакент';
+    await ctx.reply(`📍 Шаҳр: <b>${cityName}</b>\n📦 Ҳаҷм: <b>${volume.toFixed(3)} м³</b>\n💵 Нарх барои 1 м³: <b>$${result.pricePerUnit}</b>\n💰 Нархи умумии интиқол: <b>$${result.total.toFixed(2)}</b>`, { parse_mode: "HTML" });
     ctx.session.step = "";
   }
   else {

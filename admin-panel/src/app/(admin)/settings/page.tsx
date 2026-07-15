@@ -6,13 +6,22 @@ import { Settings, Plus, Trash2, Save } from "lucide-react";
 
 type Tier = { min: number; max: number; price: number };
 
-interface Config {
+interface CityConfig {
   weightTiers: Tier[];
   volumeTiers: Tier[];
 }
 
+interface Config {
+  dushanbe: CityConfig;
+  panjakent: CityConfig;
+}
+
 export default function SettingsPage() {
-  const [config, setConfig] = useState<Config>({ weightTiers: [], volumeTiers: [] });
+  const [config, setConfig] = useState<Config>({ 
+    dushanbe: { weightTiers: [], volumeTiers: [] }, 
+    panjakent: { weightTiers: [], volumeTiers: [] } 
+  });
+  const [activeCity, setActiveCity] = useState<'dushanbe' | 'panjakent'>('dushanbe');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -48,18 +57,36 @@ export default function SettingsPage() {
 
   const addTier = (type: 'weightTiers' | 'volumeTiers') => {
     const newTier = { min: 0, max: 999999, price: 0 };
-    setConfig({ ...config, [type]: [...config[type], newTier] });
+    setConfig({
+      ...config,
+      [activeCity]: {
+        ...config[activeCity],
+        [type]: [...config[activeCity][type], newTier]
+      }
+    });
   };
 
   const updateTier = (type: 'weightTiers' | 'volumeTiers', index: number, field: string, value: number) => {
-    const newTiers = [...config[type]];
+    const newTiers = [...config[activeCity][type]];
     newTiers[index] = { ...newTiers[index], [field]: value };
-    setConfig({ ...config, [type]: newTiers });
+    setConfig({
+      ...config,
+      [activeCity]: {
+        ...config[activeCity],
+        [type]: newTiers
+      }
+    });
   };
 
   const removeTier = (type: 'weightTiers' | 'volumeTiers', index: number) => {
-    const newTiers = config[type].filter((_: any, i: number) => i !== index);
-    setConfig({ ...config, [type]: newTiers });
+    const newTiers = config[activeCity][type].filter((_: any, i: number) => i !== index);
+    setConfig({
+      ...config,
+      [activeCity]: {
+        ...config[activeCity],
+        [type]: newTiers
+      }
+    });
   };
 
   if (loading) return <div>Боркунӣ...</div>;
@@ -81,6 +108,22 @@ export default function SettingsPage() {
         </button>
       </div>
 
+      {/* Tabs for cities */}
+      <div className="flex border-b border-slate-200 gap-4 mb-6">
+        <button
+          onClick={() => setActiveCity('dushanbe')}
+          className={`pb-2 px-2 text-sm font-medium transition-colors border-b-2 ${activeCity === 'dushanbe' ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+        >
+          📍 Душанбе
+        </button>
+        <button
+          onClick={() => setActiveCity('panjakent')}
+          className={`pb-2 px-2 text-sm font-medium transition-colors border-b-2 ${activeCity === 'panjakent' ? 'border-purple-600 text-purple-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+        >
+          📍 Панҷакент
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weight Tiers */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white border border-slate-200 rounded-2xl shadow-sm p-5">
@@ -92,7 +135,7 @@ export default function SettingsPage() {
           </div>
           
           <div className="space-y-3">
-            {config.weightTiers.map((tier: any, i: number) => (
+            {config[activeCity].weightTiers.map((tier: any, i: number) => (
               <div key={i} className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <div className="flex-1 flex items-center gap-2">
                   <span className="text-sm text-slate-500">Аз</span>
@@ -122,7 +165,7 @@ export default function SettingsPage() {
           </div>
           
           <div className="space-y-3">
-            {config.volumeTiers.map((tier: any, i: number) => (
+            {config[activeCity].volumeTiers.map((tier: any, i: number) => (
               <div key={i} className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <div className="flex-1 flex items-center gap-2">
                   <span className="text-sm text-slate-500">Аз</span>

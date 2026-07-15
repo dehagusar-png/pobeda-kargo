@@ -8,9 +8,24 @@ const configPath = path.resolve(process.cwd(), "..", "config.json");
 export async function GET() {
   try {
     const data = fs.readFileSync(configPath, "utf8");
-    return NextResponse.json(JSON.parse(data));
+    const parsed = JSON.parse(data);
+    
+    // Migration: If it's the old format without dushanbe/panjakent
+    if (!parsed.dushanbe) {
+      const migrated = {
+        dushanbe: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] },
+        panjakent: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] }
+      };
+      return NextResponse.json(migrated);
+    }
+    
+    return NextResponse.json(parsed);
   } catch (_error) {
-    return NextResponse.json({ error: "Failed to read config" }, { status: 500 });
+    // Return default if file doesn't exist
+    return NextResponse.json({
+      dushanbe: { weightTiers: [], volumeTiers: [] },
+      panjakent: { weightTiers: [], volumeTiers: [] }
+    });
   }
 }
 

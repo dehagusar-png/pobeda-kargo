@@ -8,6 +8,7 @@ interface SessionData {
   step: string;
   __language_code?: string;
   tempTrackCode?: string;
+  calcCity?: 'dushanbe' | 'panjakent';
 }
 export type MyContext = Context & SessionFlavor<SessionData> & I18nFlavor & {
   user?: User | null;
