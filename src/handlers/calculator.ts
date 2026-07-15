@@ -1,25 +1,22 @@
 import { Composer, InlineKeyboard } from "grammy";
 import { MyContext } from "../bot";
 import { BUTTONS } from "../utils/constants";
-import fs from "fs";
-import path from "path";
+import { prisma } from "../db";
 
 export const calculatorHandler = new Composer<MyContext>();
 
-function getPricingConfig() {
+async function getPricingConfig() {
   try {
-    const configPath = path.resolve(process.cwd(), "config.json");
-    if (fs.existsSync(configPath)) {
-      const parsed = JSON.parse(fs.readFileSync(configPath, "utf8"));
-      if (!parsed.dushanbe) {
-        return {
-          dushanbe: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] },
-          panjakent: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] }
-        };
-      }
-      return parsed;
+    const settings = await prisma.settings.findFirst({
+      where: { id: 1 }
+    });
+    
+    if (settings && settings.pricingData) {
+      return settings.pricingData as any;
     }
-  } catch (e) {}
+  } catch (e) {
+    console.error("Failed to load pricing config from DB", e);
+  }
   
   return {
     dushanbe: {
@@ -47,8 +44,8 @@ function getPricingConfig() {
   };
 }
 
-export function calculatePrice(value: number, type: 'weight' | 'volume', city: 'dushanbe' | 'panjakent' = 'dushanbe') {
-  const config = getPricingConfig();
+export async function calculatePrice(value: number, type: 'weight' | 'volume', city: 'dushanbe' | 'panjakent' = 'dushanbe') {
+  const config = await getPricingConfig();
   const cityConfig = config[city] || config.dushanbe;
   const tiers = type === 'weight' ? cityConfig.weightTiers : cityConfig.volumeTiers;
   
@@ -112,7 +109,7 @@ calculatorHandler.on("message:text", async (ctx, next) => {
     }
     
     const city = ctx.session.calcCity || 'dushanbe';
-    const result = calculatePrice(weight, 'weight', city);
+    const result = await calculatePrice(weight, 'weight', city);
     const cityName = city === 'dushanbe' ? 'Душанбе' : 'Панҷакент';
     await ctx.reply(`📍 Шаҳр: <b>${cityName}</b>\n⚖️ Вазн: <b>${weight} кг</b>\n💵 Нарх барои 1 кг: <b>$${result.pricePerUnit}</b>\n💰 Нархи умумии интиқол: <b>$${result.total.toFixed(2)}</b>`, { parse_mode: "HTML" });
     ctx.session.step = "";
@@ -137,7 +134,7 @@ calculatorHandler.on("message:text", async (ctx, next) => {
     }
     
     const city = ctx.session.calcCity || 'dushanbe';
-    const result = calculatePrice(volume, 'volume', city);
+    const result = await calculatePrice(volume, 'volume', city);
     const cityName = city === 'dushanbe' ? 'Душанбе' : 'Панҷакент';
     await ctx.reply(`📍 Шаҳр: <b>${cityName}</b>\n📦 Ҳаҷм: <b>${volume.toFixed(3)} м³</b>\n💵 Нарх барои 1 м³: <b>$${result.pricePerUnit}</b>\n💰 Нархи умумии интиқол: <b>$${result.total.toFixed(2)}</b>`, { parse_mode: "HTML" });
     ctx.session.step = "";

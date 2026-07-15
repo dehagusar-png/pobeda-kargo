@@ -1,31 +1,25 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { prisma } from "@/lib/db";
 
-// process.cwd() is likely c:\pobeda kargo\admin-panel, so config.json is in parent
-const configPath = path.resolve(process.cwd(), "..", "config.json");
+// Default pricing config fallback
+const defaultConfig = {
+  dushanbe: { weightTiers: [], volumeTiers: [] },
+  panjakent: { weightTiers: [], volumeTiers: [] }
+};
 
 export async function GET() {
   try {
-    const data = fs.readFileSync(configPath, "utf8");
-    const parsed = JSON.parse(data);
+    const settings = await prisma.settings.findFirst({
+      where: { id: 1 }
+    });
     
-    // Migration: If it's the old format without dushanbe/panjakent
-    if (!parsed.dushanbe) {
-      const migrated = {
-        dushanbe: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] },
-        panjakent: { weightTiers: parsed.weightTiers || [], volumeTiers: parsed.volumeTiers || [] }
-      };
-      return NextResponse.json(migrated);
+    if (settings && settings.pricingData) {
+      return NextResponse.json(settings.pricingData);
     }
     
-    return NextResponse.json(parsed);
+    return NextResponse.json(defaultConfig);
   } catch (_error) {
-    // Return default if file doesn't exist
-    return NextResponse.json({
-      dushanbe: { weightTiers: [], volumeTiers: [] },
-      panjakent: { weightTiers: [], volumeTiers: [] }
-    });
+    return NextResponse.json(defaultConfig);
   }
 }
 
@@ -39,7 +33,12 @@ export async function POST(_request: Request) {
       return NextResponse.json({ error: "PIN_REQUIRED" }, { status: 403 });
     }
     
-    fs.writeFileSync(configPath, JSON.stringify(config, null, 2), "utf8");
+    await prisma.settings.upsert({
+      where: { id: 1 },
+      update: { pricingData: config },
+      create: { id: 1, pricingData: config }
+    });
+    
     return NextResponse.json({ success: true });
   } catch (_error) {
     return NextResponse.json({ error: "Failed to save config" }, { status: 500 });

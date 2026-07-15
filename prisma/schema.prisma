@@ -65,6 +65,7 @@ model Order {
 model Settings {
   id           Int      @id @default(1)
   exchangeRate Float    @default(1.50) // CNY to TJS rate (includes margin)
+  pricingData  Json?
   updatedAt    DateTime @updatedAt
 }
 
