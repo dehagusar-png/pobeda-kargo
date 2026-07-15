@@ -33,10 +33,13 @@ marketplaceHandler.on("message:web_app_data", async (ctx, next) => {
         }
       });
 
-      const successMsg = `✅ <b>Фармоиши шумо бомуваффақият сабт шуд!</b>\n\n` + 
+      const successMsg = `✅ <b>Фармоиши шумо сабт шуд!</b>\n\n` + 
                          `📦 <b>Мол:</b> ${product.title}\n` + 
                          `💰 <b>Нарх:</b> ${priceTJS.toFixed(2)} Сомонӣ\n\n` + 
-                         `Менеҷерҳои мо ба зудӣ барои тасдиқи фармоиш бо шумо тамос мегиранд. Ташаккур барои интихобатон!`;
+                         `💳 <b>Пардохт:</b> Барои тасдиқи фармоиш, лутфан маблағро ба яке аз кошелёкҳои зерин гузаронед ва чекро ба мо равон кунед:\n\n` +
+                         `🟢 <b>Dushanbe City:</b> <code>987654321</code>\n` +
+                         `🔵 <b>Alif Mobi:</b> <code>123456789</code>\n\n` +
+                         `<i>Пас аз фиристодани чек, менеҷери мо фармоишро тасдиқ мекунад.</i>`;
                          
       await ctx.reply(successMsg, { parse_mode: "HTML" });
     } else {
