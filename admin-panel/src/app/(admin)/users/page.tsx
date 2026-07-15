@@ -25,7 +25,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
 
   const { data: session } = useSession();
-  const isSuperAdmin = session?.user?.role === "SUPERADMIN";
+  const isSuperAdmin = (session?.user as any)?.role === "SUPERADMIN";
   const isPrimarySuperAdmin = (session?.user as any)?.id === "1";
 
   useEffect(() => {
