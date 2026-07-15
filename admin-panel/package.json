@@ -6,7 +6,7 @@
     "predev": "node scripts/sync-schema.js",
     "dev": "next dev -p 3005",
     "prebuild": "node scripts/sync-schema.js",
-    "build": "prisma generate && prisma db push --accept-data-loss && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint"
   },
