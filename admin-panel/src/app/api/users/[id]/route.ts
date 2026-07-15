@@ -6,7 +6,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
-    if (session?.user?.role !== "SUPERADMIN") {
+    if ((session?.user as any)?.role !== "SUPERADMIN") {
       return NextResponse.json({ error: "Only SUPERADMIN can change roles" }, { status: 403 });
     }
 
