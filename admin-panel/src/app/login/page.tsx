@@ -43,7 +43,7 @@ export default function LoginPage() {
         }
 
         if (!initData) {
-          setDebugMsg("Хатогӣ: initData холӣ аст. (Аз тугмаи WebApp кушоед)");
+          setDebugMsg(`Хатогӣ: initData холӣ аст. URL: ${window.location.href} | Hash: ${window.location.hash}`);
           setLoading(false);
           return;
         }
