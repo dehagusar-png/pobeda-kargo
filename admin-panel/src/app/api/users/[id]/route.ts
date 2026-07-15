@@ -46,6 +46,16 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       data: { role },
     });
 
+    const adminName = (session?.user as any)?.name || "Номаълум";
+    await prisma.auditLog.create({
+      data: {
+        adminName,
+        action: "Иваз кард (Вазифа)",
+        target: `Корбар ${updatedUser.firstName} ${updatedUser.lastName || ''}`,
+        details: `Вазифа аз ${existingUser.role} ба ${role} иваз шуд`
+      }
+    });
+
     return NextResponse.json({
       ...updatedUser,
       telegramId: updatedUser.telegramId.toString()

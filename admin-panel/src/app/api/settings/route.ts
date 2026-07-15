@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 // Default pricing config fallback
 const defaultConfig = {
@@ -37,6 +39,18 @@ export async function POST(_request: Request) {
       where: { id: 1 },
       update: { pricingData: config },
       create: { id: 1, pricingData: config }
+    });
+    
+    // Log the action
+    const session = await getServerSession(authOptions);
+    const adminName = session?.user?.name || "Номаълум";
+    await prisma.auditLog.create({
+      data: {
+        adminName,
+        action: "Тағйир дод",
+        target: "Нархномаи Калкулятор",
+        details: "Тағйироти зинаҳои нархнома сабт шуд."
+      }
     });
     
     return NextResponse.json({ success: true });

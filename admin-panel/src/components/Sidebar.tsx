@@ -12,6 +12,7 @@ const navItems = [
   { name: "Мизоҷон (Users)", href: "/users", icon: Users },
   { name: "Мағоза (Store)", href: "/products", icon: ShoppingBag },
   { name: "Фармоишҳо (Orders)", href: "/orders", icon: ShoppingCart },
+  { name: "Таърихи Амалҳо", href: "/audit-logs", icon: LayoutDashboard },
   { name: "Танзимот", href: "/settings", icon: Settings },
 ];
 
