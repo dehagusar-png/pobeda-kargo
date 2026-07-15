@@ -29,6 +29,8 @@ services:
         generateValue: true
       - key: NEXTAUTH_URL
         value: "https://pobeda-admin-panel.onrender.com"
+      - key: BOT_TOKEN
+        sync: false
       - key: NODE_VERSION
         value: "20.14.0"
 
