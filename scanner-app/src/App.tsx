@@ -22,7 +22,7 @@ function App() {
       const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
       audio.volume = 0.5;
       audio.play().catch(e => console.log('Audio play failed:', e));
-    } catch (e) {}
+    } catch {}
   };
 
   const addLog = (text: string, type: 'success'|'error') => {
@@ -59,7 +59,7 @@ function App() {
       } else {
         addLog(`❌ ${decodedText} - ${result.error || 'Хатогӣ'}`, 'error');
       }
-    } catch (err) {
+    } catch {
       addLog(`❌ ${decodedText} - Хатогии шабака`, 'error');
     } finally {
       // Худи ҳамон лаҳза барои коди навбатӣ омода мешавад
