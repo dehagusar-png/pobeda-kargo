@@ -31,7 +31,17 @@ export default function LoginPage() {
           return;
         }
 
-        const initData = tg.initData;
+        let initData = tg.initData;
+        
+        // Recover from sessionStorage if Next.js stripped the hash
+        if (!initData) {
+          const storedHash = sessionStorage.getItem("tgWebAppData");
+          if (storedHash) {
+            const params = new URLSearchParams(storedHash.replace("#", ""));
+            initData = params.get("tgWebAppData") || "";
+          }
+        }
+
         if (!initData) {
           setDebugMsg("Хатогӣ: initData холӣ аст. (Аз тугмаи WebApp кушоед)");
           setLoading(false);

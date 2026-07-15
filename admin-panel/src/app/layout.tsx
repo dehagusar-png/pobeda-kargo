@@ -16,6 +16,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tj">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (window.location.hash.includes('tgWebAppData')) {
+                sessionStorage.setItem('tgWebAppData', window.location.hash);
+              }
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         {children}
       </body>
