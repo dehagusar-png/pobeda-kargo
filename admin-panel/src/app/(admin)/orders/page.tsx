@@ -15,7 +15,31 @@ export default async function OrdersPage() {
     const id = parseInt(formData.get("id") as string);
     const status = formData.get("status") as any;
     
-    await prisma.order.update({ where: { id }, data: { status } });
+    const order = await prisma.order.update({ 
+      where: { id }, 
+      data: { status },
+      include: { user: true, product: true }
+    });
+    
+    if (status === "PURCHASED" && order.user?.telegramId) {
+      const botToken = process.env.BOT_TOKEN;
+      if (botToken) {
+        let text = `✅ <b>Фармоиши шумо тасдиқ ва харида шуд!</b>\n\n` +
+                   `📦 <b>Мол:</b> ${order.product?.title || 'Моли шумо'}\n\n` +
+                   `<i>Дар наздиктарин фурсат трек-коди бор ба шумо равон карда мешавад ва ҳангоми қабул ва сабти трек-код ҳамчун бори шумо, ба шумо тариқи бот трек-код равон карда мешавад.</i>`;
+        
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: order.user.telegramId.toString(),
+            text: text,
+            parse_mode: "HTML"
+          })
+        }).catch(console.error);
+      }
+    }
+
     revalidatePath("/orders");
   }
 
