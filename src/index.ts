@@ -49,6 +49,8 @@ process.once("SIGINT", () => bot.stop());
 process.once("SIGTERM", () => bot.stop());
 
 import { GrammyError, HttpError } from "grammy";
+import { prisma } from "./db";
+
 bot.catch(async (err) => {
   const ctx = err.ctx;
   console.error(`Error while handling update ${ctx.update.update_id}:`);
@@ -67,6 +69,22 @@ bot.catch(async (err) => {
     }
   } catch (replyError) {
     console.error("Failed to send error message to user:", replyError);
+  }
+  
+  // Notify superadmin
+  try {
+    const superAdmins = await prisma.user.findMany({ where: { role: "SUPERADMIN" } });
+    for (const admin of superAdmins) {
+      if (admin.telegramId) {
+        await ctx.api.sendMessage(
+          admin.telegramId.toString(), 
+          `🚨 <b>ХАТОГӢ ДАР БОТ!</b>\n\n<b>Хатогӣ:</b> ${e instanceof Error ? e.message : e}\n\nЛутфан серверро тафтиш кунед.`,
+          { parse_mode: "HTML" }
+        ).catch(() => {});
+      }
+    }
+  } catch (dbError) {
+    console.error("Failed to fetch superadmins for error notification:", dbError);
   }
 });
 // Start bot
