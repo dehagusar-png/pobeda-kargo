@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 
 interface ScannerProps {
@@ -7,6 +7,14 @@ interface ScannerProps {
 }
 
 const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
+  const onScanSuccessRef = useRef(onScanSuccess);
+  const onScanFailureRef = useRef(onScanFailure);
+
+  useEffect(() => {
+    onScanSuccessRef.current = onScanSuccess;
+    onScanFailureRef.current = onScanFailure;
+  }, [onScanSuccess, onScanFailure]);
+
   useEffect(() => {
     // Истифодаи BarcodeDetector-и телефони мобилӣ (агар дастгирӣ шавад)
     // Ин хатогиҳои хониши штрих-кодҳои Чинро (Code 128 Subset C) пурра бартараф мекунад!
@@ -38,7 +46,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           
           lastScannedCode = text;
           lastScanTime = now;
-          onScanSuccess(text);
+          onScanSuccessRef.current(text);
           // html5QrCode.stop() хориҷ карда шуд барои сканери доимӣ
         }
       },
@@ -47,7 +55,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       }
     ).catch((err) => {
       console.error("Camera error:", err);
-      if (onScanFailure) onScanFailure(err);
+      if (onScanFailureRef.current) onScanFailureRef.current(err);
     });
 
     return () => {
@@ -56,7 +64,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         html5QrCode.stop().catch(console.error);
       }
     };
-  }, [onScanSuccess, onScanFailure]);
+  }, []);
 
   return (
     <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black">
