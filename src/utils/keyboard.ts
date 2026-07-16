@@ -9,7 +9,7 @@ export function getMainKeyboard(ctx: MyContext, user: User | null): Keyboard {
     .text(ctx.t("support")).row();
     
   if (user?.role === "ADMIN" || user?.role === "WORKER" || user?.role === "SUPERADMIN") {
-    keyboard.webApp("📸 Сканери Борҳо", "https://pobeda-kargo.onrender.com/?v=2").row();
+    keyboard.webApp("📸 Сканери Борҳо", `https://pobeda-kargo.onrender.com/?v=2&tgId=${user.telegramId.toString()}`).row();
   }
   
   if (user?.role === "ADMIN" || user?.role === "SUPERADMIN") {

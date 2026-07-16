@@ -37,7 +37,13 @@ function App() {
     
     // Telegram ID-и корбар аз WebApp (дубора аз нав мегирем, то ки хатогӣ надиҳад)
     const currentTg = (window as any).Telegram?.WebApp || {};
-    const telegramId = currentTg.initDataUnsafe?.user?.id;
+    
+    // Азбаски Telegram WebApp дар Keyboard Button initData намедиҳад, 
+    // мо ID-ро аз URL (query параметр) мегирем
+    const urlParams = new URLSearchParams(window.location.search);
+    const tgIdFromUrl = urlParams.get('tgId');
+    
+    const telegramId = currentTg.initDataUnsafe?.user?.id || tgIdFromUrl;
     
     try {
       addLog(`Фиристода истодааст: ${decodedText}... (ID: ${telegramId || '0'})`, 'success');
