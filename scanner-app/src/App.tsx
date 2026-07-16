@@ -35,11 +35,12 @@ function App() {
     setIsProcessing(true);
     playBeep();
     
-    // Telegram ID-и корбар аз WebApp
-    const telegramId = tg.initDataUnsafe?.user?.id;
+    // Telegram ID-и корбар аз WebApp (дубора аз нав мегирем, то ки хатогӣ надиҳад)
+    const currentTg = (window as any).Telegram?.WebApp || {};
+    const telegramId = currentTg.initDataUnsafe?.user?.id;
     
     try {
-      addLog(`Фиристода истодааст: ${decodedText}...`, 'success');
+      addLog(`Фиристода истодааст: ${decodedText}... (ID: ${telegramId || '0'})`, 'success');
       
       const response = await fetch('https://pobeda-admin-panel.onrender.com/api/parcels/scan', {
         method: 'POST',

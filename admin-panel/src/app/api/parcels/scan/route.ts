@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     });
 
     if (!worker || (worker.role !== "ADMIN" && worker.role !== "WORKER" && worker.role !== "SUPERADMIN")) {
-      return NextResponse.json({ error: "Шумо ҳуқуқи скан кардан надоред" }, { status: 403, headers: corsHeaders });
+      return NextResponse.json({ error: `Шумо ҳуқуқи скан кардан надоред (ID: ${telegramId})` }, { status: 403, headers: corsHeaders });
     }
 
     const parcel = await prisma.parcel.findUnique({
