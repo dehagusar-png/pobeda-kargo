@@ -27,9 +27,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     let lastScanTime = 0;
 
     html5QrCode.start(
-      { facingMode: "environment" },
+      { 
+        facingMode: "environment",
+        width: { ideal: 1280, max: 1920 },
+        height: { ideal: 720, max: 1080 }
+      },
       {
-        fps: 10,
+        fps: 20,
         qrbox: { width: 300, height: 150 },
       },
       (decodedText) => {
