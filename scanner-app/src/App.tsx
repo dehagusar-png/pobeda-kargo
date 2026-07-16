@@ -69,8 +69,8 @@ function App() {
     } catch {
       addLog(`❌ ${decodedText} - Хатогии шабака`, 'error');
     } finally {
-      // Худи ҳамон лаҳза барои коди навбатӣ омода мешавад
-      setTimeout(() => setIsProcessing(false), 500); 
+      // Таъхири 2 сония (2000ms) байни ҳар як скан барои пешгирии такрорёбӣ
+      setTimeout(() => setIsProcessing(false), 2000); 
     }
   };
 
