@@ -13,6 +13,11 @@ trackHandler.hears([/Пайгирии Бор/i, /Отслеживание гру
 trackHandler.on("message:text", async (ctx, next) => {
   if (ctx.session.step === "track") {
     const trackCode = ctx.message.text.trim();
+    
+    if (!/^[A-Za-z0-9\-]+$/.test(trackCode)) {
+      await ctx.reply("❌ Трек-коди нодуруст. Лутфан танҳо ҳарфҳо ва рақамҳоро бе фосила истифода баред.");
+      return;
+    }
     const parcel = await prisma.parcel.findUnique({ where: { trackCode } });
     
     if (parcel) {

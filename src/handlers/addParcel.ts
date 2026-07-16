@@ -14,6 +14,12 @@ addParcelHandler.on("message:text", async (ctx, next) => {
   if (ctx.session.step === "add_parcel") {
     const trackCode = ctx.message.text.trim();
     
+    // Санҷиши трек-код, то ки тугмаҳои меню ҳамчун бор сабт нашаванд
+    if (!/^[A-Za-z0-9\-]+$/.test(trackCode)) {
+      await ctx.reply("❌ Трек-коди нодуруст. Лутфан танҳо ҳарфҳо ва рақамҳоро бе фосила истифода баред.");
+      return;
+    }
+    
     // Check if parcel already exists
     const existingParcel = await prisma.parcel.findUnique({ where: { trackCode } });
     
