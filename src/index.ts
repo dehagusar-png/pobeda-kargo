@@ -8,7 +8,6 @@ import { trackHandler } from "./handlers/track";
 import { addParcelHandler } from "./handlers/addParcel";
 import { supportHandler } from "./handlers/support";
 import { languageHandler } from "./handlers/language";
-import { marketplaceHandler } from "./handlers/marketplace";
 import { passwordHandler } from "./handlers/password";
 import { adminHandler } from "./handlers/admin";
 import { receiptHandler } from "./handlers/receipt";
@@ -32,7 +31,6 @@ bot.use(userMiddleware);
 // Register handlers
 bot.use(startHandler);
 bot.use(languageHandler);
-bot.use(marketplaceHandler);
 bot.use(registerHandler);
 bot.use(addressHandler);
 bot.use(calculatorHandler);

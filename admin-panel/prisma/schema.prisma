@@ -19,7 +19,6 @@ model User {
   role       Role     @default(USER) // USER, ADMIN, WORKER
   password   String?
   parcels    Parcel[]
-  orders     Order[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
@@ -35,31 +34,6 @@ model Parcel {
   user      User?        @relation(fields: [userId], references: [id])
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
-}
-
-model Product {
-  id          Int      @id @default(autoincrement())
-  title       String
-  priceCNY    Float
-  image       String?
-  images      String[] @default([])
-  description String?
-  isActive    Boolean  @default(true)
-  orders      Order[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Order {
-  id        Int         @id @default(autoincrement())
-  userId    Int
-  user      User        @relation(fields: [userId], references: [id])
-  productId Int
-  product   Product     @relation(fields: [productId], references: [id])
-  totalTJS  Float
-  status    OrderStatus @default(PENDING)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
 }
 
 model Settings {
@@ -82,12 +56,6 @@ enum ParcelStatus {
   IN_TRANSIT
   ARRIVED
   DELIVERED
-}
-
-enum OrderStatus {
-  PENDING
-  PURCHASED
-  CANCELLED
 }
 
 model AuditLog {

@@ -19,6 +19,5 @@ export const BUTTONS = {
   ADD_PARCEL: ["➕ Иловаи Бор", "➕ Добавить груз", "➕ Yuk qo'shish", "➕ 添加货物", "➕ Add Parcel"],
   TRACK: ["🔍 Пайгирии Бор", "🔍 Отслеживание груза", "🔍 Yukni kuzatish", "🔍 追踪货物", "🔍 Track Parcel"],
   CALCULATOR: ["🧮 Ҳисобкунак", "🧮 Калькулятор", "🧮 Kalkulyator", "🧮 计算器", "🧮 Calculator"],
-  SUPPORT: ["🎧 Дастгирӣ", "🎧 Поддержка", "🎧 Qo'llab-quvvatlash", "🎧 客服支持", "🎧 Support"],
-  MARKETPLACE: ["🛍 Харид аз Чин", "🛍 Покупки из Китая", "🛍 Xitoydan xaridlar", "🛍 中国购物", "🛍 Shop from China"]
+  SUPPORT: ["🎧 Дастгирӣ", "🎧 Поддержка", "🎧 Qo'llab-quvvatlash", "🎧 客服支持", "🎧 Support"]
 };

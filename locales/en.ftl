@@ -4,7 +4,7 @@ ask_phone = To continue, please send your phone number using the button below:
 phone_button = 📱 Send Phone Number
 registered = Thank you! You have successfully registered. Your client code is: { $clientCode }
 main_menu = 🏠 Main Menu:
-marketplace = 🛍 Shop from China
+
 address = 📍 Address in China
 track = 🔍 Track Parcel
 calculator = 🧮 Calculator
