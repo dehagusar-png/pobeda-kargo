@@ -21,10 +21,10 @@ address_info = 📍 您的中国仓库地址：
  <code>PobedaCargо1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 номи шумо , адреси шумо , раками телефони шумо.</code>
 
 support_text = 🎧 <b>客户支持</b>
- 要联系管理部门，请拨打以下号码或在Telegram上留言：
+ 要联系管理部门，请拨打以下号码或在Telegram / WhatsApp上留言：
  
- 📞 +992 000 00 00 00
- 💬 @PobedaCargoSupport
+ 📞 +992 929121999
+ 💬 Telegram / WhatsApp: +992 929121999
 
 add_parcel = ➕ 添加货物
 add_parcel_prompt = 📦 请发送您的货物追踪号码：

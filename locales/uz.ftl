@@ -21,10 +21,10 @@ address_info = 📍 Xitoydagi manzilingiz:
  <code>PobedaCargо1 15678360075 广西壮族自治区桂林市七星区 环城北二路14号国外熊猫餐厅 номи шумо , адреси шумо , раками телефони шумо.</code>
 
 support_text = 🎧 <b>Mijozlarni qo'llab-quvvatlash</b>
- Ma'muriyat bilan bog'lanish uchun raqamlarga qo'ng'iroq qiling yoki Telegramda yozing:
+ Ma'muriyat bilan bog'lanish uchun raqamlarga qo'ng'iroq qiling yoki Telegram / WhatsApp da yozing:
  
- 📞 +992 000 00 00 00
- 💬 @PobedaCargoSupport
+ 📞 +992 929121999
+ 💬 Telegram / WhatsApp: +992 929121999
 
 add_parcel = ➕ Yuk qo'shish
 add_parcel_prompt = 📦 Iltimos, yukingizning trek-kodini yuboring:

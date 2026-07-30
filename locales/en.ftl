@@ -34,10 +34,10 @@ calc_result = 💰 <b>Calculation Result:</b>
  💵 <b>Final Price: ${ $finalPrice }</b>
 
 support_text = 🎧 <b>Customer Support</b>
- To contact the administration, call the following numbers or write in Telegram:
+ To contact the administration, call the following numbers or write on Telegram / WhatsApp:
  
- 📞 +992 000 00 00 00
- 💬 @PobedaCargoSupport
+ 📞 +992 929121999
+ 💬 Telegram / WhatsApp: +992 929121999
 
 add_parcel = ➕ Add Parcel
 add_parcel_prompt = 📦 Please send your parcel's track code:
