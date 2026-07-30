@@ -48,7 +48,7 @@ function App() {
     try {
       addLog(`Фиристода истодааст: ${decodedText}... (ID: ${telegramId || '0'})`, 'success');
       
-      const response = await fetch('https://admin.gusar.tj/api/parcels/scan', {
+      const response = await fetch('https://pobedacargo1.gusar.tj/api/parcels/scan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
