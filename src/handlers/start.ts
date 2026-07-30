@@ -7,6 +7,7 @@ export const startHandler = new Composer<MyContext>();
 
 startHandler.command("start", async (ctx) => {
   if (!ctx.from) return;
+  ctx.session.step = ""; // Clear any stuck steps
   const user = ctx.user;
   
   if (user && user.phone && user.clientCode) {

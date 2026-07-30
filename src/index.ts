@@ -34,11 +34,11 @@ bot.use(languageHandler);
 bot.use(registerHandler);
 bot.use(addressHandler);
 bot.use(calculatorHandler);
+bot.use(adminHandler);
 bot.use(trackHandler);
 bot.use(addParcelHandler);
 bot.use(supportHandler);
 bot.use(passwordHandler);
-bot.use(adminHandler);
 bot.use(receiptHandler);
 
 // Fallback handler for unhandled messages
