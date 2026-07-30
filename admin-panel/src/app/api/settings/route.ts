@@ -49,7 +49,6 @@ export async function POST(_request: Request) {
     });
     
     // Log the action
-    const session = await getServerSession(authOptions);
     const adminName = session?.user?.name || "Номаълум";
     await prisma.auditLog.create({
       data: {
