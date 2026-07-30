@@ -34,6 +34,15 @@ model Parcel {
   user      User?        @relation(fields: [userId], references: [id])
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+  history   ParcelHistory[]
+}
+
+model ParcelHistory {
+  id        Int          @id @default(autoincrement())
+  parcelId  Int
+  parcel    Parcel       @relation(fields: [parcelId], references: [id], onDelete: Cascade)
+  status    ParcelStatus
+  createdAt DateTime     @default(now())
 }
 
 model Settings {

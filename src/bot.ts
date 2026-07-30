@@ -57,11 +57,19 @@ bot.use(async (ctx, next) => {
 bot.catch((err) => {
   const ctx = err.ctx;
   const e = err.error;
-  console.error(`Error while handling update ${ctx.update.update_id}:`, e);
+  console.error(`Error while handling update ${ctx.update?.update_id}:`, e);
   
-  // Send error to SuperAdmin (fallback to 8383689133)
-  const superAdminId = process.env.SUPERADMIN_ID || "8383689133";
   let errorMessage = e instanceof Error ? e.message : String(e);
+  const text = `🚨 <b>Хатогӣ дар Бот!</b>\n\n<pre>${errorMessage}</pre>`;
   
-  bot.api.sendMessage(superAdminId, `🚨 <b>Хатогӣ дар Бот!</b>\n\n<pre>${errorMessage}</pre>`, { parse_mode: "HTML" }).catch(console.error);
+  // Равон кардани хатогӣ ба ҳамаи SUPERADMIN-ҳо
+  prisma.user.findMany({ where: { role: 'SUPERADMIN' } })
+    .then(admins => {
+      for (const admin of admins) {
+        if (admin.telegramId) {
+          bot.api.sendMessage(admin.telegramId.toString(), text, { parse_mode: "HTML" }).catch(() => {});
+        }
+      }
+    })
+    .catch(dbErr => console.error("Could not fetch superadmins for error reporting:", dbErr));
 });
