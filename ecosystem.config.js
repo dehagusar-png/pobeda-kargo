@@ -18,8 +18,9 @@ module.exports = {
       watch: false,
       env: {
         NODE_ENV: "production",
-        // Истифодаи порти 3035 барои халал нарасондан ба лоиҳаи дигар дар сервер
-        PORT: 3035 
+        PORT: 3035,
+        NEXTAUTH_URL: "https://pobedacargo1.gusar.tj",
+        NEXTAUTH_SECRET: "f2bd34091a134dc230894089a8cde"
       }
     }
   ]
