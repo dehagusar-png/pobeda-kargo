@@ -31,7 +31,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const ownerTgId = "8383689133"; // ID-и шумо
+    const ownerTgId = "6554193925"; // ID-и Spn2211 (Шумо)
     const isTargetOwner = existingUser.telegramId.toString() === ownerTgId;
     const isCallerOwner = callerUser.telegramId.toString() === ownerTgId;
 
