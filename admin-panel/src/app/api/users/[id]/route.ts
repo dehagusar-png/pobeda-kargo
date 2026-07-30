@@ -23,23 +23,10 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // The primary superadmin (Sabir, ID: 1)
-    const isPrimaryCaller = (session?.user as any)?.id === "1"; 
-    // Prevent changing other SUPERADMINs unless caller is primary
-    if (existingUser.role === "SUPERADMIN" && !isPrimaryCaller) {
-      return NextResponse.json({ error: "Cannot change role of SUPERADMIN" }, { status: 403 });
+    // Ҳеҷ кас (ҳатто дигар SUPERADMIN) наметавонад вазифаи SUPERADMIN-и амалкунандаро паст кунад ё тағйир диҳад.
+    if (existingUser.role === "SUPERADMIN") {
+      return NextResponse.json({ error: "Шумо наметавонед вазифаи SUPERADMIN-ро тағйир диҳед ё худро аз вазифа гиред!" }, { status: 403 });
     }
-    
-    // Prevent demoting themselves
-    if ((session?.user as any)?.id === userId.toString() && role !== "SUPERADMIN") {
-      return NextResponse.json({ error: "Cannot demote yourself" }, { status: 403 });
-    }
-
-    // If caller is NOT primary, they cannot demote SUPERADMINs
-    // Since we only allow SUPERADMINs in this route anyway, a SUPERADMIN can demote another SUPERADMIN?
-    // Let's just say a SUPERADMIN can do anything except demote themselves!
-    
-    // Require PIN for certain actions removed for simplicity as requested by user
     
     const updatedUser = await prisma.user.update({
       where: { id: userId },
