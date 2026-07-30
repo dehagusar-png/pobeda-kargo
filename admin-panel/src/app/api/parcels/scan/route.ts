@@ -20,12 +20,43 @@ const statusMapLocal: any = {
   "DELIVERED": { tg: "Супорида шуд", ru: "Доставлено", uz: "Yetkazildi" },
 };
 
+import crypto from 'crypto';
+
 export async function POST(request: Request) {
   try {
-    const { trackCode, telegramId } = await request.json();
+    const { trackCode, telegramId, initData } = await request.json();
     
     if (!trackCode || !telegramId) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400, headers: corsHeaders });
+    }
+
+    // Амнияти сканер: тафтиши initData
+    if (initData) {
+      const urlParams = new URLSearchParams(initData);
+      const hash = urlParams.get('hash');
+      urlParams.delete('hash');
+      
+      // Sort keys alphabetically
+      const keys = Array.from(urlParams.keys()).sort();
+      let dataCheckString = '';
+      for (const key of keys) {
+        dataCheckString += `${key}=${urlParams.get(key)}\n`;
+      }
+      dataCheckString = dataCheckString.slice(0, -1);
+      
+      const botToken = process.env.BOT_TOKEN;
+      if (botToken) {
+        const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+        const calculatedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+        
+        if (calculatedHash !== hash) {
+          return NextResponse.json({ error: "Ҳуҷҷатҳои қалбакӣ! (Invalid initData)" }, { status: 403, headers: corsHeaders });
+        }
+      }
+    } else {
+      // Агар initData набошад, метавонем манъ кунем. Вале ҳозир иҷозат медиҳем, ки аз дохили браузери оддӣ кор кунад, агар лозим бошад. 
+      // Барои амнияти пурра: 
+      return NextResponse.json({ error: "Лутфан сканерро фақат аз дохили барномаи Telegram кушоед!" }, { status: 403, headers: corsHeaders });
     }
 
     const worker = await prisma.user.findUnique({
@@ -42,6 +73,7 @@ export async function POST(request: Request) {
 
     let nextStatus = "IN_CHINA";
     let message = "";
+    let savedParcelId = 0;
 
     if (parcel) {
       if (parcel.status === "DELIVERED") {
@@ -57,10 +89,11 @@ export async function POST(request: Request) {
       else if (parcel.status === "IN_TRANSIT") nextStatus = "ARRIVED";
       else if (parcel.status === "ARRIVED") nextStatus = "DELIVERED";
 
-      await prisma.parcel.update({
+      const updated = await prisma.parcel.update({
         where: { id: parcel.id },
         data: { status: nextStatus as any }
       });
+      savedParcelId = updated.id;
       message = `Статус иваз шуд: ${statusMapLocal[nextStatus]?.tg || nextStatus}`;
 
       // Notify owner
@@ -89,13 +122,24 @@ export async function POST(request: Request) {
         }
       }
     } else {
-      await prisma.parcel.create({
+      const newParcel = await prisma.parcel.create({
         data: {
           trackCode,
           status: "IN_CHINA"
         }
       });
+      savedParcelId = newParcel.id;
       message = "Бори нав сабт шуд (Дар Чин)";
+    }
+
+    // Сабт дар ParcelHistory
+    if (savedParcelId > 0) {
+      await prisma.parcelHistory.create({
+        data: {
+          parcelId: savedParcelId,
+          status: nextStatus as any
+        }
+      });
     }
 
     await prisma.auditLog.create({

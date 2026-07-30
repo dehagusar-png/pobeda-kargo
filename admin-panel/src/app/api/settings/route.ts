@@ -27,6 +27,13 @@ export async function GET() {
 
 export async function POST(_request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    const userRole = (session?.user as any)?.role;
+    
+    if (userRole !== "SUPERADMIN" && userRole !== "ADMIN") {
+      return NextResponse.json({ error: "Access Denied: Requires ADMIN role" }, { status: 403 });
+    }
+
     const body = await _request.json();
     const { pin, config } = body;
     

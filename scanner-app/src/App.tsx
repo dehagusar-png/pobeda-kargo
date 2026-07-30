@@ -44,9 +44,10 @@ function App() {
     const tgIdFromUrl = urlParams.get('tgId');
     
     const telegramId = currentTg.initDataUnsafe?.user?.id || tgIdFromUrl;
+    const initData = currentTg.initData || '';
     
     try {
-      addLog(`Фиристода истодааст: ${decodedText}... (ID: ${telegramId || '0'})`, 'success');
+      addLog(`Фиристода истодааст: ${decodedText}...`, 'success');
       
       const response = await fetch('https://pobedacargo1.gusar.tj/api/parcels/scan', {
         method: 'POST',
@@ -55,7 +56,8 @@ function App() {
         },
         body: JSON.stringify({
           trackCode: decodedText,
-          telegramId: telegramId || '0' // Агар берун аз ТГ бошад, барои тест 0 меравад (вале хатогӣ медиҳад)
+          telegramId: telegramId || '0',
+          initData: initData
         })
       });
       
