@@ -29,8 +29,18 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     html5QrCode.start(
       { facingMode: "environment" },
       {
-        fps: 10,
-        qrbox: { width: 300, height: 150 },
+        fps: 15,
+        qrbox: (videoWidth, videoHeight) => {
+          const width = Math.min(videoWidth * 0.9, 300);
+          return { width: width, height: 150 };
+        },
+        aspectRatio: window.innerWidth / window.innerHeight, // Пешгирии кашишхӯрии видео дар iPhone
+        disableFlip: false,
+        videoConstraints: {
+          facingMode: "environment",
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
       },
       (decodedText) => {
         if (!isScanning) return;
