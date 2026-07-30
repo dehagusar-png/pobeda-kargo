@@ -4,6 +4,7 @@ import { User } from "@prisma/client";
 
 export function getMainKeyboard(ctx: MyContext, user: User | null): Keyboard {
   const keyboard = new Keyboard()
+    .text(ctx.t("address")).row()
     .text(ctx.t("add_parcel")).text(ctx.t("track")).row()
     .text(ctx.t("calculator")).text(ctx.t("support")).row();
     

@@ -1,0 +1,26 @@
+server {
+    server_name pobedacargo1.gusar.tj;
+
+    location / {
+        proxy_pass http://localhost:3035;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/pobedacargo1.gusar.tj/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/pobedacargo1.gusar.tj/privkey.pem;
+}
+
+server {
+    if ($host = pobedacargo1.gusar.tj) {
+        return 301 https://$host$request_uri;
+    }
+
+    listen 80;
+    server_name pobedacargo1.gusar.tj;
+    return 404;
+}
