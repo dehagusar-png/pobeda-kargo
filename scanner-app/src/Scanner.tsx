@@ -30,7 +30,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       { facingMode: "environment" },
       {
         fps: 15,
-        qrbox: (videoWidth, videoHeight) => {
+        qrbox: (videoWidth, _videoHeight) => {
           const width = Math.min(videoWidth * 0.9, 300);
           return { width: width, height: 150 };
         },
