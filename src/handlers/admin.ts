@@ -10,7 +10,7 @@ adminHandler.hears("📊 Панели Маъмурият", async (ctx) => {
 
   const inlineKeyboard = new InlineKeyboard().webApp(
     "🔓 Вуруд ба Панел",
-    "https://pobeda-admin-panel.onrender.com/login"
+    "https://admin.gusar.tj/login"
   );
 
   await ctx.reply("Барои вуруд ба панели маъмурият тугмаи зерро пахш кунед:", {

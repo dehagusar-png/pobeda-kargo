@@ -35,7 +35,7 @@ trackHandler.on("message:text", async (ctx, next) => {
         const statusText = ctx.t("status_" + parcel.status);
         const inlineKeyboard = new InlineKeyboard().webApp(
           "📍 Дар харита дидан",
-          `https://pobeda-admin-panel.onrender.com/track/${trackCode}`
+          `https://admin.gusar.tj/track/${trackCode}`
         );
         await ctx.reply(`📦 Бор: ${trackCode}\nҲолат: <b>${statusText}</b>`, { 
           parse_mode: "HTML",
