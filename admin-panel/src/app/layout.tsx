@@ -17,11 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tj">
+    <html lang="tg">
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                  for(let registration of registrations) {
+                    registration.unregister();
+                  }
+                });
+              }
               if (window.location.hash.includes('tgWebAppData')) {
                 sessionStorage.setItem('tgWebAppData', window.location.hash);
               }
