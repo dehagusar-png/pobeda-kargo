@@ -20,7 +20,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     // Ин хатогиҳои хониши штрих-кодҳои Чинро (Code 128 Subset C) пурра бартараф мекунад!
     const html5QrCode = new Html5Qrcode("reader", { 
       verbose: false,
-      useBarCodeDetectorIfSupported: true 
+      useBarCodeDetectorIfSupported: false 
     });
     let isScanning = true;
     let lastScannedCode = "";
