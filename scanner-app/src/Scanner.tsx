@@ -12,14 +12,10 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const onScanSuccessRef = useRef(onScanSuccess);
   const onScanFailureRef = useRef(onScanFailure);
   
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [engine, setEngine] = useState<'html5' | 'zxing' | null>(null);
-  
   // File upload state for fallback
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const zxingReaderRef = useRef<BrowserMultiFormatReader | null>(null);
-  const zxingControlsRef = useRef<any>(null);
 
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -28,134 +24,92 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
 
   useEffect(() => {
     let isScanning = true;
-    let lastScannedCode = "";
-    let lastScanTime = 0;
-    
-    // Муайян кардани дастгирии BarcodeDetector (одатан дар Андроид ҳаст, дар Айфон нест)
-    const hasBarcodeDetector = 'BarcodeDetector' in window;
-    
-    const handleSuccess = (text: string) => {
-      text = text.trim();
-      if (text && text.length >= 8) {
-        const now = Date.now();
-        if (text === lastScannedCode && (now - lastScanTime) < 3000) return;
-        lastScannedCode = text;
-        lastScanTime = now;
-        if (onScanSuccessRef.current) onScanSuccessRef.current(text);
+    let html5QrCode: Html5Qrcode | null = null;
+
+    const handleSuccess = (decodedText: string) => {
+      if (isScanning && onScanSuccessRef.current) {
+        onScanSuccessRef.current(decodedText);
       }
     };
 
-    let html5QrCode: Html5Qrcode | null = null;
-    let zxingReader: BrowserMultiFormatReader | null = null;
+    const hasBarcodeDetector = 'BarcodeDetector' in window;
 
-    if (hasBarcodeDetector) {
-      // ==========================================
-      // ENGINE: HTML5-QRCODE (БАРОИ АНДРОИД)
-      // ==========================================
-      setEngine('html5');
-      html5QrCode = new Html5Qrcode("reader", { 
-        verbose: false,
-        useBarCodeDetectorIfSupported: true, // Истифодаи сканери худии телефон
-        formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39 ] // CODE_128 & 39
-      });
+    // Универсальный старт Html5Qrcode для iOS ва Android
+    html5QrCode = new Html5Qrcode("reader", { 
+      verbose: false,
+      useBarCodeDetectorIfSupported: true, // Дар Андроид BarcodeDetector-ро истифода мебарад
+      formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39 ]
+    });
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 15,
-          qrbox: (videoWidth, _videoHeight) => {
-            const width = Math.min(videoWidth * 0.9, 450);
-            return { width: width, height: 150 };
-          },
-          aspectRatio: window.innerWidth / window.innerHeight,
-        },
-        (decodedText) => {
-          if (isScanning) handleSuccess(decodedText);
-        },
-        () => {} // ignore normal errors
-      ).catch(err => {
-        console.error("Android camera error:", err);
-        if (onScanFailureRef.current) onScanFailureRef.current(err);
-      });
+    const config: any = {
+      fps: 15,
+      qrbox: (videoWidth: number, _videoHeight: number) => {
+        const width = Math.min(videoWidth * 0.9, 450);
+        return { width: width, height: 150 };
+      },
+      aspectRatio: window.innerWidth / window.innerHeight,
+    };
 
-    } else {
-      // ==========================================
-      // ENGINE: ZXING (БАРОИ АЙФОН)
-      // ==========================================
-      setEngine('zxing');
-      const hints = new Map();
-      hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.CODE_128, BarcodeFormat.CODE_39]); // CODE_128 & 39
-      hints.set(DecodeHintType.TRY_HARDER, true);
-      
-      zxingReader = new BrowserMultiFormatReader(hints);
-      zxingReaderRef.current = zxingReader;
-
-      if (videoRef.current) {
-        const constraints = {
-          video: {
-            facingMode: 'environment',
-            width: { ideal: 1920 },
-            height: { ideal: 1080 }
-          }
-        };
-
-        import('@zxing/browser').then(({ BrowserMultiFormatReader: BrowserReader }) => {
-          const modernReader = new BrowserReader(hints);
-          zxingReaderRef.current = modernReader as any;
-          
-          modernReader.decodeFromConstraints(constraints, videoRef.current!, (result, _error) => {
-            if (result && result.getText()) {
-              handleSuccess(result.getText());
-            }
-          }).then(controls => {
-            zxingControlsRef.current = controls;
-          }).catch(err => {
-            console.error("iPhone camera error:", err);
-            if (onScanFailureRef.current) onScanFailureRef.current(err);
-          });
-        });
-      }
+    // Барои Айфон сифати камераро баланд мекунем то хира нашавад
+    if (!hasBarcodeDetector) {
+      config.videoConstraints = {
+        facingMode: "environment",
+        width: { ideal: 1920 },
+        height: { ideal: 1080 }
+      };
     }
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      config,
+      (decodedText) => handleSuccess(decodedText),
+      (_errorMessage) => {
+        // html5-qrcode хатогиҳоро хомӯшона коркард мекунад
+      }
+    ).catch((err) => {
+      console.error("Camera start error:", err);
+    });
 
     return () => {
       isScanning = false;
       if (html5QrCode && html5QrCode.isScanning) {
         html5QrCode.stop().catch(console.error);
       }
-      if (zxingControlsRef.current) {
-        zxingControlsRef.current.stop();
-      }
     };
   }, []);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
-    setIsProcessingFile(true);
     try {
-      // Истифода аз zxingReader агар бошад (айфон), вагарна сохтани нав
+      setIsProcessingFile(true);
+      const imageUrl = URL.createObjectURL(file);
+      
       let reader = zxingReaderRef.current;
       if (!reader) {
         const hints = new Map();
         hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.CODE_128, BarcodeFormat.CODE_39]);
         hints.set(DecodeHintType.TRY_HARDER, true);
         reader = new BrowserMultiFormatReader(hints);
+        zxingReaderRef.current = reader;
       }
       
-      const fileUrl = URL.createObjectURL(file);
-      const result = await reader.decodeFromImageUrl(fileUrl);
+      const result = await reader.decodeFromImageUrl(imageUrl);
       
-      const text = result.getText().trim();
-      if (text && text.length >= 8) {
-        if (onScanSuccessRef.current) onScanSuccessRef.current(text);
+      if (onScanSuccessRef.current) {
+        onScanSuccessRef.current(result.getText());
       }
+      
+      URL.revokeObjectURL(imageUrl);
     } catch (err) {
       console.error("File scan error:", err);
-      alert("Штрих-код ёфт нашуд ё сифати расм паст аст. Лутфан аз наздик ва равшантар расм гиред!");
+      alert("Штрих-код ёфт нашуд. Лутфан расми равшантаре гиред.");
     } finally {
       setIsProcessingFile(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -165,60 +119,29 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       {/* Container барои камера */}
       <div className="w-full relative bg-black" style={{ minHeight: '250px' }}>
         
-        {/* Ҳамеша reader-ро render мекунем, то ки дар вақти initialize ёфт шавад */}
-        <div 
-          id="reader" 
-          className="w-full" 
-          style={{ display: engine === 'html5' || engine === null ? 'block' : 'none' }}
-        ></div>
-
-        <video 
-          ref={videoRef} 
-          className="w-full object-cover" 
-          style={{ 
-            minHeight: '250px', 
-            maxHeight: '450px',
-            display: engine === 'zxing' ? 'block' : 'none' 
-          }}
-          muted
-          playsInline
-        />
-
-        {engine === 'zxing' && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
-            <div className="w-[90%] h-[150px] border-2 border-white/50 rounded-lg relative">
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-lg"></div>
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-lg"></div>
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-lg"></div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-lg"></div>
-              {/* Хатти сурхи сканер */}
-              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-red-500 shadow-[0_0_8px_red] animate-pulse"></div>
-            </div>
-          </div>
-        )}
+        {/* html5-qrcode ҳамеша инҷо кор мекунад */}
+        <div id="reader" className="w-full"></div>
       </div>
-      
-      <div className="px-4">
-        <div className="bg-gray-800 rounded-lg p-4 text-center">
-          <p className="text-gray-300 text-sm mb-3">
+
+      <div className="px-4 flex flex-col gap-4">
+        {/* Тугмаи фавқулода барои расм гирифтан */}
+        <div className="bg-slate-800 rounded-lg p-4 text-center">
+          <p className="text-slate-300 text-sm mb-3">
             Агар камераи зинда нахонад, расм гиред:
           </p>
-          
-          <div className="relative w-full">
-            <input 
-              type="file" 
-              accept="image/*" 
-              capture="environment" 
-              ref={fileInputRef}
-              onChange={handleFileUpload}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-            />
+          <div className="relative overflow-hidden inline-block w-full">
             <button 
-              disabled={isProcessingFile}
-              className="w-full py-3 bg-blue-600 rounded-lg font-medium text-white flex items-center justify-center gap-2 transition-colors"
+              className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
+                isProcessingFile 
+                  ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-900/20'
+              }`}
             >
               {isProcessingFile ? (
-                <span className="animate-pulse">Хониш рафта истодааст...</span>
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/20 border-t-white"></div>
+                  Коркард...
+                </>
               ) : (
                 <>
                   <Camera size={20} />
