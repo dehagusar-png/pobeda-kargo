@@ -47,7 +47,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
 
     let html5QrCode: Html5Qrcode | null = null;
     let zxingReader: BrowserMultiFormatReader | null = null;
-    let localStream: MediaStream | null = null;
 
     if (hasBarcodeDetector) {
       // ==========================================
@@ -104,7 +103,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           const modernReader = new BrowserReader(hints);
           zxingReaderRef.current = modernReader as any;
           
-          modernReader.decodeFromConstraints(constraints, videoRef.current!, (result, error) => {
+          modernReader.decodeFromConstraints(constraints, videoRef.current!, (result, _error) => {
             if (result && result.getText()) {
               handleSuccess(result.getText());
             }
