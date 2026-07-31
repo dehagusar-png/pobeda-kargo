@@ -12,10 +12,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const onScanSuccessRef = useRef(onScanSuccess);
   const onScanFailureRef = useRef(onScanFailure);
   
-  // File upload state for fallback
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [engine, setEngine] = useState<'html5' | 'zxing' | null>(null);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const zxingReaderRef = useRef<BrowserMultiFormatReader | null>(null);
+  const zxingControlsRef = useRef<any>(null);
 
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -23,8 +26,16 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   }, [onScanSuccess, onScanFailure]);
 
   useEffect(() => {
+    // Пахш кардани огоҳиҳои бемаънии ZXing дар консол
+    const originalWarn = console.warn;
+    console.warn = (...args) => {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('non-ReaderException')) return;
+      originalWarn.apply(console, args);
+    };
+
     let isScanning = true;
     let html5QrCode: Html5Qrcode | null = null;
+    let zxingReader: BrowserMultiFormatReader | null = null;
 
     const handleSuccess = (decodedText: string) => {
       if (isScanning && onScanSuccessRef.current) {
@@ -34,46 +45,81 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
 
     const hasBarcodeDetector = 'BarcodeDetector' in window;
 
-    // Универсальный старт Html5Qrcode для iOS ва Android
-    html5QrCode = new Html5Qrcode("reader", { 
-      verbose: false,
-      useBarCodeDetectorIfSupported: true, // Дар Андроид BarcodeDetector-ро истифода мебарад
-      formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39 ]
-    });
+    if (hasBarcodeDetector) {
+      // ==========================================
+      // ENGINE: HTML5-QRCODE (БАРОИ АНДРОИД)
+      // ==========================================
+      setEngine('html5');
+      html5QrCode = new Html5Qrcode("reader", { 
+        verbose: false,
+        useBarCodeDetectorIfSupported: true,
+        formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39 ]
+      });
 
-    const config: any = {
-      fps: 15,
-      qrbox: (videoWidth: number, _videoHeight: number) => {
-        const width = Math.min(videoWidth * 0.9, 450);
-        return { width: width, height: 150 };
-      },
-      aspectRatio: window.innerWidth / window.innerHeight,
-    };
+      html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 15,
+          qrbox: (videoWidth, _videoHeight) => {
+            const width = Math.min(videoWidth * 0.9, 450);
+            return { width: width, height: 150 };
+          },
+          aspectRatio: window.innerWidth / window.innerHeight,
+        },
+        (decodedText) => handleSuccess(decodedText),
+        (_errorMessage) => {
+          // ignore normal errors
+        }
+      ).catch((err) => {
+        console.error("Android camera error:", err);
+      });
+    } else {
+      // ==========================================
+      // ENGINE: ZXING (БАРОИ АЙФОН)
+      // ==========================================
+      setEngine('zxing');
+      const hints = new Map();
+      hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.CODE_128, BarcodeFormat.CODE_39]);
+      hints.set(DecodeHintType.TRY_HARDER, true);
+      
+      zxingReader = new BrowserMultiFormatReader(hints);
+      zxingReaderRef.current = zxingReader;
 
-    // Барои Айфон сифати камераро баланд мекунем то хира нашавад
-    if (!hasBarcodeDetector) {
-      config.videoConstraints = {
-        facingMode: "environment",
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      };
-    }
+      if (videoRef.current) {
+        const constraints = {
+          video: {
+            facingMode: 'environment',
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          }
+        };
 
-    html5QrCode.start(
-      { facingMode: "environment" },
-      config,
-      (decodedText) => handleSuccess(decodedText),
-      (_errorMessage) => {
-        // html5-qrcode хатогиҳоро хомӯшона коркард мекунад
+        import('@zxing/browser').then(({ BrowserMultiFormatReader: BrowserReader }) => {
+          const modernReader = new BrowserReader(hints);
+          zxingReaderRef.current = modernReader as any;
+          
+          modernReader.decodeFromConstraints(constraints, videoRef.current!, (result, _error) => {
+            if (result && result.getText()) {
+              handleSuccess(result.getText());
+            }
+          }).then(controls => {
+            zxingControlsRef.current = controls;
+          }).catch(err => {
+            console.error("iPhone camera error:", err);
+          });
+        });
       }
-    ).catch((err) => {
-      console.error("Camera start error:", err);
-    });
+    }
 
     return () => {
       isScanning = false;
+      console.warn = originalWarn; // Барқарор кардани console.warn
+      
       if (html5QrCode && html5QrCode.isScanning) {
         html5QrCode.stop().catch(console.error);
+      }
+      if (zxingControlsRef.current) {
+        zxingControlsRef.current.stop();
       }
     };
   }, []);
@@ -119,8 +165,39 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       {/* Container барои камера */}
       <div className="w-full relative bg-black" style={{ minHeight: '250px' }}>
         
-        {/* html5-qrcode ҳамеша инҷо кор мекунад */}
-        <div id="reader" className="w-full"></div>
+        {/* Барои Андроид (Html5Qrcode) */}
+        <div 
+          id="reader" 
+          className="w-full" 
+          style={{ display: engine === 'html5' || engine === null ? 'block' : 'none' }}
+        ></div>
+
+        {/* Барои Айфон (ZXing) */}
+        <video 
+          ref={videoRef} 
+          className="w-full object-cover" 
+          style={{ 
+            minHeight: '250px', 
+            maxHeight: '450px',
+            display: engine === 'zxing' ? 'block' : 'none' 
+          }}
+          autoPlay
+          muted
+          playsInline
+        />
+
+        {/* Хатти сурхи сканер барои Айфон */}
+        {engine === 'zxing' && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
+            <div className="w-[90%] h-[150px] border-2 border-white/50 rounded-lg relative">
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-lg"></div>
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-lg"></div>
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-lg"></div>
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-lg"></div>
+              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-red-500 shadow-[0_0_8px_red] animate-pulse"></div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="px-4 flex flex-col gap-4">
@@ -144,7 +221,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
                 </>
               ) : (
                 <>
-                  <Camera size={20} />
+                  <Camera className="w-5 h-5" />
                   <span>Расм гирифтан / Галерея</span>
                 </>
               )}
