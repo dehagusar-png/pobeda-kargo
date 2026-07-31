@@ -35,17 +35,18 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     html5QrCode.start(
       { facingMode: "environment" },
       {
-        fps: 15,
+        fps: 30,
         qrbox: (videoWidth, _videoHeight) => {
-          const width = Math.min(videoWidth * 0.9, 300);
+          // Барои штрих-кодҳои дарози чинӣ, қуттиро васеътар мекунем
+          const width = Math.min(videoWidth * 0.95, 450);
           return { width: width, height: 150 };
         },
-        aspectRatio: window.innerWidth / window.innerHeight, // Пешгирии кашишхӯрии видео дар iPhone
+        aspectRatio: window.innerWidth / window.innerHeight, 
         disableFlip: false,
         videoConstraints: {
           facingMode: "environment",
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
         }
       },
       (decodedText) => {
