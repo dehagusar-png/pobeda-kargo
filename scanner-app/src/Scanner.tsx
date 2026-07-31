@@ -24,8 +24,17 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     let html5QrCode: Html5Qrcode | null = null;
 
     const handleSuccess = (decodedText: string) => {
-      if (isScanning && onScanSuccessRef.current) {
-        onScanSuccessRef.current(decodedText);
+      if (!isScanning || !onScanSuccessRef.current) return;
+      
+      const cleanedText = decodedText.trim();
+      // Трек-кодҳо одатан фақат ҳарфҳои англисӣ, рақамҳо ва баъзан тире (-) доранд.
+      // Рамзҳои аҷиб ба монанди %, &, ? қабул намешаванд (чунки инҳо хатогиҳои сканер мебошанд)
+      const isValidTracking = /^[A-Za-z0-9\-]+$/.test(cleanedText) && cleanedText.length >= 6;
+      
+      if (isValidTracking) {
+        onScanSuccessRef.current(cleanedText);
+      } else {
+        console.log("Ignored invalid/garbage barcode:", cleanedText);
       }
     };
 
@@ -71,7 +80,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       const result = await html5QrCode.scanFile(file, true);
       
       if (onScanSuccessRef.current && result) {
-        onScanSuccessRef.current(result);
+        const cleanedText = result.trim();
+        const isValidTracking = /^[A-Za-z0-9\-]+$/.test(cleanedText) && cleanedText.length >= 6;
+        if (isValidTracking) {
+          onScanSuccessRef.current(cleanedText);
+        } else {
+          alert("Штрих-коди нодуруст ёфт шуд. Лутфан аз наздиктар расм гиред.");
+        }
       }
     } catch (err) {
       console.error("File scan error:", err);
