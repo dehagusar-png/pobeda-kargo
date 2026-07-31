@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -20,7 +20,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     // Ин хатогиҳои хониши штрих-кодҳои Чинро (Code 128 Subset C) пурра бартараф мекунад!
     const html5QrCode = new Html5Qrcode("reader", { 
       verbose: false,
-      useBarCodeDetectorIfSupported: false 
+      useBarCodeDetectorIfSupported: true,
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.CODE_128,
+        Html5QrcodeSupportedFormats.CODE_39,
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.QR_CODE
+      ]
     });
     let isScanning = true;
     let lastScannedCode = "";
@@ -57,7 +63,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           lastScannedCode = text;
           lastScanTime = now;
           onScanSuccessRef.current(text);
-          // html5QrCode.stop() хориҷ карда шуд барои сканери доимӣ
         }
       },
       () => {
