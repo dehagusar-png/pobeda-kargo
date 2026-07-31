@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
-import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library';
+import { Html5Qrcode } from 'html5-qrcode';
+import { BrowserMultiFormatReader, DecodeHintType } from '@zxing/library';
 import { Camera } from 'lucide-react';
 
 interface ScannerProps {
