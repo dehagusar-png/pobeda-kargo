@@ -52,8 +52,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       setEngine('html5');
       html5QrCode = new Html5Qrcode("reader", { 
         verbose: false,
-        useBarCodeDetectorIfSupported: true,
-        formatsToSupport: [ Html5QrcodeSupportedFormats.CODE_128, Html5QrcodeSupportedFormats.CODE_39 ]
+        useBarCodeDetectorIfSupported: true
       });
 
       html5QrCode.start(
@@ -79,7 +78,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       // ==========================================
       setEngine('zxing');
       const hints = new Map();
-      hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.CODE_128, BarcodeFormat.CODE_39]);
       hints.set(DecodeHintType.TRY_HARDER, true);
       
       zxingReader = new BrowserMultiFormatReader(hints);
@@ -135,7 +133,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       let reader = zxingReaderRef.current;
       if (!reader) {
         const hints = new Map();
-        hints.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.CODE_128, BarcodeFormat.CODE_39]);
         hints.set(DecodeHintType.TRY_HARDER, true);
         reader = new BrowserMultiFormatReader(hints);
         zxingReaderRef.current = reader;
