@@ -19,6 +19,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const zxingReaderRef = useRef<BrowserMultiFormatReader | null>(null);
+  const zxingControlsRef = useRef<any>(null);
 
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -90,54 +91,31 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       zxingReader = new BrowserMultiFormatReader(hints);
       zxingReaderRef.current = zxingReader;
 
-      const startZxingCamera = async () => {
-        try {
-          if (!videoRef.current) return;
-          
-          // Танзимоти сифати баланд барои Айфон то ки хира нашавад
-          const constraints = {
-            video: {
-              facingMode: 'environment',
-              width: { min: 1280, ideal: 1920, max: 2560 },
-              height: { min: 720, ideal: 1080, max: 1440 }
-            }
-          };
-
-          localStream = await navigator.mediaDevices.getUserMedia(constraints);
-          
-          if (!isScanning || !videoRef.current) {
-            localStream.getTracks().forEach(t => t.stop());
-            return;
+      if (videoRef.current) {
+        const constraints = {
+          video: {
+            facingMode: 'environment',
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
           }
+        };
 
-          videoRef.current.srcObject = localStream;
-          videoRef.current.setAttribute("playsinline", "true");
-          videoRef.current.play();
-
-          const decodeLoop = () => {
-            if (!isScanning || !videoRef.current) return;
-
-            zxingReader?.decodeFromVideoElement(videoRef.current)
-              .then((result) => {
-                if (result && result.getText()) {
-                  handleSuccess(result.getText());
-                }
-                setTimeout(decodeLoop, 200); // Баъди ёфтан боз идома медиҳад
-              })
-              .catch(() => {
-                setTimeout(decodeLoop, 250); // Наёфт, идома медиҳад
-              });
-          };
-
-          decodeLoop();
-        } catch (err) {
-          console.error("iPhone camera error:", err);
-          if (onScanFailureRef.current) onScanFailureRef.current(err);
-        }
-      };
-      
-      // Сабр мекунем то video render шавад
-      setTimeout(startZxingCamera, 100);
+        import('@zxing/browser').then(({ BrowserMultiFormatReader: BrowserReader }) => {
+          const modernReader = new BrowserReader(hints);
+          zxingReaderRef.current = modernReader as any;
+          
+          modernReader.decodeFromConstraints(constraints, videoRef.current!, (result, error) => {
+            if (result && result.getText()) {
+              handleSuccess(result.getText());
+            }
+          }).then(controls => {
+            zxingControlsRef.current = controls;
+          }).catch(err => {
+            console.error("iPhone camera error:", err);
+            if (onScanFailureRef.current) onScanFailureRef.current(err);
+          });
+        });
+      }
     }
 
     return () => {
@@ -145,8 +123,8 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       if (html5QrCode && html5QrCode.isScanning) {
         html5QrCode.stop().catch(console.error);
       }
-      if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
+      if (zxingControlsRef.current) {
+        zxingControlsRef.current.stop();
       }
     };
   }, []);
