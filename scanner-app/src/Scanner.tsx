@@ -188,9 +188,12 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       {/* Container барои камера */}
       <div className="w-full relative bg-black flex items-center justify-center" style={{ minHeight: '250px' }}>
         
-        {engine === 'html5' && (
-          <div id="reader" className="w-full h-full"></div>
-        )}
+        {/* Ҳамеша reader-ро render мекунем, то ки дар вақти initialize ёфт шавад */}
+        <div 
+          id="reader" 
+          className="w-full h-full" 
+          style={{ display: engine === 'html5' || engine === null ? 'block' : 'none' }}
+        ></div>
 
         {engine === 'zxing' && (
           <>
