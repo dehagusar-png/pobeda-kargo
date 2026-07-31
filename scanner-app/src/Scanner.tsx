@@ -149,6 +149,15 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
                 </>
               )}
             </button>
+            <input 
+              ref={fileInputRef}
+              type="file" 
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileUpload}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              disabled={isProcessingFile}
+            />
           </div>
           
         </div>
