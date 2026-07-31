@@ -87,7 +87,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
               // Давом додани ҷустуҷӯ
               setTimeout(decodeLoop, 200);
             })
-            .catch((err) => {
+            .catch(() => {
               // Хатогиҳои NotFoundException-ро сарфи назар мекунем (вақте ки код нест)
               setTimeout(decodeLoop, 300);
             });
