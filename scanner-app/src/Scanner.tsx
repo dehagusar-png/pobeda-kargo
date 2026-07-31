@@ -195,27 +195,29 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           style={{ display: engine === 'html5' || engine === null ? 'block' : 'none' }}
         ></div>
 
+        <video 
+          ref={videoRef} 
+          className="w-full h-full object-cover" 
+          style={{ 
+            minHeight: '250px', 
+            maxHeight: '450px',
+            display: engine === 'zxing' ? 'block' : 'none' 
+          }}
+          muted
+          playsInline
+        />
+
         {engine === 'zxing' && (
-          <>
-            <video 
-              ref={videoRef} 
-              className="w-full h-full object-cover" 
-              style={{ minHeight: '250px', maxHeight: '450px' }}
-              muted
-              playsInline
-            />
-            {/* Чорчӯбаи сканер барои Айфон */}
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
-              <div className="w-[90%] h-[150px] border-2 border-white/50 rounded-lg relative">
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-lg"></div>
-                <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-lg"></div>
-                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-lg"></div>
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-lg"></div>
-                {/* Хатти сурхи сканер */}
-                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-red-500 shadow-[0_0_8px_red] animate-pulse"></div>
-              </div>
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
+            <div className="w-[90%] h-[150px] border-2 border-white/50 rounded-lg relative">
+              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-lg"></div>
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-lg"></div>
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-lg"></div>
+              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-lg"></div>
+              {/* Хатти сурхи сканер */}
+              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-red-500 shadow-[0_0_8px_red] animate-pulse"></div>
             </div>
-          </>
+          </div>
         )}
       </div>
       
