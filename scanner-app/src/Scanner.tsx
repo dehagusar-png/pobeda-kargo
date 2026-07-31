@@ -186,18 +186,18 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black flex flex-col gap-4 pb-4 relative">
       
       {/* Container барои камера */}
-      <div className="w-full relative bg-black flex items-center justify-center" style={{ minHeight: '250px' }}>
+      <div className="w-full relative bg-black" style={{ minHeight: '250px' }}>
         
         {/* Ҳамеша reader-ро render мекунем, то ки дар вақти initialize ёфт шавад */}
         <div 
           id="reader" 
-          className="w-full h-full" 
+          className="w-full" 
           style={{ display: engine === 'html5' || engine === null ? 'block' : 'none' }}
         ></div>
 
         <video 
           ref={videoRef} 
-          className="w-full h-full object-cover" 
+          className="w-full object-cover" 
           style={{ 
             minHeight: '250px', 
             maxHeight: '450px',
