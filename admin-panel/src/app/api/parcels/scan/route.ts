@@ -56,7 +56,7 @@ export async function POST(request: Request) {
     } else {
       // Агар initData набошад, метавонем манъ кунем. Вале ҳозир иҷозат медиҳем, ки аз дохили браузери оддӣ кор кунад, агар лозим бошад. 
       // Барои амнияти пурра: 
-      return NextResponse.json({ error: "Лутфан сканерро фақат аз дохили барномаи Telegram кушоед!" }, { status: 403, headers: corsHeaders });
+      console.warn("Scanner API: initData is missing, relying on telegramId check only.");
     }
 
     const worker = await prisma.user.findUnique({
