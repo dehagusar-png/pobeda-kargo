@@ -22,8 +22,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   useEffect(() => {
     // Сканери оддӣ ва устувор
     const html5QrCode = new Html5Qrcode("reader", { 
-      verbose: false,
-      useBarCodeDetectorIfSupported: true // Муҳим барои Android
+      verbose: true,
+      useBarCodeDetectorIfSupported: true, // Муҳим барои Android
+      formatsToSupport: [ 1 ] // 1 = CODE_128 (аз рӯи Html5QrcodeSupportedFormats)
     });
     html5QrCodeRef.current = html5QrCode;
 
@@ -36,7 +37,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       {
         fps: 15,
         qrbox: (videoWidth, _videoHeight) => {
-          const width = Math.min(videoWidth * 0.9, 350);
+          const width = Math.min(videoWidth * 0.95, 450);
           return { width: width, height: 150 };
         },
         aspectRatio: window.innerWidth / window.innerHeight,
@@ -78,6 +79,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
 
     setIsProcessingFile(true);
     try {
+      // scanFile(file, true) = true means it will try to handle image rotation
       const decodedText = await html5QrCodeRef.current.scanFile(file, true);
       const text = decodedText.trim();
       if (text && text.length >= 8) {
@@ -85,10 +87,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       }
     } catch (err) {
       console.error("File scan error:", err);
-      alert("Штрих-код ёфт нашуд. Лутфан акси равшантар ва наздиктар гиред!");
+      alert("Штрих-код ёфт нашуд ё сифати расм паст аст. Лутфан аз наздик ва равшантар расм гиред!");
     } finally {
       setIsProcessingFile(false);
-      // Reset input
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -100,30 +101,33 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       <div className="px-4">
         <div className="bg-gray-800 rounded-lg p-4 text-center">
           <p className="text-gray-300 text-sm mb-3">
-            Агар камераи зинда дар Айфон хуб нахонад:
+            Агар камераи зинда нахонад, расм гиред:
           </p>
-          <input 
-            type="file" 
-            accept="image/*" 
-            capture="environment" 
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className="hidden" 
-          />
-          <button 
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isProcessingFile}
-            className="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-medium text-white flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
-          >
-            {isProcessingFile ? (
-              <span className="animate-pulse">Хониш рафта истодааст...</span>
-            ) : (
-              <>
-                <Camera size={20} />
-                <span>Расм гирифтан / Галерея</span>
-              </>
-            )}
-          </button>
+          
+          <div className="relative w-full">
+            <input 
+              type="file" 
+              accept="image/*" 
+              capture="environment" 
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+            />
+            <button 
+              disabled={isProcessingFile}
+              className="w-full py-3 bg-blue-600 rounded-lg font-medium text-white flex items-center justify-center gap-2 transition-colors"
+            >
+              {isProcessingFile ? (
+                <span className="animate-pulse">Хониш рафта истодааст...</span>
+              ) : (
+                <>
+                  <Camera size={20} />
+                  <span>Расм гирифтан / Галерея</span>
+                </>
+              )}
+            </button>
+          </div>
+          
         </div>
       </div>
     </div>
