@@ -67,8 +67,17 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           () => {} // ignore normal errors
         );
       } else {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const videoConstraints: any = { facingMode: "environment" };
+        
+        if (isIOS) {
+          // Барои Айфон сифати баландтар мепурсем то ки хира нашавад
+          videoConstraints.width = { ideal: 1280 };
+          videoConstraints.height = { ideal: 720 };
+        }
+
         await html5QrCodeRef.current.start(
-          { facingMode: "environment" },
+          videoConstraints,
           config,
           handleSuccess,
           () => {} // ignore normal errors
