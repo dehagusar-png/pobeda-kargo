@@ -43,7 +43,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         await html5QrCodeRef.current.stop();
       }
       
-      const config = {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+      const config: any = {
         fps: 15,
         qrbox: (videoWidth: number, _videoHeight: number) => {
           const width = Math.min(videoWidth * 0.9, 450);
@@ -52,6 +54,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         aspectRatio: window.innerWidth / window.innerHeight,
       };
 
+      if (isIOS) {
+        // Барои Айфон сифати баландтар мепурсем то ки хира нашавад
+        config.videoConstraints = cameraId 
+          ? { deviceId: { exact: cameraId }, width: { ideal: 1280 }, height: { ideal: 720 } }
+          : { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } };
+      }
+
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("reader", { 
           verbose: false,
@@ -59,30 +68,15 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         });
       }
 
-      if (cameraId) {
-        await html5QrCodeRef.current.start(
-          cameraId,
-          config,
-          handleSuccess,
-          () => {} // ignore normal errors
-        );
-      } else {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        const videoConstraints: any = { facingMode: "environment" };
-        
-        if (isIOS) {
-          // Барои Айфон сифати баландтар мепурсем то ки хира нашавад
-          videoConstraints.width = { ideal: 1280 };
-          videoConstraints.height = { ideal: 720 };
-        }
+      const firstArg = cameraId ? cameraId : { facingMode: "environment" };
 
-        await html5QrCodeRef.current.start(
-          videoConstraints,
-          config,
-          handleSuccess,
-          () => {} // ignore normal errors
-        );
-      }
+      await html5QrCodeRef.current.start(
+        firstArg,
+        config,
+        handleSuccess,
+        () => {} // ignore normal errors
+      );
+      
       isScanningRef.current = true;
     } catch (err) {
       console.error("Camera start error:", err);
