@@ -20,6 +20,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const [currentCameraIndex, setCurrentCameraIndex] = useState<number>(0);
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const isScanningRef = useRef(false);
+  const isStartingRef = useRef(false); // Lock барои пешгирии concurrent starts
 
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -38,7 +39,11 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   };
 
   const startCamera = async (cameraId?: string) => {
+    if (isStartingRef.current) return;
+    
     try {
+      isStartingRef.current = true;
+      
       if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
         await html5QrCodeRef.current.stop();
       }
@@ -80,26 +85,44 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       isScanningRef.current = true;
     } catch (err) {
       console.error("Camera start error:", err);
+    } finally {
+      isStartingRef.current = false;
     }
   };
 
   useEffect(() => {
-    // Пайдо кардани ҳамаи камераҳо ҳангоми кушодан
-    Html5Qrcode.getCameras().then(devices => {
-      if (devices && devices.length > 0) {
-        // Фақат камераҳои қафоро ҷудо мекунем (агар имкон бошад)
-        const backCameras = devices.filter(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('environment'));
-        const availableCameras = backCameras.length > 0 ? backCameras : devices;
-        setCameras(availableCameras);
-      }
-    }).catch(console.error);
+    let mounted = true;
 
-    startCamera();
+    const init = async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        if (mounted && devices && devices.length > 0) {
+          const backCameras = devices.filter(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('environment'));
+          const availableCameras = backCameras.length > 0 ? backCameras : devices;
+          setCameras(availableCameras);
+        }
+      } catch (err) {
+        console.error("getCameras error:", err);
+      }
+
+      if (mounted) {
+        startCamera();
+      }
+    };
+
+    init();
 
     return () => {
+      mounted = false;
       isScanningRef.current = false;
-      if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
-        html5QrCodeRef.current.stop().catch(console.error);
+      if (html5QrCodeRef.current) {
+        try {
+          if (html5QrCodeRef.current.isScanning) {
+            html5QrCodeRef.current.stop().catch(console.error);
+          } else {
+            html5QrCodeRef.current.clear();
+          }
+        } catch (e) {}
       }
     };
   }, []);
