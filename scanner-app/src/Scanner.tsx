@@ -1,21 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import { Camera } from 'lucide-react';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
   onScanFailure?: (error: any) => void;
 }
-
-const SUPPORTED_FORMATS = [
-  Html5QrcodeSupportedFormats.CODE_128,
-  Html5QrcodeSupportedFormats.CODE_39,
-  Html5QrcodeSupportedFormats.EAN_13,
-  Html5QrcodeSupportedFormats.EAN_8,
-  Html5QrcodeSupportedFormats.ITF,
-  Html5QrcodeSupportedFormats.UPC_A,
-  Html5QrcodeSupportedFormats.UPC_E,
-];
 
 const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const onScanSuccessRef = useRef(onScanSuccess);
@@ -37,12 +27,12 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     if (!isScanningRef.current || !onScanSuccessRef.current) return;
     
     const cleanedText = decodedText.trim();
-    // Иҷозати фосилаҳо дар штрих-код
-    const isValidTracking = /^[A-Za-z0-9\-\s]+$/.test(cleanedText) && cleanedText.length >= 6;
+    // Иҷозати фосилаҳо ва ситорачаҳо (барои Code 39)
+    const isValidTracking = /^[A-Za-z0-9\-\s\*]+$/.test(cleanedText) && cleanedText.length >= 5;
     
     if (isValidTracking) {
-      // Тоза кардани фосилаҳо пеш аз фиристодан
-      const finalCode = cleanedText.replace(/\s+/g, '');
+      // Тоза кардани фосилаҳо ва ситорачаҳо пеш аз фиристодан
+      const finalCode = cleanedText.replace(/[\s\*]+/g, '');
       onScanSuccessRef.current(finalCode);
     }
   };
@@ -75,7 +65,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("reader", { 
           verbose: false,
-          formatsToSupport: SUPPORTED_FORMATS
+          useBarCodeDetectorIfSupported: true
         });
       }
 
@@ -118,26 +108,24 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     try {
       setIsProcessingFile(true);
       
-      // Истифодаи Html5Qrcode барои хондани расмҳо, чунки он аз ZXing беҳтар аст
       const fileScanner = new Html5Qrcode("file-reader", {
         verbose: false,
-        formatsToSupport: SUPPORTED_FORMATS
+        useBarCodeDetectorIfSupported: true
       });
       
       const result = await fileScanner.scanFile(file, true);
       
       if (onScanSuccessRef.current && result) {
         const cleanedText = result.trim();
-        const isValidTracking = /^[A-Za-z0-9\-\s]+$/.test(cleanedText) && cleanedText.length >= 6;
+        const isValidTracking = /^[A-Za-z0-9\-\s\*]+$/.test(cleanedText) && cleanedText.length >= 5;
         if (isValidTracking) {
-          const finalCode = cleanedText.replace(/\s+/g, '');
+          const finalCode = cleanedText.replace(/[\s\*]+/g, '');
           onScanSuccessRef.current(finalCode);
         } else {
           alert("Штрих-коди нодуруст ёфт шуд. Лутфан аз наздиктар расм гиред.");
         }
       }
       
-      // Тоза кардани сканери файл
       fileScanner.clear();
     } catch (err) {
       console.error("File scan error:", err);
