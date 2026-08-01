@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { BrowserMultiFormatReader } from '@zxing/library';
-import { Camera, RefreshCw } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
@@ -15,12 +15,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   
-  // Барои иваз кардани камераҳо
-  const [cameras, setCameras] = useState<{id: string, label: string}[]>([]);
-  const [currentCameraIndex, setCurrentCameraIndex] = useState<number>(0);
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const isScanningRef = useRef(false);
-  const isStartingRef = useRef(false); // Lock барои пешгирии concurrent starts
+  const isStartingRef = useRef(false);
 
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
@@ -38,7 +35,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     }
   };
 
-  const startCamera = async (cameraId?: string) => {
+  const startCamera = async () => {
     if (isStartingRef.current) return;
     
     try {
@@ -60,10 +57,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       };
 
       if (isIOS) {
-        // Барои Айфон сифати баландтар мепурсем то ки хира нашавад
-        config.videoConstraints = cameraId 
-          ? { deviceId: { exact: cameraId }, width: { ideal: 1280 }, height: { ideal: 720 } }
-          : { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } };
+        config.videoConstraints = { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } };
       }
 
       if (!html5QrCodeRef.current) {
@@ -73,10 +67,8 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         });
       }
 
-      const firstArg = cameraId ? cameraId : { facingMode: "environment" };
-
       await html5QrCodeRef.current.start(
-        firstArg,
+        { facingMode: "environment" },
         config,
         handleSuccess,
         () => {} // ignore normal errors
@@ -91,29 +83,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   };
 
   useEffect(() => {
-    let mounted = true;
-
-    const init = async () => {
-      try {
-        const devices = await Html5Qrcode.getCameras();
-        if (mounted && devices && devices.length > 0) {
-          const backCameras = devices.filter(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('environment'));
-          const availableCameras = backCameras.length > 0 ? backCameras : devices;
-          setCameras(availableCameras);
-        }
-      } catch (err) {
-        console.error("getCameras error:", err);
-      }
-
-      if (mounted) {
-        startCamera();
-      }
-    };
-
-    init();
+    startCamera();
 
     return () => {
-      mounted = false;
       isScanningRef.current = false;
       if (html5QrCodeRef.current) {
         try {
@@ -127,13 +99,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     };
   }, []);
 
-  const switchCamera = () => {
-    if (cameras.length <= 1) return;
-    const nextIndex = (currentCameraIndex + 1) % cameras.length;
-    setCurrentCameraIndex(nextIndex);
-    startCamera(cameras[nextIndex].id);
-  };
-
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -141,7 +106,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     try {
       setIsProcessingFile(true);
       
-      // Барои файлҳо мо ZXing истифода мебарем, чунки Html5Qrcode бо reader id мушкил мекунад
       const reader = new BrowserMultiFormatReader();
       const imageUrl = URL.createObjectURL(file);
       const result = await reader.decodeFromImageUrl(imageUrl);
@@ -170,6 +134,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   return (
     <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black flex flex-col gap-4 pb-4 relative">
       
+      {/* Container барои камера */}
       <div className="w-full relative bg-black flex flex-col" style={{ minHeight: '300px' }}>
         
         {/* Маслиҳат барои Айфон */}
@@ -178,17 +143,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
             Камера хира аст? Телефонро <b>дуртар (15-20 см)</b> гиред!
           </div>
         </div>
-
-        {/* Тугмаи Ивази Камера */}
-        {cameras.length > 1 && (
-          <button 
-            onClick={switchCamera}
-            className="absolute bottom-4 right-4 z-10 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95"
-            title="Иваз кардани камера"
-          >
-            <RefreshCw className="w-6 h-6" />
-          </button>
-        )}
 
         <div id="reader" className="w-full mt-2"></div>
       </div>
