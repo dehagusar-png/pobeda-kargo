@@ -1,12 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
-import { BrowserMultiFormatReader } from '@zxing/library';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { Camera } from 'lucide-react';
 
 interface ScannerProps {
   onScanSuccess: (decodedText: string) => void;
   onScanFailure?: (error: any) => void;
 }
+
+const SUPPORTED_FORMATS = [
+  Html5QrcodeSupportedFormats.CODE_128,
+  Html5QrcodeSupportedFormats.CODE_39,
+  Html5QrcodeSupportedFormats.EAN_13,
+  Html5QrcodeSupportedFormats.EAN_8,
+  Html5QrcodeSupportedFormats.ITF,
+  Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.UPC_E,
+];
 
 const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const onScanSuccessRef = useRef(onScanSuccess);
@@ -28,10 +37,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     if (!isScanningRef.current || !onScanSuccessRef.current) return;
     
     const cleanedText = decodedText.trim();
-    const isValidTracking = /^[A-Za-z0-9\-]+$/.test(cleanedText) && cleanedText.length >= 6;
+    // Иҷозати фосилаҳо дар штрих-код
+    const isValidTracking = /^[A-Za-z0-9\-\s]+$/.test(cleanedText) && cleanedText.length >= 6;
     
     if (isValidTracking) {
-      onScanSuccessRef.current(cleanedText);
+      // Тоза кардани фосилаҳо пеш аз фиристодан
+      const finalCode = cleanedText.replace(/\s+/g, '');
+      onScanSuccessRef.current(finalCode);
     }
   };
 
@@ -63,7 +75,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("reader", { 
           verbose: false,
-          useBarCodeDetectorIfSupported: true 
+          formatsToSupport: SUPPORTED_FORMATS
         });
       }
 
@@ -106,20 +118,27 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     try {
       setIsProcessingFile(true);
       
-      const reader = new BrowserMultiFormatReader();
-      const imageUrl = URL.createObjectURL(file);
-      const result = await reader.decodeFromImageUrl(imageUrl);
-      URL.revokeObjectURL(imageUrl);
+      // Истифодаи Html5Qrcode барои хондани расмҳо, чунки он аз ZXing беҳтар аст
+      const fileScanner = new Html5Qrcode("file-reader", {
+        verbose: false,
+        formatsToSupport: SUPPORTED_FORMATS
+      });
+      
+      const result = await fileScanner.scanFile(file, true);
       
       if (onScanSuccessRef.current && result) {
-        const cleanedText = result.getText().trim();
-        const isValidTracking = /^[A-Za-z0-9\-]+$/.test(cleanedText) && cleanedText.length >= 6;
+        const cleanedText = result.trim();
+        const isValidTracking = /^[A-Za-z0-9\-\s]+$/.test(cleanedText) && cleanedText.length >= 6;
         if (isValidTracking) {
-          onScanSuccessRef.current(cleanedText);
+          const finalCode = cleanedText.replace(/\s+/g, '');
+          onScanSuccessRef.current(finalCode);
         } else {
           alert("Штрих-коди нодуруст ёфт шуд. Лутфан аз наздиктар расм гиред.");
         }
       }
+      
+      // Тоза кардани сканери файл
+      fileScanner.clear();
     } catch (err) {
       console.error("File scan error:", err);
       alert("Штрих-код ёфт нашуд. Лутфан расми равшантаре гиред.");
@@ -134,7 +153,6 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   return (
     <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black flex flex-col gap-4 pb-4 relative">
       
-      {/* Container барои камера */}
       <div className="w-full relative bg-black flex flex-col" style={{ minHeight: '300px' }}>
         
         {/* Маслиҳат барои Айфон */}
@@ -145,6 +163,8 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
         </div>
 
         <div id="reader" className="w-full mt-2"></div>
+        {/* Сканери пинҳонӣ барои хондани расмҳо */}
+        <div id="file-reader" style={{ display: 'none' }}></div>
       </div>
 
       <div className="px-4 flex flex-col gap-4">
