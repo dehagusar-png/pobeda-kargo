@@ -44,7 +44,12 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     });
 
     html5QrCode.start(
-      { facingMode: "environment" },
+      { 
+        facingMode: "environment",
+        width: { ideal: 1280, min: 640 },
+        height: { ideal: 720, min: 480 },
+        advanced: [{ focusMode: "continuous" }] as any
+      },
       {
         fps: 15,
         qrbox: (videoWidth, _videoHeight) => {
@@ -103,8 +108,16 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     <div className="w-full max-w-sm mx-auto overflow-hidden rounded-xl bg-black flex flex-col gap-4 pb-4 relative">
       
       {/* Container барои камера */}
-      <div className="w-full relative bg-black" style={{ minHeight: '250px' }}>
-        <div id="reader" className="w-full"></div>
+      <div className="w-full relative bg-black flex flex-col" style={{ minHeight: '300px' }}>
+        
+        {/* Маслиҳат барои Айфон */}
+        <div className="absolute top-2 left-0 right-0 z-10 text-center px-4">
+          <div className="bg-black/60 text-white text-xs px-3 py-2 rounded-lg backdrop-blur-sm border border-white/20">
+            Телефонро аз штрих-код каме <b>дуртар (15-20 см)</b> доред, то ки хира (blurry) нашавад!
+          </div>
+        </div>
+
+        <div id="reader" className="w-full mt-2"></div>
       </div>
 
       <div className="px-4 flex flex-col gap-4">
