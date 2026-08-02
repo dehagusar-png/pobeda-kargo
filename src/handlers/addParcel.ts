@@ -117,7 +117,7 @@ addParcelHandler.callbackQuery(/^claim_(.+)$/, async (ctx) => {
   const existingParcel = await prisma.parcel.findUnique({ where: { trackCode } });
   
   if (existingParcel && existingParcel.userId && existingParcel.userId !== ctx.user?.id) {
-    await ctx.answerCallbackQuery(ctx.t("parcel_already_others"), { show_alert: true });
+    await ctx.answerCallbackQuery({ text: ctx.t("parcel_already_others"), show_alert: true });
     await ctx.editMessageText(ctx.t("parcel_already_others"));
     return;
   }
