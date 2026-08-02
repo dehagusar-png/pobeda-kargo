@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Package, QrCode, X, CheckCircle, AlertCircle } from 'lucide-react';
 import Scanner from './Scanner';
 
@@ -8,6 +8,7 @@ function App() {
   const [isScanning, setIsScanning] = useState<boolean>(false);
   const [logs, setLogs] = useState<{id: number, text: string, type: 'success'|'error'}[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const isProcessingRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (tg.ready) {
@@ -31,8 +32,10 @@ function App() {
   };
 
   const handleScanSuccess = async (decodedText: string) => {
-    if (isProcessing) return;
+    if (isProcessingRef.current) return;
+    isProcessingRef.current = true;
     setIsProcessing(true);
+    
     playBeep();
     
     // Telegram ID-и корбар аз WebApp (дубора аз нав мегирем, то ки хатогӣ надиҳад)
@@ -72,7 +75,10 @@ function App() {
       addLog(`❌ ${decodedText} - Хатогии шабака`, 'error');
     } finally {
       // Таъхири 2 сония (2000ms) байни ҳар як скан барои пешгирии такрорёбӣ
-      setTimeout(() => setIsProcessing(false), 2000); 
+      setTimeout(() => {
+        isProcessingRef.current = false;
+        setIsProcessing(false);
+      }, 2000); 
     }
   };
 
