@@ -75,6 +75,15 @@ addParcelHandler.on("message:text", async (ctx, next) => {
       return;
     }
     
+    // Check if it's already claimed by someone else
+    const existingParcel = await prisma.parcel.findUnique({ where: { trackCode } });
+    if (existingParcel && existingParcel.userId && existingParcel.userId !== owner.id) {
+      await ctx.reply(ctx.t("parcel_already_others"));
+      ctx.session.step = "";
+      ctx.session.tempTrackCode = "";
+      return;
+    }
+
     // Assign parcel
     await prisma.parcel.update({
       where: { trackCode },
@@ -104,6 +113,14 @@ addParcelHandler.on("message:text", async (ctx, next) => {
 
 addParcelHandler.callbackQuery(/^claim_(.+)$/, async (ctx) => {
   const trackCode = ctx.match[1] as string;
+  
+  const existingParcel = await prisma.parcel.findUnique({ where: { trackCode } });
+  
+  if (existingParcel && existingParcel.userId && existingParcel.userId !== ctx.user?.id) {
+    await ctx.answerCallbackQuery(ctx.t("parcel_already_others"), { show_alert: true });
+    await ctx.editMessageText(ctx.t("parcel_already_others"));
+    return;
+  }
   
   await prisma.parcel.update({
     where: { trackCode },
