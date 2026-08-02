@@ -2,6 +2,10 @@ import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { Package, Truck, MapPin, CheckCircle } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
+
 export default async function TrackPage({ params }: { params: Promise<{ code: string }> }) {
   const resolvedParams = await params;
   const parcel = await prisma.parcel.findUnique({
