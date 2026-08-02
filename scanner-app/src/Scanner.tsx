@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { Camera } from 'lucide-react';
 
 interface ScannerProps {
@@ -18,6 +18,16 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const isScanningRef = useRef(false);
   const isStartingRef = useRef(false);
 
+  // Штрих-кодҳои дастгирӣшаванда (бе QR код то ки чизҳои нодаркорро нахонад)
+  const supportedFormats = [
+    Html5QrcodeSupportedFormats.CODE_128,
+    Html5QrcodeSupportedFormats.CODE_39,
+    Html5QrcodeSupportedFormats.CODE_93,
+    Html5QrcodeSupportedFormats.EAN_13,
+    Html5QrcodeSupportedFormats.EAN_8,
+    Html5QrcodeSupportedFormats.ITF
+  ];
+
   useEffect(() => {
     onScanSuccessRef.current = onScanSuccess;
     onScanFailureRef.current = onScanFailure;
@@ -26,13 +36,13 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const handleSuccess = (decodedText: string) => {
     if (!isScanningRef.current || !onScanSuccessRef.current) return;
     
-    const cleanedText = decodedText.trim();
-    // Иҷозати фосилаҳо ва ситорачаҳо (барои Code 39)
-    const isValidTracking = /^[A-Za-z0-9\-\s\*]+$/.test(cleanedText) && cleanedText.length >= 5;
+    // Тоза кардани фосила ва ситорачаҳо (ки баъзан дар Code 39 пайдо мешаванд)
+    const finalCode = decodedText.trim().replace(/[\s\*]+/g, '');
+    
+    // Трек-код бояд танҳо аз ҳарфу рақам иборат бошад ва дарозиаш аз 8 зиёд бошад
+    const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 8;
     
     if (isValidTracking) {
-      // Тоза кардани фосилаҳо ва ситорачаҳо пеш аз фиристодан
-      const finalCode = cleanedText.replace(/[\s\*]+/g, '');
       onScanSuccessRef.current(finalCode);
     }
   };
@@ -65,7 +75,8 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("reader", { 
           verbose: false,
-          useBarCodeDetectorIfSupported: true
+          useBarCodeDetectorIfSupported: true,
+          formatsToSupport: supportedFormats
         });
       }
 
@@ -110,19 +121,20 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       
       const fileScanner = new Html5Qrcode("file-reader", {
         verbose: false,
-        useBarCodeDetectorIfSupported: true
+        useBarCodeDetectorIfSupported: true,
+        formatsToSupport: supportedFormats
       });
       
       const result = await fileScanner.scanFile(file, true);
       
       if (onScanSuccessRef.current && result) {
-        const cleanedText = result.trim();
-        const isValidTracking = /^[A-Za-z0-9\-\s\*]+$/.test(cleanedText) && cleanedText.length >= 5;
+        const finalCode = result.trim().replace(/[\s\*]+/g, '');
+        const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 8;
+        
         if (isValidTracking) {
-          const finalCode = cleanedText.replace(/[\s\*]+/g, '');
           onScanSuccessRef.current(finalCode);
         } else {
-          alert("Штрих-коди нодуруст ёфт шуд. Лутфан аз наздиктар расм гиред.");
+          alert("Ин штрих-коди дуруст барои трек-код нест (дарозиаш кам ё аломатҳои номафҳум дорад).");
         }
       }
       
