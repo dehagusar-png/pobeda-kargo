@@ -10,7 +10,7 @@ async function fix() {
     });
     
     console.log('Fixing git pull...');
-    await ssh.execCommand('rm set_superadmin.js deploy_superadmin.js temp_script.js', { cwd: '/home/administrator/pobeda-kargo' });
+    await ssh.execCommand('rm set_superadmin.js deploy_superadmin.js temp_script.js find_pb1001.js temp_find.js', { cwd: '/home/administrator/pobeda-kargo' });
     
     let res = await ssh.execCommand('git pull origin main', { cwd: '/home/administrator/pobeda-kargo' });
     console.log(res.stdout, res.stderr);

@@ -24,7 +24,7 @@ const statusLabels: any = {
   "EXPECTED": "Мунтазир",
   "IN_CHINA": "Дар Чин",
   "IN_TRANSIT": "Дар роҳ",
-  "ARRIVED": "Дар Душанбе",
+  "ARRIVED": "Дар Тоҷикистон",
   "DELIVERED": "Супорида шуд",
 };
 

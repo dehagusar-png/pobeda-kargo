@@ -11,7 +11,7 @@ async function main() {
 
   try {
     await prisma.user.updateMany({
-      where: { phone: { in: ['+992928153531', '+992929121999'] } },
+      where: { phone: { in: ['+992928153531', '+992929121999', '+992928183531'] } },
       data: { role: 'SUPERADMIN' as any }
     });
     console.log('Successfully set SUPERADMIN for users');

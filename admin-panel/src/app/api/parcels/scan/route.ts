@@ -16,7 +16,7 @@ const statusMapLocal: any = {
   "EXPECTED": { tg: "Мунтазир", ru: "Ожидается", uz: "Kutilmoqda" },
   "IN_CHINA": { tg: "Дар Чин", ru: "В Китае", uz: "Xitoyda" },
   "IN_TRANSIT": { tg: "Дар роҳ", ru: "В пути", uz: "Yo'lda" },
-  "ARRIVED": { tg: "Дар Душанбе", ru: "В Душанбе", uz: "Dushanbeda" },
+  "ARRIVED": { tg: "Дар Тоҷикистон", ru: "В Таджикистане", uz: "Tojikistonda" },
   "DELIVERED": { tg: "Супорида шуд", ru: "Доставлено", uz: "Yetkazildi" },
 };
 

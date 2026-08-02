@@ -30,7 +30,7 @@ export default async function TrackPage({ params }: { params: Promise<{ code: st
   const steps = [
     { label: "Дар анбори Чин", icon: Package, status: "IN_CHINA", level: 1 },
     { label: "Дар роҳ ба Тоҷикистон", icon: Truck, status: "IN_TRANSIT", level: 2 },
-    { label: "Омода дар Душанбе", icon: MapPin, status: "ARRIVED", level: 3 },
+    { label: "Омода дар Тоҷикистон", icon: MapPin, status: "ARRIVED", level: 3 },
     { label: "Супорида шуд", icon: CheckCircle, status: "DELIVERED", level: 4 }
   ];
 
