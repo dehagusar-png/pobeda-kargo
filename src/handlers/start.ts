@@ -23,17 +23,3 @@ startHandler.command("start", async (ctx) => {
   }
 });
 
-startHandler.command("setadmin", async (ctx) => {
-  if (!ctx.from) return;
-  try {
-    const user = await prisma.user.update({
-      where: { telegramId: BigInt(ctx.from.id) },
-      data: { role: "ADMIN" }
-    });
-    if (ctx.user) ctx.user.role = "ADMIN";
-    const keyboard = getMainKeyboard(ctx, user);
-    await ctx.reply("✅ Шумо акнун ADMIN ҳастед! Тугмаи сканер дар поён пайдо шуд.", { reply_markup: keyboard });
-  } catch (error) {
-    await ctx.reply("❌ Хатогӣ ҳангоми иваз кардани нақш. Шояд шумо ҳанӯз пурра сабти ном нашудаед (рақами телефонро нафиристодаед). Аввал сабти ном шавед ва сипас /setadmin-ро пахш кунед.");
-  }
-});

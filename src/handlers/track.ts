@@ -62,8 +62,8 @@ trackHandler.on("message:web_app_data", async (ctx) => {
     if (data.trackCode) {
       const user = ctx.user;
       
-      // Танҳо Admin ё Worker ҳуқуқи иваз кардани статусро доранд
-      if (user?.role === "ADMIN" || user?.role === "WORKER") {
+      // Танҳо Admin, Worker ё Superadmin ҳуқуқи иваз кардани статусро доранд
+      if (user?.role === "ADMIN" || user?.role === "WORKER" || user?.role === "SUPERADMIN") {
         const parcel = await prisma.parcel.findUnique({ where: { trackCode: data.trackCode } });
         
         if (parcel) {
