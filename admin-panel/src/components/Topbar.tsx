@@ -20,7 +20,7 @@ export default function Topbar() {
         <div className="flex items-center gap-3 border-l border-gray-200 pl-4">
           <div className="text-right hidden sm:block">
             <p className="text-sm font-medium text-gray-700">Администратор</p>
-            <p className="text-xs text-gray-500">admin@pobedakargo.tj</p>
+            <p className="text-xs text-gray-500">adminpobedacargo1@gmail.com</p>
           </div>
           <div className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold">
             <User size={20} />
