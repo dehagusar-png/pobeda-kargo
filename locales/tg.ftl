@@ -55,6 +55,6 @@ parcel_assigned = ✅ Бор бомуваффақият ба муштарӣ { $c
 status_EXPECTED = Мунтазири қабул 📦
 status_IN_CHINA = Бор дар анбори Чин 🇨🇳
 status_IN_TRANSIT = Аз анбор ба роҳ баромад 🚚
-status_ARRIVED = Ба манзил омада расид 🇹🇯
+status_ARRIVED = Ба Тоҷикистон омада расид 🇹🇯
 status_DELIVERED = Супорида шуд ✅
 status_changed = 🔔 Огоҳинома: Статуси бори шумо ({ $trackCode }) иваз шуд: <b>{ $status }</b>
