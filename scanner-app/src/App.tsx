@@ -115,6 +115,40 @@ function App() {
               )}
             </div>
 
+            {/* Вуруди дастӣ */}
+            <div className="mt-4 bg-gray-100 p-3 rounded-xl border border-gray-200">
+              <label className="text-sm font-semibold text-gray-700 mb-1 block">Намехонад? Дастӣ дохил кунед:</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  id="manual-track-code"
+                  placeholder="Трек-код..."
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const input = e.currentTarget;
+                      if(input.value.trim().length >= 5) {
+                        handleScanSuccess(input.value.trim());
+                        input.value = '';
+                      }
+                    }
+                  }}
+                />
+                <button 
+                  onClick={() => {
+                    const input = document.getElementById('manual-track-code') as HTMLInputElement;
+                    if(input.value.trim().length >= 5) {
+                      handleScanSuccess(input.value.trim());
+                      input.value = '';
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 text-sm shadow-sm"
+                >
+                  Сабт
+                </button>
+              </div>
+            </div>
+
             {/* Рӯйхати борҳои охирин сканшуда */}
             <div className="mt-4 flex-1">
               <h3 className="text-sm font-bold text-gray-700 mb-2">Натиҷаҳо:</h3>
