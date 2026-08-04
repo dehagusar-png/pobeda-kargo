@@ -18,11 +18,10 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const isScanningRef = useRef(false);
   const isStartingRef = useRef(false);
 
-  // Штрих-кодҳои дастгирӣшаванда
-  // Танҳо CODE_128-ро монондем, чунки ин формати стандартии трек-кодҳост.
-  // CODE_39 баъзан қисмати штрих-кодро хато мехонад.
+  // Ҳоло мо форматҳоро дубора фаъол кардем, аммо "лазер"-ро танзим мекунем
   const supportedFormats = [
-    Html5QrcodeSupportedFormats.CODE_128
+    Html5QrcodeSupportedFormats.CODE_128,
+    Html5QrcodeSupportedFormats.CODE_39
   ];
 
   useEffect(() => {
@@ -36,8 +35,8 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     // Тоза кардани фосила ва ситорачаҳо (ки баъзан дар Code 39 пайдо мешаванд)
     const finalCode = decodedText.trim().replace(/[\s*]+/g, '');
     
-    // Трек-код бояд танҳо аз ҳарфу рақам иборат бошад ва дарозиаш аз 8 зиёд бошад
-    const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 8;
+    // Трек-код бояд танҳо аз ҳарфу рақам иборат бошад ва дарозиаш аз 5 зиёд бошад
+    const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 5;
     
     if (isValidTracking) {
       onScanSuccessRef.current(finalCode);
@@ -59,8 +58,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       const config: any = {
         fps: 15,
         qrbox: (videoWidth: number, _videoHeight: number) => {
-          const width = Math.min(videoWidth * 0.9, 450);
-          return { width: width, height: 150 };
+          // Монанди сканери лазерӣ: паҳноиаш калон, баландиаш хеле хурд
+          const width = Math.min(videoWidth * 0.9, 350);
+          return { width: width, height: 60 }; 
         },
         aspectRatio: window.innerWidth / window.innerHeight,
       };
@@ -160,7 +160,14 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           </div>
         </div>
 
-        <div id="reader" className="w-full mt-2"></div>
+        <div className="relative w-full mt-2">
+          <div id="reader" className="w-full"></div>
+          {/* Хатти сурхи сканери лазерӣ */}
+          <div className="absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-red-500 shadow-[0_0_10px_rgba(239,68,68,1)] z-20 pointer-events-none animate-pulse"></div>
+          <p className="absolute top-[55%] left-0 right-0 text-center text-red-100 text-[11px] font-bold z-20 pointer-events-none drop-shadow-md uppercase tracking-wider">
+            Хатро ба болои трек-код рост кунед
+          </p>
+        </div>
         {/* Сканери пинҳонӣ барои хондани расмҳо */}
         <div id="file-reader" style={{ display: 'none' }}></div>
       </div>
