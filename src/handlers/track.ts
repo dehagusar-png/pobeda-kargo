@@ -72,11 +72,14 @@ trackHandler.on("message:web_app_data", async (ctx) => {
              return;
            }
 
+           if (parcel.status === "ARRIVED") {
+             await ctx.reply(`ℹ️ Бор (${data.trackCode}) аллакай дар анбори Тоҷикистон аст! Барои супоридани он ба мизоҷ ба администратор муроҷиат кунед ё аз панели администратор истифода баред.`);
+             return;
+           }
+
            let nextStatus = "IN_CHINA";
            if (parcel.status === "EXPECTED") nextStatus = "IN_CHINA";
-           else if (parcel.status === "IN_CHINA") nextStatus = "IN_TRANSIT";
-           else if (parcel.status === "IN_TRANSIT") nextStatus = "ARRIVED";
-           else if (parcel.status === "ARRIVED") nextStatus = "DELIVERED";
+           else if (parcel.status === "IN_CHINA" || parcel.status === "IN_TRANSIT") nextStatus = "ARRIVED";
            
            await prisma.parcel.update({
              where: { id: parcel.id },

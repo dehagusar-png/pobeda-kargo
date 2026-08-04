@@ -37,7 +37,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     if (!isScanningRef.current || !onScanSuccessRef.current) return;
     
     // Тоза кардани фосила ва ситорачаҳо (ки баъзан дар Code 39 пайдо мешаванд)
-    const finalCode = decodedText.trim().replace(/[\s\*]+/g, '');
+    const finalCode = decodedText.trim().replace(/[\s*]+/g, '');
     
     // Трек-код бояд танҳо аз ҳарфу рақам иборат бошад ва дарозиаш аз 8 зиёд бошад
     const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 8;
@@ -107,9 +107,10 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
           } else {
             html5QrCodeRef.current.clear();
           }
-        } catch (e) {}
+        } catch {}
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,7 +129,7 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
       const result = await fileScanner.scanFile(file, true);
       
       if (onScanSuccessRef.current && result) {
-        const finalCode = result.trim().replace(/[\s\*]+/g, '');
+        const finalCode = result.trim().replace(/[\s*]+/g, '');
         const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 8;
         
         if (isValidTracking) {

@@ -14,6 +14,10 @@ async function update() {
     await ssh.execCommand('pm2 restart pobeda-bot', { cwd: '/home/administrator/pobeda-kargo' });
     console.log('Building Scanner App...');
     await ssh.execCommand('npm run build', { cwd: '/home/administrator/pobeda-kargo/scanner-app' });
+    console.log('Building Admin Panel...');
+    await ssh.execCommand('npm run build', { cwd: '/home/administrator/pobeda-kargo/admin-panel' });
+    console.log('Restarting pobeda-admin-panel...');
+    await ssh.execCommand('pm2 restart pobeda-admin-panel', { cwd: '/home/administrator/pobeda-kargo' });
     
     console.log('Updating Nginx domain...');
     await ssh.execCommand('echo "s(38U1H37h" | sudo -S sed -i "s/server_name admin.gusar.tj;/server_name pobedacargo1.gusar.tj;/g" /etc/nginx/sites-available/pobeda-admin');

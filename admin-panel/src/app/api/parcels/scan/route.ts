@@ -84,10 +84,16 @@ export async function POST(request: Request) {
         }, { headers: corsHeaders });
       }
       
+      if (parcel.status === "ARRIVED") {
+        return NextResponse.json({ 
+          success: true, 
+          message: `Бор аллакай дар анбори Тоҷикистон аст! Барои гирифтани бор ба администратор муроҷиат кунед.`, 
+          status: parcel.status 
+        }, { headers: corsHeaders });
+      }
+
       if (parcel.status === "EXPECTED") nextStatus = "IN_CHINA";
-      else if (parcel.status === "IN_CHINA") nextStatus = "IN_TRANSIT";
-      else if (parcel.status === "IN_TRANSIT") nextStatus = "ARRIVED";
-      else if (parcel.status === "ARRIVED") nextStatus = "DELIVERED";
+      else if (parcel.status === "IN_CHINA" || parcel.status === "IN_TRANSIT") nextStatus = "ARRIVED";
 
       const updated = await prisma.parcel.update({
         where: { id: parcel.id },
