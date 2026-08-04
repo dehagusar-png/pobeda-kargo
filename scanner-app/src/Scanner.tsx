@@ -19,10 +19,10 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const isStartingRef = useRef(false);
 
   // Штрих-кодҳои дастгирӣшаванда
-  // Танҳо CODE_128 ва CODE_39-ро монондем, чунки дигар форматҳо (мисли ITF) баъзан кодро нопурра ва ғалат мехонанд.
+  // Танҳо CODE_128-ро монондем, чунки ин формати стандартии трек-кодҳост.
+  // CODE_39 баъзан қисмати штрих-кодро хато мехонад.
   const supportedFormats = [
-    Html5QrcodeSupportedFormats.CODE_128,
-    Html5QrcodeSupportedFormats.CODE_39
+    Html5QrcodeSupportedFormats.CODE_128
   ];
 
   useEffect(() => {
