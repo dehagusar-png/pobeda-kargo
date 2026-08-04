@@ -18,14 +18,11 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const isScanningRef = useRef(false);
   const isStartingRef = useRef(false);
 
-  // Штрих-кодҳои дастгирӣшаванда (бе QR код то ки чизҳои нодаркорро нахонад)
+  // Штрих-кодҳои дастгирӣшаванда
+  // Танҳо CODE_128 ва CODE_39-ро монондем, чунки дигар форматҳо (мисли ITF) баъзан кодро нопурра ва ғалат мехонанд.
   const supportedFormats = [
     Html5QrcodeSupportedFormats.CODE_128,
-    Html5QrcodeSupportedFormats.CODE_39,
-    Html5QrcodeSupportedFormats.CODE_93,
-    Html5QrcodeSupportedFormats.EAN_13,
-    Html5QrcodeSupportedFormats.EAN_8,
-    Html5QrcodeSupportedFormats.ITF
+    Html5QrcodeSupportedFormats.CODE_39
   ];
 
   useEffect(() => {

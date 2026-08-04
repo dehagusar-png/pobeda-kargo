@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
-import { Package, Truck, MapPin, CheckCircle } from "lucide-react";
+import { Package, MapPin } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -20,18 +20,16 @@ export default async function TrackPage({ params }: { params: Promise<{ code: st
   const statusLevels: Record<string, number> = {
     EXPECTED: 0,
     IN_CHINA: 1,
-    IN_TRANSIT: 2,
-    ARRIVED: 3,
-    DELIVERED: 4
+    IN_TRANSIT: 1, // Treat any leftover IN_TRANSIT as IN_CHINA level
+    ARRIVED: 2,
+    DELIVERED: 3
   };
 
   const currentLevel = statusLevels[parcel.status] || 0;
 
   const steps = [
     { label: "Дар анбори Чин", icon: Package, status: "IN_CHINA", level: 1 },
-    { label: "Дар роҳ ба Тоҷикистон", icon: Truck, status: "IN_TRANSIT", level: 2 },
-    { label: "Омода дар Тоҷикистон", icon: MapPin, status: "ARRIVED", level: 3 },
-    { label: "Супорида шуд", icon: CheckCircle, status: "DELIVERED", level: 4 }
+    { label: "Омода дар Тоҷикистон", icon: MapPin, status: "ARRIVED", level: 2 }
   ];
 
   return (
