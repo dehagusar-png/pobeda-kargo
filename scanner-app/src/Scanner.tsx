@@ -18,10 +18,9 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const isScanningRef = useRef(false);
   const isStartingRef = useRef(false);
 
-  // Ҳоло мо форматҳоро дубора фаъол кардем, аммо "лазер"-ро танзим мекунем
+  // Танҳо CODE_128-ро мемонем, зеро CODE_39 штрих-кодҳои чиниро хато ва ғалат (рақами дароз) мехонад.
   const supportedFormats = [
-    Html5QrcodeSupportedFormats.CODE_128,
-    Html5QrcodeSupportedFormats.CODE_39
+    Html5QrcodeSupportedFormats.CODE_128
   ];
 
   useEffect(() => {
