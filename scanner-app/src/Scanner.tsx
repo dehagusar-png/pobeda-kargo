@@ -18,9 +18,10 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
   const isScanningRef = useRef(false);
   const isStartingRef = useRef(false);
 
-  // Танҳо CODE_128-ро мемонем, зеро CODE_39 штрих-кодҳои чиниро хато ва ғалат (рақами дароз) мехонад.
+  // CODE_39 боз фаъол шуд, вале бо "Филтри ҳушманд" назорат карда мешавад.
   const supportedFormats = [
-    Html5QrcodeSupportedFormats.CODE_128
+    Html5QrcodeSupportedFormats.CODE_128,
+    Html5QrcodeSupportedFormats.CODE_39
   ];
 
   useEffect(() => {
@@ -28,11 +29,22 @@ const Scanner = ({ onScanSuccess, onScanFailure }: ScannerProps) => {
     onScanFailureRef.current = onScanFailure;
   }, [onScanSuccess, onScanFailure]);
 
-  const handleSuccess = (decodedText: string) => {
+  const handleSuccess = (decodedText: string, decodedResult?: any) => {
     if (!isScanningRef.current || !onScanSuccessRef.current) return;
     
-    // Тоза кардани фосила ва ситорачаҳо (ки баъзан дар Code 39 пайдо мешаванд)
+    // Тоза кардани фосила ва ситорачаҳо
     const finalCode = decodedText.trim().replace(/[\s*]+/g, '');
+    
+    // Филтри Ҳушманд барои CODE_39
+    const formatName = decodedResult?.result?.format?.formatName;
+    if (formatName === "CODE_39") {
+      // Агар формат CODE_39 бошад, он бояд ҳадди ақал як ҳарф дошта бошад (масалан JT...).
+      // Агар фақат рақам бошад, ин 100% галлютсинатсияи сканер аз CODE_128 аст.
+      const hasLetters = /[A-Za-z]/.test(finalCode);
+      if (!hasLetters) {
+        return; // Ин натиҷаи хаторо партофта, кори сканерро давом медиҳем.
+      }
+    }
     
     // Трек-код бояд танҳо аз ҳарфу рақам иборат бошад ва дарозиаш аз 5 зиёд бошад
     const isValidTracking = /^[A-Za-z0-9]+$/.test(finalCode) && finalCode.length >= 5;
