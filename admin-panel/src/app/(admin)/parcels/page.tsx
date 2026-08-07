@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Filter, MoreHorizontal, FileDown } from "lucide-react";
+import { Search, Filter, MoreHorizontal, FileDown, Edit, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
@@ -36,6 +36,48 @@ export default function ParcelsPage() {
   const [newTrackCode, setNewTrackCode] = useState("");
   const [newClientCode, setNewClientCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editParcel, setEditParcel] = useState<any>(null);
+
+  const handleDelete = async (id: string, track: string) => {
+    if (!confirm(`Оё шумо дар ҳақиқат мехоҳед бори ${track}-ро нест кунед?`)) return;
+    try {
+      const res = await fetch(`/api/parcels/${id}`, { method: "DELETE" });
+      if (res.ok) fetchParcels();
+      else alert("Хатогӣ ҳангоми несткунӣ!");
+    } catch (error) {
+      alert("Хатогӣ ҳангоми пайвастшавӣ.");
+    }
+  };
+
+  const handleUpdateParcel = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editParcel) return;
+    setSubmitting(true);
+    
+    try {
+      const res = await fetch(`/api/parcels/${editParcel.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          trackCode: editParcel.track, 
+          status: editParcel.status,
+          weight: editParcel.weight ? editParcel.weight.toString().replace(" kg", "").replace("-", "") : ""
+        })
+      });
+      
+      if (res.ok) {
+        setIsEditModalOpen(false);
+        fetchParcels();
+      } else {
+        alert("Хатогӣ ҳангоми навсозӣ!");
+      }
+    } catch (error) {
+      alert("Хатогӣ ҳангоми пайвастшавӣ.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const fetchParcels = () => {
     fetch("/api/parcels")
@@ -135,6 +177,68 @@ export default function ParcelsPage() {
         </div>
       )}
 
+      {/* Edit Modal */}
+      {isEditModalOpen && editParcel && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+          >
+            <h2 className="text-xl font-bold text-slate-800 mb-4">Таҳрири бор</h2>
+            <form onSubmit={handleUpdateParcel} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Трек-код</label>
+                <input 
+                  type="text" 
+                  required
+                  value={editParcel.track}
+                  onChange={e => setEditParcel({...editParcel, track: e.target.value})}
+                  className="w-full border border-slate-200 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Вазн (кг)</label>
+                <input 
+                  type="text" 
+                  value={editParcel.weight ? editParcel.weight.toString().replace(" kg", "").replace("-", "") : ""}
+                  onChange={e => setEditParcel({...editParcel, weight: e.target.value})}
+                  className="w-full border border-slate-200 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">Ҳолат (Status)</label>
+                <select 
+                  value={editParcel.status}
+                  onChange={e => setEditParcel({...editParcel, status: e.target.value})}
+                  className="w-full border border-slate-200 rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {Object.entries(statusLabels).map(([key, label]) => (
+                    <option key={key} value={key}>{label as string}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex justify-end gap-3 mt-6">
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors text-sm font-medium"
+                >
+                  Бекор кардан
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={submitting}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm disabled:opacity-50"
+                >
+                  {submitting ? "Сабт мешавад..." : "Сабт кардан"}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Борҳо (Parcels)</h1>
@@ -194,9 +298,14 @@ export default function ParcelsPage() {
                   <div className="text-xs text-slate-500">Вазн: <span className="font-medium text-slate-700">{parcel.weight}</span></div>
                   <div className="text-xs text-slate-500">Сана: <span className="font-medium text-slate-700">{parcel.date}</span></div>
                 </div>
-                <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors bg-slate-50">
-                  <MoreHorizontal size={18} />
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={() => { setEditParcel(parcel); setIsEditModalOpen(true); }} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors bg-slate-50" title="Таҳрир">
+                    <Edit size={18} />
+                  </button>
+                  <button onClick={() => handleDelete(parcel.id, parcel.track)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors bg-slate-50" title="Нест кардан">
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -235,9 +344,14 @@ export default function ParcelsPage() {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-right">
-                    <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                      <MoreHorizontal size={18} />
-                    </button>
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => { setEditParcel(parcel); setIsEditModalOpen(true); }} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Таҳрир">
+                        <Edit size={18} />
+                      </button>
+                      <button onClick={() => handleDelete(parcel.id, parcel.track)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Нест кардан">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
