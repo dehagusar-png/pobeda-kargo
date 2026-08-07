@@ -12,7 +12,7 @@ status_changed = 🔔 Огоҳинома: Статуси бори шумо ({ $t
 `,
   ru: `
 status_EXPECTED = Ожидает поступления 📦
-status_IN_CHINA = Груз на складе в Китае 🇨🇳
+status_IN_CHINA = Груз выехал со склада в Китае 🇨🇳
 status_IN_TRANSIT = Отправлен со склада в пути 🚚
 status_ARRIVED = Прибыл в пункт назначения 🇹🇯
 status_DELIVERED = Выдан ✅
@@ -20,7 +20,7 @@ status_changed = 🔔 Уведомление: Статус вашего груз
 `,
   en: `
 status_EXPECTED = Expected 📦
-status_IN_CHINA = Parcel at China warehouse 🇨🇳
+status_IN_CHINA = Parcel departed from China warehouse 🇨🇳
 status_IN_TRANSIT = Departed warehouse, in transit 🚚
 status_ARRIVED = Arrived at destination 🇹🇯
 status_DELIVERED = Delivered ✅
@@ -28,7 +28,7 @@ status_changed = 🔔 Notification: Your parcel ({ $trackCode }) status changed 
 `,
   uz: `
 status_EXPECTED = Qabul qilinishi kutilmoqda 📦
-status_IN_CHINA = Yuk Xitoy omborida 🇨🇳
+status_IN_CHINA = Yuk Xitoy omboridan yo'lga chiqdi 🇨🇳
 status_IN_TRANSIT = Ombordan yo'lga chiqdi 🚚
 status_ARRIVED = Manzilga yetib keldi 🇹🇯
 status_DELIVERED = Topshirildi ✅
@@ -36,7 +36,7 @@ status_changed = 🔔 Bildirishnoma: Yukingiz ({ $trackCode }) holati o'zgardi: 
 `,
   zh: `
 status_EXPECTED = 待接收 📦
-status_IN_CHINA = 货物在中国仓库 🇨🇳
+status_IN_CHINA = 货物已离开中国仓库 🇨🇳
 status_IN_TRANSIT = 已离开仓库，运输中 🚚
 status_ARRIVED = 已到达目的地 🇹🇯
 status_DELIVERED = 已交付 ✅

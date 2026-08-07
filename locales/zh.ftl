@@ -40,7 +40,7 @@ owner_not_found = ❌ 未找到具有此代码的客户。
 parcel_assigned = ✅ 货物已成功绑定到客户 { $clientCode }！
 
 status_EXPECTED = 待接收 📦
-status_IN_CHINA = 货物在中国仓库 🇨🇳
+status_IN_CHINA = 货物已离开中国仓库 🇨🇳
 status_IN_TRANSIT = 已离开仓库，运输中 🚚
 status_ARRIVED = 已到达目的地 🇹🇯
 status_DELIVERED = 已交付 ✅

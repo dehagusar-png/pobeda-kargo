@@ -53,7 +53,7 @@ owner_not_found = ❌ Client with this code was not found.
 parcel_assigned = ✅ Parcel successfully assigned to client { $clientCode }!
 
 status_EXPECTED = Expected 📦
-status_IN_CHINA = Parcel at China warehouse 🇨🇳
+status_IN_CHINA = Parcel departed from China warehouse 🇨🇳
 status_IN_TRANSIT = Departed warehouse, in transit 🚚
 status_ARRIVED = Arrived at destination 🇹🇯
 status_DELIVERED = Delivered ✅

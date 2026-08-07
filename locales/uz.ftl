@@ -40,7 +40,7 @@ owner_not_found = ❌ Bunday kodli mijoz topilmadi.
 parcel_assigned = ✅ Yuk muvaffaqiyatli { $clientCode } mijoziga biriktirildi!
 
 status_EXPECTED = Qabul qilinishi kutilmoqda 📦
-status_IN_CHINA = Yuk Xitoy omborida 🇨🇳
+status_IN_CHINA = Yuk Xitoy omboridan yo'lga chiqdi 🇨🇳
 status_IN_TRANSIT = Ombordan yo'lga chiqdi 🚚
 status_ARRIVED = Manzilga yetib keldi 🇹🇯
 status_DELIVERED = Topshirildi ✅
