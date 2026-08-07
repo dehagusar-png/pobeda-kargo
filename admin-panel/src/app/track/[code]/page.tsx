@@ -28,7 +28,7 @@ export default async function TrackPage({ params }: { params: Promise<{ code: st
   const currentLevel = statusLevels[parcel.status] || 0;
 
   const steps = [
-    { label: "Дар анбори Чин", icon: Package, status: "IN_CHINA", level: 1 },
+    { label: "Бор аз анбори Чин ба роҳ баромад", icon: Package, status: "IN_CHINA", level: 1 },
     { label: "Омода дар Тоҷикистон", icon: MapPin, status: "ARRIVED", level: 2 }
   ];
 

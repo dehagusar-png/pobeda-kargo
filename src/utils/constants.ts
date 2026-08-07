@@ -1,6 +1,6 @@
 export const STATUS_MAP: Record<string, string> = {
   "EXPECTED": "Мунтазири қабул 📦",
-  "IN_CHINA": "Дар анбори Чин 🇨🇳",
+  "IN_CHINA": "Бор аз анбори Чин ба роҳ баромад 🇨🇳",
   "IN_TRANSIT": "Дар роҳ ба Тоҷикистон 🚚",
   "ARRIVED": "Дар Тоҷикистон омода аст 🇹🇯",
   "DELIVERED": "Супорида шуд ✅"
