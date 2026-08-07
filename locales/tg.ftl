@@ -53,7 +53,7 @@ owner_not_found = ❌ Муштарӣ бо ин код ёфт нашуд.
 parcel_assigned = ✅ Бор бомуваффақият ба муштарӣ { $clientCode } пайваст карда шуд!
 
 status_EXPECTED = Мунтазири қабул 📦
-status_IN_CHINA = Бор дар анбори Чин 🇨🇳
+status_IN_CHINA = Бор аз анбори Чин ба роҳ баромад 🇨🇳
 status_IN_TRANSIT = Аз анбор ба роҳ баромад 🚚
 status_ARRIVED = Ба Тоҷикистон омада расид 🇹🇯
 status_DELIVERED = Супорида шуд ✅

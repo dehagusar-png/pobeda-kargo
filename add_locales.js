@@ -4,7 +4,7 @@ const path = require('path');
 const locales = {
   tg: `
 status_EXPECTED = Мунтазири қабул 📦
-status_IN_CHINA = Бор дар анбори Чин 🇨🇳
+status_IN_CHINA = Бор аз анбори Чин ба роҳ баромад 🇨🇳
 status_IN_TRANSIT = Аз анбор ба роҳ баромад 🚚
 status_ARRIVED = Ба манзил омада расид 🇹🇯
 status_DELIVERED = Супорида шуд ✅
