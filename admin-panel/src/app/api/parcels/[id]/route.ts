@@ -5,14 +5,15 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = "force-dynamic";
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const parcelId = parseInt(params.id);
+    const resolvedParams = await params;
+    const parcelId = parseInt(resolvedParams.id);
     if (isNaN(parcelId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
@@ -42,14 +43,15 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   }
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const parcelId = parseInt(params.id);
+    const resolvedParams = await params;
+    const parcelId = parseInt(resolvedParams.id);
     if (isNaN(parcelId)) {
       return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
