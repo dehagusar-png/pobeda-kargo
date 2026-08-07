@@ -122,6 +122,11 @@ export default function ParcelsPage() {
     }
   };
 
+  const filteredParcels = parcels.filter(p => 
+    p.track?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    p.client?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="space-y-6 relative">
       {/* Modal */}
@@ -282,7 +287,7 @@ export default function ParcelsPage() {
         <div className="md:hidden divide-y divide-slate-100">
           {loading ? (
             <div className="p-8 text-center text-slate-500 text-sm">Боркунӣ...</div>
-          ) : parcels.filter(p => p.track.includes(searchTerm)).map((parcel) => (
+          ) : filteredParcels.map((parcel) => (
             <div key={parcel.id} className="p-4 hover:bg-slate-50 transition-colors">
               <div className="flex justify-between items-start mb-2">
                 <div className="font-mono font-bold text-slate-900">{parcel.track}</div>
@@ -309,7 +314,7 @@ export default function ParcelsPage() {
               </div>
             </div>
           ))}
-          {!loading && parcels.filter(p => p.track.includes(searchTerm)).length === 0 && (
+          {!loading && filteredParcels.length === 0 && (
             <div className="p-8 text-center text-slate-500 text-sm">Боре ёфт нашуд.</div>
           )}
         </div>
@@ -330,7 +335,7 @@ export default function ParcelsPage() {
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr><td colSpan={6} className="py-8 text-center text-slate-500">Боркунӣ...</td></tr>
-              ) : parcels.filter(p => p.track.includes(searchTerm)).map((parcel) => (
+              ) : filteredParcels.map((parcel) => (
                 <tr key={parcel.id} className="hover:bg-slate-50 transition-colors">
                   <td className="py-4 px-6 font-mono font-medium text-slate-900">{parcel.track}</td>
                   <td className="py-4 px-6">
@@ -355,7 +360,7 @@ export default function ParcelsPage() {
                   </td>
                 </tr>
               ))}
-              {!loading && parcels.filter(p => p.track.includes(searchTerm)).length === 0 && (
+              {!loading && filteredParcels.length === 0 && (
                 <tr><td colSpan={6} className="py-8 text-center text-slate-500">Боре ёфт нашуд.</td></tr>
               )}
             </tbody>
